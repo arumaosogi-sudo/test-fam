@@ -1,0 +1,4 @@
+# ไฟล์ที่ Python/VS Code สร้างเอง ไม่ใช่ส่วนของงาน
+__pycache__/
+*.pyc
+.vscode/
