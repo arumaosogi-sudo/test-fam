@@ -1,0 +1,51 @@
+# docker-compose.yaml — MySQL 8 + phpMyAdmin สำหรับดูผลลัพธ์ของ TXT -> JSON -> MySQL
+#
+# เปิด:   docker compose up -d
+# ดู:     http://localhost:8081   (phpMyAdmin — login อัตโนมัติเป็น root)
+# ปิด:    docker compose down          (ข้อมูลยังอยู่)
+# ล้าง:   docker compose down -v       (ลบข้อมูล → ครั้งต่อไปโหลด schema.sql/data.sql ใหม่)
+#
+# หมายเหตุ: MySQL จะรันไฟล์ใน /docker-entrypoint-initdb.d เฉพาะ "ครั้งแรก" ที่ volume ยังว่าง
+#           ถ้าแก้ schema.sql/data.sql แล้วอยากโหลดใหม่ ให้  docker compose down -v  แล้ว up ใหม่
+---
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fam-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: mflix
+    ports:
+      - "3307:3306"                     # ต่อจากเครื่อง: localhost:3307 (3306 มักถูกใช้แล้ว)
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # โหลดอัตโนมัติตอนเริ่มครั้งแรก — ตั้งชื่อ 01-, 02- เพื่อบังคับลำดับ (schema ก่อน data)
+      - ./mysql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./mysql/data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-ptest", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: fam-phpmyadmin
+    environment:
+      PMA_HOST: mysql                   # ชื่อ service ด้านบน (container คุยกันด้วยชื่อ service)
+      PMA_PORT: 3306
+      PMA_USER: root                    # login อัตโนมัติ ไม่ต้องกรอก
+      PMA_PASSWORD: test
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "8081:80"                       # http://localhost:8081  (8080 ถูก Airflow ใช้อยู่)
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql-data:

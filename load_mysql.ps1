@@ -8,7 +8,7 @@ Set-Location $PSScriptRoot
 
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 
-# ---------- 0. ตรวจ Docker ----------
+
 Step "ตรวจ Docker Desktop"
 docker info *> $null
 if ($LASTEXITCODE -ne 0) {
@@ -16,7 +16,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# ---------- 1. เปิด container MySQL ----------
+
 Step "เปิด container '$Container' (mysql:8.0)"
 $exists = docker ps -a --format "{{.Names}}" | Where-Object { $_ -eq $Container }
 if ($exists) {
@@ -25,7 +25,7 @@ if ($exists) {
     docker run -d --name $Container -e "MYSQL_ROOT_PASSWORD=$Password" -p "${Port}:3306" mysql:8.0 | Out-Null
 }
 
-# ---------- 2. รอให้ MySQL พร้อม ----------
+
 Step "รอ MySQL พร้อม (ครั้งแรกประมาณ 20-40 วินาที)"
 $ready = $false
 for ($i = 0; $i -lt 40; $i++) {
@@ -37,12 +37,12 @@ for ($i = 0; $i -lt 40; $i++) {
 Write-Host ""
 if (-not $ready) { Write-Host "MySQL ไม่พร้อมภายในเวลา ลองดู: docker logs $Container" -ForegroundColor Red; exit 1 }
 
-# ---------- 3. copy ไฟล์ SQL เข้า container (เลี่ยงปัญหา '<' ของ PowerShell และ encoding) ----------
+
 Step "copy schema.sql / data.sql เข้า container"
 docker cp mysql/schema.sql "${Container}:/tmp/schema.sql"
 docker cp mysql/data.sql   "${Container}:/tmp/data.sql"
 
-# ---------- 4. รัน SQL ----------
+
 Step "รัน schema.sql (สร้าง database mflix + 6 ตาราง)"
 docker exec -e "MYSQL_PWD=$Password" $Container mysql -uroot -e "source /tmp/schema.sql"
 if ($LASTEXITCODE -ne 0) { Write-Host "schema.sql ล้มเหลว" -ForegroundColor Red; exit 1 }
@@ -51,7 +51,7 @@ Step "รัน data.sql (INSERT ข้อมูลหนัง 2 เรื่�
 docker exec -e "MYSQL_PWD=$Password" $Container mysql -uroot mflix -e "source /tmp/data.sql"
 if ($LASTEXITCODE -ne 0) { Write-Host "data.sql ล้มเหลว" -ForegroundColor Red; exit 1 }
 
-# ---------- 5. แสดงผล ----------
+
 Step "ผลลัพธ์ในตาราง"
 docker exec -e "MYSQL_PWD=$Password" $Container mysql -uroot mflix --table -e @"
 SELECT 'movies' AS tbl, COUNT(*) AS rows_ FROM movies
