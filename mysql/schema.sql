@@ -1,6 +1,8 @@
 -- schema.sql — โครงสร้างตารางสำหรับ MySQL 8
 -- สร้างโดย convert.py จากเอกสาร MongoDB (sample_mflix.movies)
--- รัน:  mysql -u root -p < schema.sql
+-- โหลดด้วย load_mysql.ps1 หรือ docker compose up (ดู README)
+
+SET NAMES utf8mb4;   -- ให้ MySQL อ่านไฟล์นี้เป็น UTF-8 (มี comment ภาษาไทย)
 
 CREATE DATABASE IF NOT EXISTS mflix CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE mflix;
