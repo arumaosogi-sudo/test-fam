@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:thai": "node scripts/check-thai.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

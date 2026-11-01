@@ -27,6 +27,7 @@ export const CEFR_ORDER = cefrLevelSchema.options;
 
 export const partOfSpeechSchema = z.enum([
   "noun",
+  "pronoun",
   "verb",
   "adjective",
   "number",
@@ -65,6 +66,17 @@ export const wordSchema = z.object({
   id: z.string().min(1),
   en: z.string().min(1),
   th: z.string().min(1),
+  /**
+   * คำแปลไทยนี้มีอะไรรองรับ (ดู docs/thai-review.md)
+   *
+   * wiktionary = ปรากฏใน Wiktionary ตรงตัว
+   * adapted    = ต่างจากพจนานุกรมโดยตั้งใจ มีเหตุผลกำกับไว้ในเอกสาร
+   * unverified = ยังไม่มีอะไรรองรับ ห้ามปล่อยถึงเด็กโดยไม่มีคนตรวจก่อน
+   *
+   * บังคับให้ทุกคำต้องระบุ เพราะคำแปลผิดในสื่อสอนเด็กคือความเสียหายจริง
+   * และ "ลืมตรวจ" ต้องแยกออกจาก "ตรวจแล้ว" ให้ได้ในข้อมูล ไม่ใช่ในความทรงจำ
+   */
+  thSource: z.enum(["wiktionary", "adapted", "unverified"]),
   pos: partOfSpeechSchema,
   cefr: cefrLevelSchema,
   /** คำอ่านสากล ใช้โชว์ตอนสอนออกเสียง */

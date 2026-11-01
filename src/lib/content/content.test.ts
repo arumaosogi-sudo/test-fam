@@ -428,3 +428,54 @@ describe("ระดับที่ผู้เรียนเลือกเอ�
     expect(clozeLevels(hard).every((level) => level === "type")).toBe(true);
   });
 });
+
+/**
+ * คำแปลผิดในสื่อสอนเด็กคือความเสียหายจริง และโตตามจำนวนคำ
+ * เทสชุดนี้จึงกันไม่ให้คำที่ยังไม่มีใครตรวจหลุดถึงเด็กโดยไม่มีใครรู้ตัว
+ */
+describe("ที่มาของคำแปลไทย", () => {
+  it("ทุกคำต้องระบุว่าคำแปลมีอะไรรองรับ", () => {
+    for (const word of WORDS) {
+      expect(["wiktionary", "adapted", "unverified"], word.id).toContain(
+        word.thSource,
+      );
+    }
+  });
+
+  it("ไม่มีคำที่ยังไม่ได้ตรวจหลงอยู่ในคลัง", () => {
+    // เพิ่มคำใหม่โดยไม่ตรวจคำแปลก่อน เทสนี้จะพังทันที
+    const unverified = WORDS.filter((word) => word.thSource === "unverified");
+
+    expect(unverified.map((word) => word.id)).toEqual([]);
+  });
+
+  it("คำที่ปรับถ้อยคำเองต้องมีเหตุผลเขียนไว้ในเอกสาร", () => {
+    const review = readFileSync(
+      join(process.cwd(), "docs", "thai-review.md"),
+      "utf8",
+    );
+
+    for (const word of WORDS.filter((item) => item.thSource === "adapted")) {
+      expect(review, word.id).toContain(`| ${word.en} |`);
+    }
+  });
+
+  it("เอกสารตรวจคำแปลบอกที่มาและไม่ลืมให้เครดิต", () => {
+    const review = readFileSync(
+      join(process.cwd(), "docs", "thai-review.md"),
+      "utf8",
+    );
+
+    expect(review).toContain("Wiktionary");
+    expect(review).toContain("kaikki.org");
+  });
+
+  it("ส่วนใหญ่ต้องมีพจนานุกรมรองรับตรงตัว ไม่ใช่ปรับเองเกือบทั้งคลัง", () => {
+    const fromDictionary = WORDS.filter(
+      (word) => word.thSource === "wiktionary",
+    ).length;
+
+    // ถ้าวันหนึ่งสัดส่วนนี้ตก แปลว่าเริ่มเขียนคำแปลเองมากกว่าอ้างพจนานุกรม
+    expect(fromDictionary / WORDS.length).toBeGreaterThan(0.8);
+  });
+});
