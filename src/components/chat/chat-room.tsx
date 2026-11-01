@@ -1,180 +1,259 @@
 "use client";
 
+import { Languages, Send } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
-import { Milo } from "@/components/mascot/milo";
+import { Milo, type MiloState } from "@/components/mascot/milo";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
-import type { BuddyReply, ChatTurn, LanguageError } from "@/lib/chat/types";
-import { getWord } from "@/lib/content";
-import { getLesson } from "@/lib/content/lessons";
-import { nextLessonId } from "@/lib/progress/session";
+import { SpeakerButton } from "@/components/ui/speaker-button";
+import { UNITS, getUnit, wordsInUnit } from "@/lib/content";
+import type { ChatMessage, ChatMistake, ChatTurn } from "@/lib/chat/types";
+import { getTts } from "@/lib/speech";
+import { cn } from "@/lib/utils";
 import { useHydrateProgress, useProgressStore } from "@/store/progress-store";
 
-import { ChatBubble, ThinkingBubble } from "./chat-bubble";
+/** คำเปิดบทสนทนาที่สร้างในเครื่อง ไม่ต้องเสียเทิร์นเรียกโมเดลเพื่อทักทาย */
+function openingFor(unitId: string) {
+  const unit = getUnit(unitId);
+  const words = wordsInUnit(unitId);
 
-/**
- * อายุของเด็กยังไม่มีเก็บในโปรไฟล์ (ตารางจริงมีช่อง birth_year แต่ตอนนี้
- * ยังไม่มีระบบบัญชี) ใช้ค่ากลางของช่วงอนุบาล–ประถมต้นไปก่อน
- * แล้วเปลี่ยนเป็นค่าจริงตอนภารกิจ E6
- */
-const ASSUMED_AGE = 7;
+  return {
+    text: `Hi! I am Milo. Let's talk about ${unit?.titleEn ?? "English"}!`,
+    textTh: `สวัสดี! ฉันชื่อไมโล มาคุยเรื่อง${unit?.titleTh ?? "ภาษาอังกฤษ"}กัน!`,
+    suggestions: [
+      "Hello Milo!",
+      words[0] ? `I like ${words[0].en}.` : "I am happy!",
+      "What is this?",
+    ],
+  };
+}
 
-/** คำเป้าหมายที่ส่งเข้าบทสนทนา มากกว่านี้ AI จะยัดคำจนประโยคไม่เป็นธรรมชาติ */
-const MAX_TARGET_WORDS = 6;
+function Bubble({
+  message,
+  showThai,
+  onToggleThai,
+}: {
+  message: ChatMessage;
+  showThai: boolean;
+  onToggleThai: () => void;
+}) {
+  const fromChild = message.role === "child";
 
-type Message = {
-  role: "child" | "buddy";
-  text: string;
-  textTh?: string;
-  errors?: LanguageError[];
-};
+  return (
+    <div className={cn("flex", fromChild ? "justify-end" : "justify-start")}>
+      <div
+        className={cn(
+          "rounded-card max-w-[85%] space-y-2 border-2 px-4 py-3",
+          fromChild
+            ? "bg-primary-soft border-primary"
+            : "bg-surface border-border",
+        )}
+      >
+        <p className="text-kid text-ink font-bold">{message.text}</p>
 
-const GREETING: Message = {
-  role: "buddy",
-  text: "Hello! I am Milo. What is your favourite animal?",
-  textTh: "สวัสดี! ฉันชื่อไมโล สัตว์ตัวโปรดของหนูคืออะไร",
-};
+        {showThai && message.textTh ? (
+          <p className="text-ink-muted text-kid-sm border-border border-t-2 pt-2 font-bold">
+            {message.textTh}
+          </p>
+        ) : null}
 
-type ApiOk = { reply: BuddyReply; noticeTh: string | null };
-type ApiError = { error: string; messageTh?: string };
+        {!fromChild ? (
+          <div className="flex items-center gap-2">
+            <SpeakerButton text={message.text} size="sm" />
+            <SpeakerButton text={message.text} slow size="sm" />
+            {message.textTh ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleThai}
+                aria-pressed={showThai}
+              >
+                <Languages className="size-5" strokeWidth={2.75} aria-hidden />
+                {showThai ? "ซ่อนคำแปล" : "แปลไทย"}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** กล่องสอนหลังเด็กพูดผิด — แยกจากบับเบิลเพราะ Milo ไม่ดุในบทสนทนา */
+function MistakeCard({ mistakes }: { mistakes: ChatMistake[] }) {
+  return (
+    <div className="bg-accent-soft border-accent rounded-card space-y-2 border-2 p-3">
+      <p className="text-ink text-kid-sm font-extrabold">
+        ครั้งหน้าลองพูดแบบนี้นะ
+      </p>
+      {mistakes.map((mistake, index) => (
+        <div key={index} className="flex flex-wrap items-center gap-2">
+          <span className="text-ink-muted text-kid-sm font-bold line-through">
+            {mistake.childSaid}
+          </span>
+          <span aria-hidden>→</span>
+          <span className="text-ink text-kid font-extrabold">
+            {mistake.correct}
+          </span>
+          <SpeakerButton text={mistake.correct} size="sm" />
+          <span className="text-ink-muted text-kid-sm w-full font-bold">
+            {mistake.whyTh}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function ChatRoom() {
   useHydrateProgress();
 
   const hydrated = useProgressStore((state) => state.hydrated);
   const profile = useProgressStore((state) => state.profile);
-  const results = useProgressStore((state) => state.results);
-  const spendChatTurn = useProgressStore((state) => state.spendChatTurn);
-  const canChatNow = useProgressStore((state) => state.canChatNow);
 
-  const [messages, setMessages] = useState<Message[]>([GREETING]);
-  const [followups, setFollowups] = useState<string[]>([]);
-  const [draft, setDraft] = useState("");
-  const [thinking, setThinking] = useState(false);
+  const [unitId, setUnitId] = useState(UNITS[0]?.id ?? "");
+  const opening = useMemo(() => openingFor(unitId), [unitId]);
+
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const [setupNeeded, setSetupNeeded] = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const [concerned, setConcerned] = useState(false);
+  const [thaiShown, setThaiShown] = useState<string[]>([]);
 
-  if (!hydrated) {
-    return (
-      <div className="mt-20 flex flex-col items-center gap-4">
-        <Milo state="idle" size={120} />
-        <p className="text-ink-muted font-bold">กำลังเตรียมห้องคุย…</p>
-      </div>
-    );
+  const nextId = useRef(0);
+  const bottom = useRef<HTMLDivElement>(null);
+
+  // เลื่อนลงล่างสุดเมื่อมีข้อความใหม่ เด็กไม่ต้องหาเอง
+  useEffect(() => {
+    bottom.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages, sending]);
+
+  function makeId() {
+    nextId.current += 1;
+    return `m${nextId.current}`;
   }
 
-  /** คำที่เด็กกำลังเรียนอยู่ ใช้ชี้นำให้บทสนทนาวนอยู่กับคำเหล่านี้ */
-  function targetWords(): string[] {
-    const lesson = getLesson(nextLessonId(results) ?? "");
-    if (!lesson) return [];
-    return lesson.wordIds
-      .map((id) => getWord(id)?.en)
-      .filter((word): word is string => Boolean(word))
-      .slice(0, MAX_TARGET_WORDS);
+  function changeTopic(id: string) {
+    setUnitId(id);
+    setMessages([]);
+    setSuggestions([]);
+    setNotice(null);
+    setConcerned(false);
+    getTts().cancel();
   }
 
   async function send(text: string) {
     const trimmed = text.trim();
-    if (trimmed.length === 0 || thinking) return;
+    if (!trimmed || sending) return;
 
-    if (!canChatNow()) {
-      setNotice("วันนี้คุยกับ Milo ครบแล้ว พรุ่งนี้มาคุยกันใหม่นะ");
-      return;
-    }
+    const childMessage: ChatMessage = {
+      id: makeId(),
+      role: "child",
+      text: trimmed,
+    };
 
-    const history: Message[] = [...messages, { role: "child", text: trimmed }];
-    setMessages(history);
-    setDraft("");
-    setFollowups([]);
-    setNotice(null);
-    setThinking(true);
-
-    const turns: ChatTurn[] = history.map((message) => ({
+    // ประวัติที่ส่งไปคือสิ่งที่อยู่บนจอ ไม่รวมคำทักทายที่เราสร้างเอง
+    const history = messages.map((message) => ({
       role: message.role,
       text: message.text,
     }));
 
+    setMessages((current) => [...current, childMessage]);
+    setInput("");
+    setSuggestions([]);
+    setNotice(null);
+    setSending(true);
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          turns,
-          child: {
-            ageYears: ASSUMED_AGE,
-            cefr: profile.cefr,
-            targetWords: targetWords(),
-            topicTh: "สิ่งรอบตัวและสิ่งที่ชอบ",
-          },
+          history,
+          message: trimmed,
+          cefr: profile.cefr,
+          unitId,
+          childName: profile.displayName,
         }),
       });
 
-      if (!response.ok) {
-        const problem = (await response.json()) as ApiError;
-        if (problem.error === "not_configured") setSetupNeeded(true);
-        setNotice(problem.messageTh ?? "ตอนนี้คุยกับ Milo ไม่ได้ ลองใหม่นะ");
+      const payload = (await response.json()) as
+        | { turn: ChatTurn; remaining: number; notice: string | null }
+        | { error: string; message: string };
+
+      if (!response.ok || !("turn" in payload)) {
+        setNotice(
+          "message" in payload
+            ? payload.message
+            : "ตอนนี้ Milo ยังไม่ตอบ ลองใหม่อีกครั้งนะ",
+        );
         return;
       }
 
-      const { reply, noticeTh } = (await response.json()) as ApiOk;
-      spendChatTurn();
+      const { turn } = payload;
 
-      setMessages([
-        ...history,
+      setMessages((current) => [
+        ...current,
         {
-          role: "buddy",
-          text: reply.reply,
-          textTh: reply.replyTh || undefined,
-          errors: reply.errors.length > 0 ? reply.errors : undefined,
+          id: makeId(),
+          role: "milo",
+          text: turn.reply,
+          textTh: turn.replyTh,
+          mistakes: turn.mistakes.length > 0 ? turn.mistakes : undefined,
         },
       ]);
-      setFollowups(reply.suggestedFollowups);
-      if (noticeTh) setNotice(noticeTh);
+      setSuggestions(turn.suggestedReplies);
+      if (turn.safetyFlag === "concerning") setConcerned(true);
+      // บอกเด็กเมื่อระบบตัดข้อมูลส่วนตัวออกก่อนส่ง เพื่อให้รู้ว่าทำไมข้อความเปลี่ยน
+      if (payload.notice) setNotice(payload.notice);
 
-      // เรื่องที่น่าเป็นห่วงต้องไม่จบอยู่แค่ในแชท ผู้ใหญ่ต้องได้เห็น
-      if (reply.safetyFlag === "concerning") {
-        setNotice(
-          "Milo เห็นว่าหนูเล่าเรื่องที่อาจไม่สบายใจ ลองเล่าให้ผู้ใหญ่ที่ไว้ใจฟังด้วยนะ",
-        );
-      }
+      // อ่านคำตอบให้ฟังทันที ตามที่โจทย์ขอว่า "พิมพ์กลับมาและมีเสียงตอบกลับ"
+      void getTts().speak(turn.reply);
     } catch {
-      setNotice("เชื่อมต่อไม่ได้ ลองเช็กอินเทอร์เน็ตแล้วลองใหม่นะ");
+      setNotice("ต่อเน็ตไม่ได้ ลองใหม่อีกครั้งนะ");
     } finally {
-      setThinking(false);
-      endRef.current?.scrollIntoView({ behavior: "smooth" });
+      setSending(false);
     }
   }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    void send(draft);
+    void send(input);
   }
 
-  if (setupNeeded) {
+  if (!hydrated) {
     return (
-      <Card className="mx-auto mt-10 max-w-md space-y-3">
-        <CardTitle>ยังไม่ได้ตั้งค่า AI</CardTitle>
-        <CardNote>
-          หน้าแชทต้องมีคีย์ของผู้ให้บริการ AI ก่อนถึงจะคุยได้ คัดลอก
-          <code className="bg-surface-2 mx-1 rounded px-1 font-mono">
-            .env.local.example
-          </code>
-          เป็น
-          <code className="bg-surface-2 mx-1 rounded px-1 font-mono">
-            .env.local
-          </code>
-          แล้วใส่ค่า ANTHROPIC_API_KEY จากนั้นรีสตาร์ต dev server
-        </CardNote>
-        <Link href="/learn" className={buttonVariants({ size: "md" })}>
-          กลับไปเล่นด่าน
-        </Link>
-      </Card>
+      <div className="mt-20 flex flex-col items-center gap-4">
+        <Milo state="idle" size={120} />
+        <p className="text-ink-muted font-bold">กำลังเตรียมห้องแชท…</p>
+      </div>
     );
   }
+
+  const miloState: MiloState = sending
+    ? "listening"
+    : concerned
+      ? "oops"
+      : messages.length > 0
+        ? "happy"
+        : "idle";
+
+  const visible: ChatMessage[] = [
+    {
+      id: "opening",
+      role: "milo",
+      text: opening.text,
+      textTh: opening.textTh,
+    },
+    ...messages,
+  ];
+
+  const chips = suggestions.length > 0 ? suggestions : opening.suggestions;
 
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-4 py-6">
@@ -183,46 +262,95 @@ export function ChatRoom() {
           href="/learn"
           className={buttonVariants({ size: "sm", variant: "ghost" })}
         >
-          ← ออก
+          ← กลับ
         </Link>
-        <h1 className="text-kid-lg font-extrabold">คุยกับ Milo</h1>
+        <div className="flex items-center gap-2">
+          <Milo state={miloState} size={48} />
+          <span className="text-kid font-extrabold">คุยกับ Milo</span>
+        </div>
       </header>
 
-      <div className="space-y-4">
-        {messages.map((message, index) => (
-          <ChatBubble
-            key={index}
-            role={message.role}
-            text={message.text}
-            textTh={message.textTh}
-            errors={message.errors}
-          />
+      <div
+        className="flex flex-wrap gap-2"
+        role="group"
+        aria-label="เลือกหัวข้อที่จะคุย"
+      >
+        {UNITS.map((unit) => (
+          <button
+            key={unit.id}
+            type="button"
+            onClick={() => changeTopic(unit.id)}
+            aria-pressed={unit.id === unitId}
+            className={cn(
+              "rounded-pill border-2 px-3 py-1.5 text-kid-sm font-extrabold",
+              unit.id === unitId
+                ? "bg-primary border-primary text-primary-ink"
+                : "bg-surface border-border text-ink",
+            )}
+          >
+            {unit.emoji} {unit.titleTh}
+          </button>
         ))}
-        {thinking ? <ThinkingBubble /> : null}
-        <div ref={endRef} />
       </div>
 
-      {notice ? (
-        <p
-          role="status"
-          aria-live="polite"
-          className="bg-accent-soft rounded-card text-ink text-kid-sm p-3 text-center font-bold"
-        >
-          {notice}
-        </p>
+      <div
+        className="bg-surface-2 rounded-card border-border flex min-h-[22rem] flex-col gap-3 border-2 p-4"
+        aria-live="polite"
+      >
+        {visible.map((message) => (
+          <div key={message.id} className="space-y-2">
+            <Bubble
+              message={message}
+              showThai={thaiShown.includes(message.id)}
+              onToggleThai={() =>
+                setThaiShown((current) =>
+                  current.includes(message.id)
+                    ? current.filter((id) => id !== message.id)
+                    : [...current, message.id],
+                )
+              }
+            />
+            {message.mistakes ? (
+              <MistakeCard mistakes={message.mistakes} />
+            ) : null}
+          </div>
+        ))}
+
+        {sending ? (
+          <p className="text-ink-muted text-kid-sm font-bold">
+            Milo กำลังคิด…
+          </p>
+        ) : null}
+
+        <div ref={bottom} />
+      </div>
+
+      {concerned ? (
+        <Card className="border-danger bg-danger-soft space-y-1 border-2">
+          <CardTitle className="text-kid">อยากให้บอกผู้ใหญ่</CardTitle>
+          <CardNote className="text-ink">
+            เรื่องที่หนูเล่าเป็นเรื่องสำคัญ ลองเล่าให้คุณครูหรือคนที่บ้านที่ไว้ใจฟังนะ
+          </CardNote>
+        </Card>
       ) : null}
 
-      {/* ตัวช่วยสำหรับเด็กที่ยังแต่งประโยคเองไม่ได้ — กดแล้วส่งได้เลย */}
-      {followups.length > 0 && !thinking ? (
+      {notice ? (
+        <Card className="border-accent bg-accent-soft border-2">
+          <CardNote className="text-ink font-bold">{notice}</CardNote>
+        </Card>
+      ) : null}
+
+      {!concerned ? (
         <div className="flex flex-wrap gap-2">
-          {followups.map((suggestion) => (
+          {chips.map((chip) => (
             <button
-              key={suggestion}
+              key={chip}
               type="button"
-              onClick={() => void send(suggestion)}
-              className="pressable active:pressable-sunk rounded-pill [--edge:var(--border)] bg-surface border-border text-ink text-kid-sm min-h-11 border-2 px-4 font-bold"
+              disabled={sending}
+              onClick={() => void send(chip)}
+              className="pressable active:pressable-sunk rounded-pill [--edge:var(--accent-edge)] bg-accent text-accent-ink px-4 py-2 text-kid-sm font-extrabold disabled:opacity-45 disabled:shadow-none"
             >
-              {suggestion}
+              {chip}
             </button>
           ))}
         </div>
@@ -234,19 +362,22 @@ export function ChatRoom() {
         </label>
         <input
           id="chat-input"
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          disabled={thinking}
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          disabled={sending}
+          maxLength={500}
           autoComplete="off"
           placeholder="พิมพ์เป็นภาษาอังกฤษ…"
-          className="rounded-pill border-border bg-surface text-ink text-kid focus:border-primary h-13 min-w-0 flex-1 border-2 px-5 font-bold outline-none"
+          className="rounded-pill border-border bg-surface text-ink text-kid focus:border-primary h-13 flex-1 border-2 px-4 font-bold outline-none"
         />
         <Button
           type="submit"
           size="md"
-          disabled={thinking || draft.trim().length === 0}
+          square
+          disabled={sending || input.trim().length === 0}
+          aria-label="ส่งข้อความ"
         >
-          ส่ง
+          <Send className="size-6" strokeWidth={2.75} aria-hidden />
         </Button>
       </form>
     </div>

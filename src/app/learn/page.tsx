@@ -87,6 +87,13 @@ export default function LearnPage() {
         </Link>
       ) : null}
 
+      <Link
+        href="/chat"
+        className={cn(buttonVariants({ size: "lg", variant: "neutral" }), "w-full")}
+      >
+        💬 คุยกับ Milo
+      </Link>
+
       <div className="space-y-6">
         {UNITS.map((unit) => {
           const lessons = lessonsInUnit(unit.id);

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import { ChatBubble, ThinkingBubble } from "@/components/chat/chat-bubble";
 import { FeedbackPanel } from "@/components/games/feedback-panel";
 import { LetterTiles } from "@/components/games/letter-tiles";
 import { Milo, type MiloState } from "@/components/mascot/milo";
@@ -273,33 +272,6 @@ export default function StyleguidePage() {
             </>
           ) : null}
         </div>
-      </Section>
-
-      <Section
-        title="บับเบิลแชทกับ Milo"
-        note="คำแปลไทยซ่อนไว้จนเด็กกดขอ เพราะถ้าโชว์ตลอดเด็กจะอ่านแต่ไทย · จุดที่พูดผิดแสดงแบบชวนลองใหม่ ไม่ใช่ขีดผิด"
-      >
-        <Card className="space-y-4">
-          <ChatBubble
-            role="buddy"
-            text="Hello! I am Milo. What is your favourite animal?"
-            textTh="สวัสดี! ฉันชื่อไมโล สัตว์ตัวโปรดของหนูคืออะไร"
-          />
-          <ChatBubble role="child" text="I like cat. I have two cat." />
-          <ChatBubble
-            role="buddy"
-            text="You have two cats! What are their names?"
-            textTh="หนูมีแมวสองตัว! พวกมันชื่ออะไรบ้าง"
-            errors={[
-              {
-                type: "plural_s",
-                childSaid: "two cat",
-                correct: "two cats",
-              },
-            ]}
-          />
-          <ThinkingBubble />
-        </Card>
       </Section>
 
       <Section title="ความคืบหน้าและดาว">

@@ -1,115 +1,126 @@
-import type { CefrLevel } from "@/lib/types";
-
-import type { ChildContext } from "./types";
+import type { CefrLevel, Unit, Word } from "@/lib/types";
 
 /**
- * System prompt ของ Milo — 6 ส่วนบังคับตาม docs/PLAN.md หัวข้อ 10
+ * System prompt ของเพื่อน AI ชื่อ Milo — 6 ส่วนบังคับตาม docs/PLAN.md หัวข้อ 10
  *
- * เขียนเป็นฟังก์ชันบริสุทธิ์เพื่อให้เทสได้ว่าเพดานคำศัพท์ของแต่ละระดับถูกใส่
- * ลงไปจริง เพราะนี่คือจุดที่แยก "แอปสอนภาษาเด็ก" ออกจาก "แชทบอททั่วไป":
- * ถ้า AI ตอบด้วยคำระดับผู้ใหญ่ เด็กจะไม่เข้าใจและเลิกคุย ซึ่งทำให้ฟีเจอร์นี้
- * ไร้ค่าทั้งอัน
- *
- * ตัว prompt เขียนเป็นภาษาอังกฤษโดยตั้งใจ เพราะเป็นคำสั่งถึงโมเดล ไม่ใช่
- * ข้อความที่เด็กเห็น ส่วนภาษาที่ Milo พูดกับเด็กถูกกำหนดไว้ในกฎข้อ 5
+ * เขียนเป็นฟังก์ชันบริสุทธิ์ที่เทสได้ ไม่ใช่สตริงก้อนเดียวฝังใน API route
+ * เพราะ prompt คือ "หลักสูตร" ของโหมดนี้ ถ้าเพดานคำศัพท์หรือกฎความปลอดภัย
+ * เพี้ยนไปบรรทัดเดียว เด็กจะเจอภาษาที่ยากเกินหรือเจอคำถามที่ไม่ควรถาม
+ * และเราจะไม่รู้เลยจนกว่าจะมีคนไปนั่งอ่านแชท
  */
 
-export type CefrCeiling = {
-  /** ความยาวประโยคสูงสุดที่เด็กระดับนี้รับไหว */
-  maxSentenceWords: number;
-  /** ใส่คำแปลไทยในวงเล็บช่วยได้ไหม */
+/** เพดานภาษาต่อระดับ CEFR */
+export type LanguageCeiling = {
+  /** ความยาวประโยคสูงสุด (คำ) */
+  maxWordsPerSentence: number;
+  /** แทรกคำแปลไทยในวงเล็บได้หรือไม่ */
   allowThaiScaffold: boolean;
-  /** คำอธิบายคลังคำที่ใช้ได้ ส่งเข้า prompt ตรง ๆ */
-  vocabulary: string;
+  /** อธิบายระดับให้โมเดลเข้าใจว่าควรใช้ภาษาแบบไหน */
+  description: string;
 };
 
-/**
- * เพดานภาษาต่อระดับ CEFR
- *
- * ความยาวประโยคไล่ขึ้นแบบไม่กระโดด เพราะเด็กที่เพิ่งขยับระดับยังฟังประโยค
- * ยาวกว่าเดิมเท่าตัวไม่ทัน ส่วนภาษาไทยถูกถอดออกตั้งแต่ A2 ตามหลัก scaffold
- * คือช่วยตอนต้นแล้วค่อย ๆ เอาออก ไม่ใช่ช่วยตลอดไปจนเด็กติด
- */
-export const CEFR_CEILING: Record<CefrLevel, CefrCeiling> = {
+export const LANGUAGE_CEILING: Record<CefrLevel, LanguageCeiling> = {
   "Pre-A1": {
-    maxSentenceWords: 6,
+    maxWordsPerSentence: 6,
     allowThaiScaffold: true,
-    vocabulary:
-      "only the most common 300 English words (colours, numbers 1-10, animals, family, body, food, classroom objects, simple actions)",
+    description:
+      "single words and very short phrases only; present simple tense only",
   },
   A1: {
-    maxSentenceWords: 8,
+    maxWordsPerSentence: 8,
     allowThaiScaffold: true,
-    vocabulary:
-      "only the most common 600 English words; present simple, can/can't, like/don't like",
+    description:
+      "simple present tense, basic everyday words, no idioms, no past tense",
   },
   A2: {
-    maxSentenceWords: 12,
+    maxWordsPerSentence: 12,
     allowThaiScaffold: false,
-    vocabulary:
-      "only the most common 1200 English words; past simple and going-to future are allowed",
+    description:
+      "simple past and future are allowed, common everyday vocabulary, no idioms",
   },
   B1: {
-    maxSentenceWords: 16,
+    maxWordsPerSentence: 16,
     allowThaiScaffold: false,
-    vocabulary: "common everyday vocabulary; avoid rare or technical words",
+    description: "common tenses, simple opinions and reasons, very few idioms",
   },
   B2: {
-    maxSentenceWords: 20,
+    maxWordsPerSentence: 20,
     allowThaiScaffold: false,
-    vocabulary: "a wide everyday vocabulary; some idioms are fine",
+    description: "natural everyday English, some idioms are fine",
   },
   C1: {
-    maxSentenceWords: 25,
+    maxWordsPerSentence: 25,
     allowThaiScaffold: false,
-    vocabulary: "natural adult vocabulary, including idioms",
+    description: "natural fluent English, idioms and nuance are fine",
   },
 };
 
-/** โครงของ JSON ที่ขอให้โมเดลตอบกลับ อธิบายทีละช่องเพื่อลดโอกาสตอบผิดรูป */
-const OUTPUT_CONTRACT = `Reply with ONE JSON object and nothing else. No markdown fence, no text before or after.
+export type PromptOptions = {
+  cefr: CefrLevel;
+  /** หน่วยคำศัพท์ที่เป็นเป้าหมายของบทสนทนานี้ */
+  unit: Unit;
+  /** คำในหน่วยนั้น ใช้เป็นทั้งเป้าหมายและเพดานคำศัพท์ */
+  targetWords: Word[];
+  childName?: string;
+};
 
-{
-  "reply": "your 1-2 sentences, then your question back to the child",
-  "reply_th": "a natural Thai translation of reply",
-  "objective_met": true or false,
-  "words_used": ["target words the child used correctly this turn"],
-  "errors": [{"type": "short_label", "child_said": "...", "correct": "..."}],
-  "safety_flag": "none" | "personal_info" | "concerning" | "off_topic",
-  "suggested_followups": ["up to 3 short things the child could say next"]
+/** ชื่อที่ใช้เรียกเด็กในบทสนทนา — ไม่รู้ชื่อก็เรียกว่าเพื่อน */
+function addressee(childName?: string): string {
+  const trimmed = childName?.trim();
+  return trimmed && trimmed.length > 0 ? trimmed : "my friend";
 }
 
-"suggested_followups" are written for the CHILD to say, in English, at the child's level.`;
+export function buildSystemPrompt({
+  cefr,
+  unit,
+  targetWords,
+  childName,
+}: PromptOptions): string {
+  const ceiling = LANGUAGE_CEILING[cefr];
+  const words = targetWords.map((word) => word.en).join(", ");
 
-export function buildSystemPrompt(child: ChildContext): string {
-  const ceiling = CEFR_CEILING[child.cefr];
-
-  // กฎข้อ 5 — ภาษาไทยเป็น scaffold ที่ต้องถอดออกเมื่อเด็กพร้อม
-  const thaiRule = ceiling.allowThaiScaffold
-    ? "You may put a short Thai translation in brackets after a hard word, like: a rabbit (กระต่าย). Use this only for words the child may not know yet."
-    : "Do not write Thai unless the child asks for it. The child is ready to work in English only.";
-
-  const targets =
-    child.targetWords.length > 0
-      ? `Try to use these words naturally: ${child.targetWords.join(", ")}.`
-      : "";
-
-  return `You are Milo, a friendly cartoon animal who is the English-speaking friend of a ${child.ageYears}-year-old child in Thailand. You are warm, playful and always encouraging.
-
-LANGUAGE CEILING (most important rule)
-Use ${ceiling.vocabulary}. Keep every sentence to ${ceiling.maxSentenceWords} words or fewer. No idioms, no sarcasm, no wordplay the child cannot decode. If you need a word outside this range, choose a simpler one instead.
-
-HOW TO TALK
-Say 1-2 short sentences, then ALWAYS end your turn with one question back to the child. A turn without a question ends the conversation, which is a failure. Today's topic is ${child.topicTh}. ${targets}
-
-HOW TO CORRECT MISTAKES
-Never scold and never say the child is wrong. Recast instead: say the correct sentence back naturally as part of your reply. If the child says "I has two cat", you might answer "You have two cats! What are their names?". Record the mistake in "errors", not in "reply".
-
-THAI
-${thaiRule}
-
-SAFETY
-Never ask for the child's full name, age, school, address, phone number, or photo. Never bring up violence, politics, religion, romance, or anything frightening. If the child mentions something worrying (being hurt, hurting themselves, someone making them feel unsafe), reply warmly and gently suggest telling a trusted adult, and set "safety_flag" to "concerning". If the child volunteers personal details, do not repeat them back and set "safety_flag" to "personal_info".
-
-${OUTPUT_CONTRACT}`;
+  // ส่วนที่ 1 บทบาท · 2 เพดานภาษา · 3 วินัยการสอน · 4 การแก้ผิด
+  // 5 scaffold ไทย · 6 guardrail — เรียงตามลำดับเดียวกับในแผน
+  return [
+    `# 1. Who you are`,
+    `You are Milo, a friendly and gentle bear. You are chatting with ${addressee(childName)}, a Thai child in kindergarten or primary school who is learning English. You are their playmate, not their teacher. Be warm, silly and encouraging.`,
+    ``,
+    `# 2. Language ceiling (never break this)`,
+    `The child is at CEFR level ${cefr}: ${ceiling.description}.`,
+    `Keep every sentence to ${ceiling.maxWordsPerSentence} words or fewer.`,
+    `Today's topic is "${unit.titleEn}". Prefer these words, which the child is learning: ${words}.`,
+    `You may also use very common function words (I, you, a, the, is, do, can, and, what, yes, no).`,
+    `Do not use any other difficult word. If you must introduce a new word, use at most one per reply.`,
+    ``,
+    `# 3. Keep the conversation alive`,
+    `Reply with 1 or 2 short sentences, then ask the child one simple question back.`,
+    `A conversation that stops is a failed turn. The only exception is rule 6 below.`,
+    ``,
+    `# 4. How to correct mistakes`,
+    `Never scold and never say the child is wrong. Use recast: naturally repeat the correct form inside your own reply, as if you were just talking.`,
+    `Example: child says "I have two cat" -> you say "Two cats! I like cats too. What are their names?"`,
+    `Record the mistake in the "mistakes" field, not in the visible reply.`,
+    ``,
+    `# 5. Thai support`,
+    ceiling.allowThaiScaffold
+      ? `The child barely reads English. You may put a short Thai gloss in brackets after a hard word, like "cat (แมว)". Use this at most once per reply.`
+      : `Do not use Thai in the "reply" field unless the child asks for it in Thai. The "replyTh" field is the only place for Thai.`,
+    ``,
+    `# 6. Safety (this overrides everything above)`,
+    `Never ask for or repeat personal details: real name beyond what you were told, address, school, phone, photos, or where the child is right now. If the child volunteers any of it, do not repeat it back and set safetyFlag to "personal_info".`,
+    `Never discuss violence, weapons, sex, drugs, politics or religion. If the child brings these up, gently change the subject back to the topic and set safetyFlag to "off_topic".`,
+    `If the child says anything that an adult should know about — being hurt, being afraid of someone, hurting themselves, or not being safe — set safetyFlag to "concerning". Then: say you are sorry that happened, tell them it is not their fault, and ask them to tell a grown-up they trust.`,
+    `In that case ONLY, break rule 3: do NOT ask a topic question, do NOT change the subject back to ${unit.titleEn}, and return an empty "suggestedReplies" list. Jumping back to the lesson after a child tells you something frightening is the worst thing you could do.`,
+    `Do not interrogate them, do not ask for details, and do not give advice beyond telling a grown-up.`,
+    `Never agree to meet, never claim to be a real person, and never ask the child to keep a secret.`,
+    ``,
+    `# Output`,
+    `Reply with JSON only, matching the given schema.`,
+    `- "reply": what you say, in English, following every rule above.`,
+    `- "replyTh": a natural Thai translation of "reply", for a child.`,
+    `- "wordsUsed": today's topic words that the child used CORRECTLY in their own message. Empty if none.`,
+    `- "mistakes": English mistakes in the child's message, with a short Thai explanation. Empty if none. Ignore capitalisation and punctuation — the child is little.`,
+    `- "objectiveMet": true once the child has used at least three of today's topic words correctly during this conversation.`,
+    `- "suggestedReplies": exactly 3 very short English sentences the child could send next. They must be things a ${cefr} child can actually say, and must answer your question.`,
+  ].join("\n");
 }

@@ -1,5 +1,4 @@
 import { DEFAULT_RATING, updateRatings } from "@/lib/adaptive/elo";
-import { EMPTY_BUDGET, type TurnBudget } from "@/lib/chat/limits";
 import { LESSONS, previousLesson } from "@/lib/content/lessons";
 import { createCard, ratingFromAttempt, review } from "@/lib/srs/fsrs";
 import type {
@@ -32,8 +31,6 @@ export type ProgressSnapshot = {
   /** ความยากของแต่ละคำที่ระบบเรียนรู้เอง ไม่ได้กำหนดไว้ล่วงหน้า */
   wordDifficulty: Record<string, number>;
   results: Record<string, LessonResult>;
-  /** โควตาเทิร์นแชทของวันนี้ (ภารกิจ T217) */
-  chatBudget: TurnBudget;
 };
 
 export type LessonSummary = {
@@ -65,7 +62,6 @@ export function createInitialProgress(): ProgressSnapshot {
     mastery: {},
     wordDifficulty: {},
     results: {},
-    chatBudget: EMPTY_BUDGET,
   };
 }
 
@@ -156,8 +152,6 @@ export function applyLessonResult(
       cards,
       mastery,
       wordDifficulty,
-      // แชทไม่เกี่ยวกับการเล่นด่าน โควตาจึงผ่านไปเฉย ๆ ไม่ถูกแตะ
-      chatBudget: snapshot.chatBudget,
       results: {
         ...snapshot.results,
         [lessonId]: {

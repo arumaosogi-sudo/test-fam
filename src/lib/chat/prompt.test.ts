@@ -1,101 +1,100 @@
 import { describe, expect, it } from "vitest";
 
-import { cefrLevelSchema, type CefrLevel } from "@/lib/types";
+import { getUnit, wordsInUnit } from "@/lib/content";
+import { CEFR_ORDER } from "@/lib/types";
 
-import { CEFR_CEILING, buildSystemPrompt } from "./prompt";
-import type { ChildContext } from "./types";
+import { LANGUAGE_CEILING, buildSystemPrompt } from "./prompt";
 
-const child: ChildContext = {
-  ageYears: 7,
-  cefr: "Pre-A1",
-  targetWords: ["cat", "big"],
-  topicTh: "สัตว์เลี้ยง",
-};
+function requireUnit(id: string) {
+  const found = getUnit(id);
+  if (!found) throw new Error(`ไม่มีหน่วย ${id} ในคลังคำ`);
+  return found;
+}
 
-describe("CEFR_CEILING", () => {
-  it("มีครบทุกระดับที่ schema ยอมรับ", () => {
-    for (const level of cefrLevelSchema.options) {
-      expect(CEFR_CEILING[level], level).toBeDefined();
-    }
-  });
+const unit = requireUnit("u-animals");
+const targetWords = wordsInUnit(unit.id);
 
-  it("ประโยคยาวขึ้นตามระดับ ไม่มีระดับไหนสั้นลง", () => {
-    const lengths = cefrLevelSchema.options.map(
-      (level) => CEFR_CEILING[level].maxSentenceWords,
+function prompt(overrides: Partial<Parameters<typeof buildSystemPrompt>[0]> = {}) {
+  return buildSystemPrompt({ cefr: "Pre-A1", unit, targetWords, ...overrides });
+}
+
+describe("LANGUAGE_CEILING", () => {
+  it("ประโยคยาวขึ้นตามระดับ ไม่มีระดับไหนย้อนกลับ", () => {
+    const lengths = CEFR_ORDER.map(
+      (level) => LANGUAGE_CEILING[level].maxWordsPerSentence,
     );
 
     for (let i = 1; i < lengths.length; i += 1) {
-      expect(lengths[i], cefrLevelSchema.options[i]).toBeGreaterThan(
-        lengths[i - 1],
-      );
+      expect(lengths[i], CEFR_ORDER[i]).toBeGreaterThan(lengths[i - 1]);
     }
   });
 
-  it("ภาษาไทยเป็นตัวช่วยเฉพาะระดับต้น แล้วถูกถอดออก ไม่กลับมาอีก", () => {
-    const allowed = cefrLevelSchema.options.map(
-      (level) => CEFR_CEILING[level].allowThaiScaffold,
-    );
-
-    // scaffold ที่ถอดแล้วกลับมาใหม่ในระดับสูงกว่า แปลว่าตารางผิด
-    expect(allowed).toEqual([true, true, false, false, false, false]);
+  it("ภาษาไทยช่วยเฉพาะสองระดับแรก แล้วถอดออก", () => {
+    // กฎการออกแบบข้อ 5: ไทยช่วยตอนต้น แล้วถอด scaffold ออกตามระดับ
+    expect(LANGUAGE_CEILING["Pre-A1"].allowThaiScaffold).toBe(true);
+    expect(LANGUAGE_CEILING.A1.allowThaiScaffold).toBe(true);
+    expect(LANGUAGE_CEILING.A2.allowThaiScaffold).toBe(false);
+    expect(LANGUAGE_CEILING.B1.allowThaiScaffold).toBe(false);
+    expect(LANGUAGE_CEILING.B2.allowThaiScaffold).toBe(false);
+    expect(LANGUAGE_CEILING.C1.allowThaiScaffold).toBe(false);
   });
 });
 
 describe("buildSystemPrompt", () => {
-  it("ใส่เพดานความยาวประโยคของระดับนั้นลงไปจริง", () => {
-    for (const level of cefrLevelSchema.options) {
-      const prompt = buildSystemPrompt({ ...child, cefr: level });
-      expect(prompt, level).toContain(
-        `${CEFR_CEILING[level].maxSentenceWords} words or fewer`,
-      );
-    }
-  });
-
   it("มีครบทั้ง 6 ส่วนบังคับตามแผน", () => {
-    const prompt = buildSystemPrompt(child);
+    const text = prompt();
 
-    expect(prompt).toContain("Milo"); // 1 บทบาท
-    expect(prompt).toContain("LANGUAGE CEILING"); // 2 เพดานภาษา
-    expect(prompt).toContain("question back to the child"); // 3 วินัยการสอน
-    expect(prompt).toContain("Recast"); // 4 การแก้ผิด
-    expect(prompt).toContain("THAI"); // 5 scaffold ไทย
-    expect(prompt).toContain("SAFETY"); // 6 guardrail
-  });
-
-  it("บอกอายุและหัวข้อของเด็กคนนั้น", () => {
-    const prompt = buildSystemPrompt(child);
-
-    expect(prompt).toContain("7-year-old");
-    expect(prompt).toContain("สัตว์เลี้ยง");
-  });
-
-  it("ส่งคำเป้าหมายเข้าไป และไม่พูดถึงเลยถ้าไม่มีคำ", () => {
-    expect(buildSystemPrompt(child)).toContain("cat, big");
-    expect(
-      buildSystemPrompt({ ...child, targetWords: [] }),
-    ).not.toContain("Try to use these words");
-  });
-
-  it("ระดับต้นอนุญาตให้แทรกไทย ระดับ A2 ขึ้นไปห้าม", () => {
-    const preA1 = buildSystemPrompt({ ...child, cefr: "Pre-A1" });
-    const a2 = buildSystemPrompt({ ...child, cefr: "A2" });
-
-    expect(preA1).toContain("short Thai translation in brackets");
-    expect(a2).toContain("Do not write Thai unless the child asks");
-  });
-
-  it("สั่งห้ามถามข้อมูลส่วนตัวของเด็กเสมอ ทุกระดับ", () => {
-    for (const level of cefrLevelSchema.options as CefrLevel[]) {
-      const prompt = buildSystemPrompt({ ...child, cefr: level });
-      expect(prompt, level).toContain("Never ask for the child's full name");
+    for (const heading of [
+      "# 1. Who you are",
+      "# 2. Language ceiling",
+      "# 3. Keep the conversation alive",
+      "# 4. How to correct mistakes",
+      "# 5. Thai support",
+      "# 6. Safety",
+    ]) {
+      expect(text, heading).toContain(heading);
     }
   });
 
-  it("บอกรูปแบบ JSON ที่ต้องตอบกลับ", () => {
-    const prompt = buildSystemPrompt(child);
+  it("บอกเพดานความยาวประโยคของระดับนั้นจริง", () => {
+    expect(prompt({ cefr: "Pre-A1" })).toContain("6 words or fewer");
+    expect(prompt({ cefr: "B1" })).toContain("16 words or fewer");
+  });
 
-    expect(prompt).toContain("safety_flag");
-    expect(prompt).toContain("suggested_followups");
-    expect(prompt).toContain("ONE JSON object");
+  it("ใส่คำของหน่วยนั้นลงไปเป็นเพดานคำศัพท์", () => {
+    const text = prompt();
+
+    // ถ้าคำหลุดไปจาก prompt โมเดลจะใช้คำอะไรก็ได้ แล้วเด็กจะเจอภาษาที่ยากเกิน
+    for (const word of targetWords) {
+      expect(text, word.en).toContain(word.en);
+    }
+  });
+
+  it("ระดับต้นอนุญาตคำแปลไทยในวงเล็บ ระดับสูงห้าม", () => {
+    expect(prompt({ cefr: "Pre-A1" })).toContain("Thai gloss in brackets");
+    expect(prompt({ cefr: "A2" })).toContain("Do not use Thai");
+  });
+
+  it("เรียกชื่อเด็กเมื่อรู้ชื่อ และเรียกว่าเพื่อนเมื่อไม่รู้", () => {
+    expect(prompt({ childName: "Nong" })).toContain("Nong");
+    expect(prompt()).toContain("my friend");
+    // ชื่อที่เป็นช่องว่างล้วนต้องไม่กลายเป็นชื่อจริง
+    expect(prompt({ childName: "   " })).toContain("my friend");
+  });
+
+  it("สั่งห้ามเด้งกลับไปถามเรื่องบทเรียนเมื่อเด็กเล่าเรื่องน่าห่วง", () => {
+    // กฎข้อ 3 (ถามกลับทุกเทิร์น) ต้องแพ้กฎข้อ 6 ไม่งั้นโมเดลจะถามเรื่อง
+    // บทเรียนต่อทันทีหลังเด็กเล่าว่าโดนทำร้าย — เจอจริงตอนทดสอบกับโมเดล
+    const text = prompt();
+
+    expect(text).toContain("break rule 3");
+    expect(text).toContain('empty "suggestedReplies"');
+  });
+
+  it("ห้ามเรื่องที่ไม่เหมาะกับเด็กไว้ชัดเจน", () => {
+    const text = prompt();
+
+    expect(text).toContain("Never ask for or repeat personal details");
+    expect(text).toContain("never ask the child to keep a secret");
   });
 });

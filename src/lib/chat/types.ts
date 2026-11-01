@@ -1,85 +1,80 @@
 import { z } from "zod";
 
-import type { CefrLevel } from "@/lib/types";
+import { cefrLevelSchema } from "@/lib/types";
 
 /**
- * สัญญากลางของ AI Chat Buddy (ตามแนวคิดเดียวกับ ADR-0003 ของบริการเสียง)
+ * สัญญาของคำตอบหนึ่งเทิร์นจากเพื่อน AI
  *
- * เหตุผลที่แยก interface ไว้ตั้งแต่ต้น: เรายังไม่ได้ทดสอบว่าเจ้าไหนคุมเพดาน
- * คำศัพท์ตาม CEFR ได้แม่นกว่ากัน ซึ่งเป็นหัวใจของแอปสอนภาษาเด็ก การผูกโค้ด
- * ไว้กับผู้ให้บริการเจ้าเดียวตั้งแต่ยังไม่รู้ผล แปลว่าถ้าผลออกมาไม่ดีต้องรื้อ
- * ทั้งหน้าแชท ชั้นนี้ทำให้การสลับเจ้าเหลือแค่แก้ไฟล์ index.ts ไฟล์เดียว
+ * ทุกเทิร์นต้องส่งข้อมูลกลับมามากกว่าข้อความที่เด็กเห็น เพราะแชทในแอปนี้
+ * ไม่ใช่ของเล่นแยกส่วน — คำที่เด็กใช้ได้จริงและที่ใช้ผิดต้องไหลกลับเข้า
+ * ตารางทบทวนและรายงานครู (ดู docs/PLAN.md หัวข้อ 10)
+ *
+ * schema เดียวกันนี้ถูกแปลงเป็น JSON Schema ส่งให้โมเดลด้วย (ดู geminiResponseSchema)
+ * ทั้งสองฝั่งจึงไม่มีทางหลุดจากกัน
  */
 
-export const chatRoleSchema = z.enum(["child", "buddy"]);
-export type ChatRole = z.infer<typeof chatRoleSchema>;
-
-export const chatTurnSchema = z.object({
-  role: chatRoleSchema,
-  /** ข้อความภาษาอังกฤษที่แสดงบนจอ */
-  text: z.string(),
-});
-export type ChatTurn = z.infer<typeof chatTurnSchema>;
-
-/** ธงความปลอดภัย — `concerning` คือกรณีที่ผู้ใหญ่ต้องรู้ ไม่ใช่แค่กรองคำ */
 export const safetyFlagSchema = z.enum([
   "none",
-  /** เด็กเผลอเล่าข้อมูลส่วนตัว */
+  /** เด็กบอกชื่อจริง ที่อยู่ โรงเรียน เบอร์โทร */
   "personal_info",
-  /** เด็กเล่าเรื่องที่น่าเป็นห่วง เช่น ถูกทำร้าย หรือทำร้ายตัวเอง */
+  /** เด็กเล่าเรื่องที่ผู้ใหญ่ควรรู้ เช่น ถูกทำร้าย หรือทำร้ายตัวเอง */
   "concerning",
-  /** คุยออกนอกเรื่องจนไม่ได้ฝึกภาษา */
+  /** คุยออกนอกเรื่องที่ไม่เหมาะกับเด็ก */
   "off_topic",
 ]);
 export type SafetyFlag = z.infer<typeof safetyFlagSchema>;
 
-export const languageErrorSchema = z.object({
-  /** ชนิดของข้อผิดพลาด เช่น plural_s, verb_tense — ใช้จับแพตเทิร์นที่ผิดซ้ำ */
+export const chatMistakeSchema = z.object({
+  /** ชนิดของข้อผิดพลาด เช่น plural_s, verb_tense, word_order */
   type: z.string(),
   childSaid: z.string(),
   correct: z.string(),
+  /** อธิบายเป็นไทยสั้น ๆ ให้เด็กกับผู้ปกครองอ่านเข้าใจ */
+  whyTh: z.string(),
 });
-export type LanguageError = z.infer<typeof languageErrorSchema>;
+export type ChatMistake = z.infer<typeof chatMistakeSchema>;
 
-/**
- * สิ่งที่ AI ต้องตอบกลับมาทุกเทิร์น ไม่ใช่แค่ข้อความ
- *
- * ข้อมูลส่วนที่เด็กไม่เห็น (คำที่ใช้ไป ข้อผิดพลาด ธงความปลอดภัย) คือสิ่งที่
- * ทำให้แชทป้อนกลับเข้าเอนจินการเรียนได้ ไม่ใช่แค่คุยเล่นแล้วจบไป
- */
-export const buddyReplySchema = z.object({
-  /** คำตอบภาษาอังกฤษ 1–2 ประโยค แล้วตามด้วยคำถามกลับ */
+export const chatTurnSchema = z.object({
+  /** ข้อความภาษาอังกฤษที่เด็กเห็นและได้ยิน */
   reply: z.string().min(1),
-  /** คำแปลไทยของคำตอบ ใช้กับปุ่ม "แปลเป็นไทย" */
-  replyTh: z.string().default(""),
-  /** เด็กทำสำเร็จตามเป้าของบทสนทนานี้หรือยัง */
-  objectiveMet: z.boolean().default(false),
-  /** คำเป้าหมายที่เด็กใช้ได้ถูกต้อง ใช้ให้ XP และป้อนกลับเข้า SRS */
-  wordsUsed: z.array(z.string()).default([]),
-  errors: z.array(languageErrorSchema).default([]),
-  safetyFlag: safetyFlagSchema.default("none"),
-  /** ตัวช่วยสำหรับเด็กที่ยังตอบเองไม่ได้ กดเลือกแล้วส่งได้เลย */
-  suggestedFollowups: z.array(z.string()).max(3).default([]),
+  /** คำแปลไทยของ reply ใช้กับปุ่ม "แปลเป็นไทย" */
+  replyTh: z.string(),
+  /** คำจากคลังคำที่เด็กใช้ถูกต้องในเทิร์นนี้ ป้อนกลับเข้าตารางทบทวน */
+  wordsUsed: z.array(z.string()),
+  /** ที่เด็กใช้ผิด — AI ไม่ดุในข้อความ แต่บันทึกไว้ให้ระบบกับครูเห็น */
+  mistakes: z.array(chatMistakeSchema),
+  /** เด็กทำเป้าหมายของบทสนทนานี้สำเร็จหรือยัง */
+  objectiveMet: z.boolean(),
+  safetyFlag: safetyFlagSchema,
+  /** 3 ประโยคสั้นที่เด็กกดส่งต่อได้ทันที กันบทสนทนาตายเพราะเด็กนึกไม่ออก */
+  suggestedReplies: z.array(z.string()),
 });
-export type BuddyReply = z.infer<typeof buddyReplySchema>;
+export type ChatTurn = z.infer<typeof chatTurnSchema>;
 
-export type ChatRequest = {
-  system: string;
-  turns: ChatTurn[];
+/** ข้อความหนึ่งบรรทัดในหน้าแชท */
+export type ChatMessage = {
+  id: string;
+  role: "child" | "milo";
+  text: string;
+  textTh?: string;
+  mistakes?: ChatMistake[];
 };
 
-export interface ChatProvider {
-  readonly id: string;
-  /** มี API key ครบและพร้อมเรียกจริงหรือยัง */
-  isConfigured(): boolean;
-  reply(request: ChatRequest): Promise<BuddyReply>;
-}
-
-/** บริบทของเด็กที่ใช้ประกอบ system prompt */
-export type ChildContext = {
-  ageYears: number;
-  cefr: CefrLevel;
-  /** คำที่อยากให้เด็กได้ใช้ในบทสนทนานี้ */
-  targetWords: string[];
-  topicTh: string;
-};
+export const chatRequestSchema = z.object({
+  /** บทสนทนาก่อนหน้า ไม่รวมข้อความล่าสุด */
+  history: z
+    .array(
+      z.object({
+        role: z.enum(["child", "milo"]),
+        text: z.string().min(1).max(500),
+      }),
+    )
+    .max(40),
+  /** ข้อความล่าสุดที่เด็กพิมพ์ */
+  message: z.string().min(1).max(500),
+  cefr: cefrLevelSchema,
+  /** หน่วยคำศัพท์ที่เป็นเป้าหมายของบทสนทนานี้ */
+  unitId: z.string().min(1),
+  childName: z.string().max(40).optional(),
+});
+export type ChatRequest = z.infer<typeof chatRequestSchema>;

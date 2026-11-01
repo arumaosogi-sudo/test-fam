@@ -18,6 +18,13 @@ export const cefrLevelSchema = z.enum([
 ]);
 export type CefrLevel = z.infer<typeof cefrLevelSchema>;
 
+/**
+ * ระดับเรียงจากต้นไปปลาย — อ่านจาก schema ตัวเดียวกัน ไม่ประกาศซ้ำ
+ * เพราะลำดับนี้ใช้ตัดสินว่าระดับไหน "สูงกว่า" ระดับไหน ถ้ามีสองชุดแล้วหลุดจากกัน
+ * บันไดระดับทั้งแอปจะเพี้ยนโดยไม่มีอะไรฟ้อง
+ */
+export const CEFR_ORDER = cefrLevelSchema.options;
+
 export const partOfSpeechSchema = z.enum([
   "noun",
   "verb",

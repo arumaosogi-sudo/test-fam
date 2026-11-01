@@ -1,127 +1,118 @@
-import { z } from "zod";
-
-import { getChatProvider } from "@/lib/chat";
-import { redactionNotice, screenChildMessage } from "@/lib/chat/guardrails";
+import { ChatProviderError, getChatProvider } from "@/lib/ai";
+import {
+  mergeSafetyFlags,
+  redactionNotice,
+  screenChildMessage,
+  spendTurn,
+  type TurnBudget,
+} from "@/lib/chat/guardrail";
 import { buildSystemPrompt } from "@/lib/chat/prompt";
-import { chatTurnSchema } from "@/lib/chat/types";
-import { cefrLevelSchema } from "@/lib/types";
+import { chatRequestSchema } from "@/lib/chat/types";
+import { getUnit, wordsInUnit } from "@/lib/content";
+import { localDateKey } from "@/lib/progress/xp";
 
 /**
- * เส้นทางเดียวที่คุยกับผู้ให้บริการ AI
+ * เทิร์นเดียวของการคุยกับเพื่อน AI
  *
- * API key ถูกอ่านที่นี่เท่านั้น ไม่เคยถูกส่งลงไปฝั่งเบราว์เซอร์
- * (ตัวแปรที่ไม่ขึ้นต้นด้วย NEXT_PUBLIC_ จะอยู่แต่ฝั่งเซิร์ฟเวอร์)
- * ถ้าหลุดไปอยู่ใน client component จะถูกดูดไปใช้ภายในไม่กี่ชั่วโมง
+ * ทุกอย่างที่แตะ GEMINI_API_KEY อยู่ฝั่งนี้เท่านั้น หน้าเว็บเรียกผ่าน fetch
+ * ไม่มีทางที่ key จะไปโผล่ในเบราว์เซอร์ (ถ้าย้ายไปเรียกตรงจากฝั่ง client
+ * เพื่อความเร็ว key จะถูกดูดไปใช้ภายในไม่กี่ชั่วโมง)
  */
-
-const requestSchema = z.object({
-  turns: z.array(chatTurnSchema).min(1).max(40),
-  child: z.object({
-    ageYears: z.number().int().min(3).max(15),
-    cefr: cefrLevelSchema,
-    targetWords: z.array(z.string()).max(10),
-    topicTh: z.string().max(100),
-  }),
-});
 
 /**
- * กันยิงถี่แบบหยาบ ๆ ด้วยหน่วยความจำของ process
+ * โควตาต่อเครื่อง เก็บในหน่วยความจำของโปรเซส
  *
- * ข้อจำกัดที่ต้องรู้: ค่าหายทุกครั้งที่ deploy และถ้ารันหลาย instance
- * แต่ละตัวจะนับแยกกัน มันจึงกันได้แค่การยิงรัวจากเครื่องเดียว ไม่ใช่
- * การคุมต้นทุนจริง ของจริงต้องผูกกับบัญชีผู้ใช้ตอนภารกิจ E6
+ * หายเมื่อเซิร์ฟเวอร์รีสตาร์ต และแยกกันคนละอินสแตนซ์ — รับได้ในเฟสเดโม
+ * ที่ยังไม่มีบัญชีผู้ใช้ พอถึง E6 ต้องย้ายไปนับในฐานข้อมูลต่อผู้ใช้จริง
  */
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 15;
-const hits = new Map<string, number[]>();
-
-function rateLimited(key: string, now: number): boolean {
-  const recent = (hits.get(key) ?? []).filter(
-    (stamp) => now - stamp < WINDOW_MS,
-  );
-
-  if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(key, recent);
-    return true;
-  }
-
-  recent.push(now);
-  hits.set(key, recent);
-  return false;
-}
+const budgets = new Map<string, TurnBudget>();
 
 function clientKey(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   return forwarded?.split(",")[0]?.trim() || "local";
 }
 
+function fail(status: number, message: string, code: string) {
+  return Response.json({ error: code, message }, { status });
+}
+
 export async function POST(request: Request) {
-  const provider = getChatProvider();
-
-  if (!provider.isConfigured()) {
-    return Response.json(
-      {
-        error: "not_configured",
-        messageTh:
-          "ยังไม่ได้ตั้งค่า ANTHROPIC_API_KEY — คัดลอก .env.local.example เป็น .env.local แล้วใส่ key",
-      },
-      { status: 503 },
-    );
-  }
-
-  if (rateLimited(clientKey(request), Date.now())) {
-    return Response.json(
-      {
-        error: "rate_limited",
-        messageTh: "คุยเร็วไปหน่อย รอสักครู่แล้วลองใหม่นะ",
-      },
-      { status: 429 },
-    );
-  }
-
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return Response.json({ error: "bad_request" }, { status: 400 });
+    return fail(400, "ส่งข้อมูลมาไม่ถูกรูปแบบ", "bad_request");
   }
 
-  const parsed = requestSchema.safeParse(body);
+  const parsed = chatRequestSchema.safeParse(body);
   if (!parsed.success) {
-    return Response.json({ error: "bad_request" }, { status: 400 });
+    return fail(400, "ข้อความยาวเกินไปหรือข้อมูลไม่ครบ", "bad_request");
   }
 
-  // กรองข้อมูลส่วนตัวออกจากทุกเทิร์นของเด็กก่อนส่งออกนอกเครื่อง
-  const found: string[] = [];
-  const turns = parsed.data.turns.map((turn) => {
-    if (turn.role !== "child") return turn;
-    const screened = screenChildMessage(turn.text);
-    found.push(...screened.found);
-    return { ...turn, text: screened.text };
-  });
+  const { history, message, cefr, unitId, childName } = parsed.data;
+
+  const unit = getUnit(unitId);
+  if (!unit) return fail(400, "ไม่พบหัวข้อที่เลือก", "unknown_unit");
+
+  const key = clientKey(request);
+  const today = localDateKey(new Date());
+  const spent = spendTurn(budgets.get(key), today);
+  budgets.set(key, spent.budget);
+
+  if (!spent.allowed) {
+    return fail(
+      429,
+      "วันนี้คุยกับ Milo ครบแล้ว พรุ่งนี้มาคุยกันใหม่นะ",
+      "daily_limit",
+    );
+  }
+
+  // ตัดข้อมูลระบุตัวตนออก "ก่อน" ส่งออกนอกเครื่อง ส่งไปแล้วเอากลับไม่ได้
+  const screened = screenChildMessage(message);
+  if (screened.text.length === 0) {
+    return fail(400, "พิมพ์อย่างอื่นคุยกับ Milo ได้เลยนะ", "empty_after_redaction");
+  }
+
+  const provider = getChatProvider();
 
   try {
-    const reply = await provider.reply({
-      system: buildSystemPrompt(parsed.data.child),
-      turns,
+    const { turn, model } = await provider.respond({
+      systemPrompt: buildSystemPrompt({
+        cefr,
+        unit,
+        targetWords: wordsInUnit(unit.id),
+        childName,
+      }),
+      history,
+      message: screened.text,
     });
+
+    // ธงของเราเองชนะถ้าร้ายแรงกว่าที่โมเดลตอบมา
+    const safetyFlag = mergeSafetyFlags(
+      turn.safetyFlag,
+      screened.found.length > 0 ? "personal_info" : "none",
+    );
 
     return Response.json({
-      reply,
-      noticeTh: redactionNotice(
-        found as Parameters<typeof redactionNotice>[0],
-      ),
+      turn: { ...turn, safetyFlag },
+      notice: redactionNotice(screened.found),
+      remaining: spent.remaining,
+      model,
     });
   } catch (error) {
-    // ไม่ส่งรายละเอียด error กลับไปฝั่งเบราว์เซอร์ เพราะอาจมีข้อมูลของระบบปนมา
-    console.error("[chat] เรียกผู้ให้บริการ AI ไม่สำเร็จ:", error);
+    if (error instanceof ChatProviderError && error.kind === "not_configured") {
+      return fail(
+        503,
+        "ยังไม่ได้ตั้งค่า GEMINI_API_KEY ในไฟล์ .env.local",
+        "not_configured",
+      );
+    }
 
-    return Response.json(
-      {
-        error: "provider_failed",
-        messageTh: "Milo ไม่ว่างพอดี ลองใหม่อีกครั้งนะ",
-      },
-      { status: 502 },
+    // ข้อความนี้เด็กเห็น จึงต้องไม่ใช่ศัพท์เทคนิคและไม่โทษเด็ก
+    return fail(
+      502,
+      "ตอนนี้ Milo ยังไม่ตอบ ลองพิมพ์ใหม่อีกครั้งนะ",
+      "provider_unavailable",
     );
   }
 }

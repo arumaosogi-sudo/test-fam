@@ -1,9 +1,11 @@
+import { CEFR_ORDER, type CefrLevel } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-/** บันไดระดับภาษาของแอป — ไต่ได้ถึง C1 ไม่มีเพดาน (ดู docs/PLAN.md ข้อ 1) */
-export const CEFR_LEVELS = ["Pre-A1", "A1", "A2", "B1", "B2", "C1"] as const;
-
-export type CefrLevel = (typeof CEFR_LEVELS)[number];
+/**
+ * บันไดระดับภาษาของแอป — ไต่ได้ถึง C1 ไม่มีเพดาน (ดู docs/PLAN.md ข้อ 1)
+ * รายการจริงอยู่ใน lib/types.ts ที่นี่แค่ re-export ให้หน้าที่ใช้ป้ายเรียกง่าย
+ */
+export const CEFR_LEVELS = CEFR_ORDER;
 
 /** ช่วงชั้นที่ "ตั้งเป้าไว้" ของแต่ละระดับ ใช้อธิบายให้ผู้ปกครองเข้าใจ */
 export const CEFR_GRADE_LABEL: Record<CefrLevel, string> = {
