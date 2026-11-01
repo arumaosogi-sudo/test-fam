@@ -184,6 +184,49 @@ export function buildItems(
   ];
 }
 
+/**
+ * สร้างข้อของด่านทบทวน — หนึ่งข้อต่อหนึ่งคำ
+ *
+ * ต่างจากด่านปกติที่ให้สามข้อต่อคำ เพราะจุดประสงค์คนละอย่าง: ด่านปกติสอนคำใหม่
+ * จึงต้องเจอหลายทางกว่าจะติด ส่วนด่านทบทวนแค่ดึงคำที่ใกล้ลืมออกมาใช้หนึ่งครั้ง
+ * ให้ตรงจังหวะ ถ้าให้สามข้อต่อคำ ชุดละ 8 คำจะกลายเป็น 24 จอซึ่งยาวเกินไป
+ *
+ * ไม่มีโหมดจับคู่ในด่านทบทวน เพราะจับคู่เอาคำตอบมาวางให้เห็นบนจออยู่แล้ว
+ * จึงวัดไม่ได้ว่าเด็กนึกคำออกเองหรือเปล่า ซึ่งเป็นสิ่งเดียวที่การทบทวนต้องการรู้
+ */
+export function buildReviewItems(
+  wordIds: string[],
+  levelOf: (wordId: string) => WordLevel = () => ({ recognize: 0, write: 0 }),
+): Item[] {
+  return wordIds.map((wordId, index) => {
+    const level = levelOf(wordId);
+
+    // หมุนสามโหมดเพื่อไม่ให้เด็กเจอเกมเดิมติดกันทั้งชุด
+    switch (index % 3) {
+      case 0:
+        return {
+          kind: "listen",
+          id: `review-listen-${wordId}`,
+          wordIds: [wordId],
+        };
+      case 1:
+        return {
+          kind: "picture",
+          id: `review-picture-${wordId}`,
+          wordIds: [wordId],
+          variant: pictureVariantFor(level),
+        };
+      default:
+        return {
+          kind: "cloze",
+          id: `review-cloze-${wordId}`,
+          wordIds: [wordId],
+          level: clozeLevelFor(level),
+        };
+    }
+  });
+}
+
 /** จำนวนข้อที่ต้องตอบทั้งด่าน ใช้คำนวณความแม่นยำ */
 export function totalAnswersInLesson(lesson: Lesson): number {
   return buildItems(lesson, () => 0).reduce(

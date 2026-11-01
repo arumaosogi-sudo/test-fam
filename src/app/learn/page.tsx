@@ -15,6 +15,8 @@ import { lessonsInUnit } from "@/lib/content/lessons";
 import { isSkillPassed } from "@/lib/progress/mastery";
 import { isLessonUnlocked, nextLessonId } from "@/lib/progress/session";
 import { levelProgress } from "@/lib/progress/xp";
+import { countDue } from "@/lib/srs/review-deck";
+import { useNow } from "@/lib/use-now";
 import { cn } from "@/lib/utils";
 import { useHydrateProgress, useProgressStore } from "@/store/progress-store";
 
@@ -25,6 +27,10 @@ export default function LearnPage() {
   const profile = useProgressStore((state) => state.profile);
   const results = useProgressStore((state) => state.results);
   const mastery = useProgressStore((state) => state.mastery);
+  const cards = useProgressStore((state) => state.cards);
+
+  // นาฬิกาอ่านได้เฉพาะหลัง mount ตอน build ยังไม่รู้ว่าเด็กจะเปิดหน้านี้วันไหน
+  const now = useNow();
 
   if (!hydrated) {
     return (
@@ -38,10 +44,13 @@ export default function LearnPage() {
   const { level, current, needed } = levelProgress(profile.xp);
   const upcoming = nextLessonId(results);
 
-  // ตอนนี้แอปมีแต่โหมดที่ฝึกการจำคำ จึงนับความคืบหน้าจากทักษะนั้นก่อน
+  // นับจากทักษะจำคำเป็นตัวแทน เพราะเป็นทักษะที่ทุกโหมดแตะ และเด็กเข้าใจง่ายที่สุด
   const wordsLearned = Object.values(mastery).filter((item) =>
     isSkillPassed(item, "recognize"),
   ).length;
+
+  // ก่อนรู้เวลา ถือว่ายังไม่มีคำถึงกำหนด ปุ่มจะอัปเดตเองทันทีที่รู้
+  const dueCount = now ? countDue(cards, now) : 0;
 
   return (
     <main className="mx-auto w-full max-w-3xl space-y-8 px-4 py-8">
@@ -87,12 +96,31 @@ export default function LearnPage() {
         </Link>
       ) : null}
 
-      <Link
-        href="/chat"
-        className={cn(buttonVariants({ size: "lg", variant: "neutral" }), "w-full")}
-      >
-        💬 คุยกับ Milo
-      </Link>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Link
+          href="/review"
+          className={cn(
+            buttonVariants({
+              size: "lg",
+              variant: dueCount > 0 ? "success" : "neutral",
+            }),
+            "w-full",
+          )}
+        >
+          {dueCount > 0
+            ? `🔁 ทบทวน ${dueCount} คำที่ใกล้ลืม`
+            : "🔁 ทบทวนคำเก่า"}
+        </Link>
+        <Link
+          href="/chat"
+          className={cn(
+            buttonVariants({ size: "lg", variant: "neutral" }),
+            "w-full",
+          )}
+        >
+          💬 คุยกับ Milo
+        </Link>
+      </div>
 
       <div className="space-y-6">
         {UNITS.map((unit) => {

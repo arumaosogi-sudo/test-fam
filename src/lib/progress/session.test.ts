@@ -5,6 +5,7 @@ import type { Attempt } from "@/lib/types";
 
 import {
   applyLessonResult,
+  applyReviewResult,
   createInitialProgress,
   isLessonUnlocked,
   nextLessonId,
@@ -172,5 +173,78 @@ describe("การปลดล็อกด่าน", () => {
 
     const { snapshot } = play(createInitialProgress(), 5);
     expect(nextLessonId(snapshot.results)).toBe(LESSONS[1].id);
+  });
+});
+
+describe("applyReviewResult", () => {
+  it("ไม่เขียนลง results เพราะด่านทบทวนไม่ได้อยู่ในหลักสูตร", () => {
+    // ถ้าเขียนลงไป แผนที่ด่านจะเพี้ยนและปลดล็อกด่านที่เด็กยังไม่ได้เรียน
+    const { snapshot } = applyReviewResult(
+      createInitialProgress(),
+      attemptsFor(5),
+      5,
+      NOW,
+    );
+
+    expect(snapshot.results).toEqual({});
+    expect(nextLessonId(snapshot.results)).toBe(LESSONS[0].id);
+  });
+
+  it("ไม่ปลดล็อกด่านถัดไป แม้ตอบถูกหมด", () => {
+    const { snapshot } = applyReviewResult(
+      createInitialProgress(),
+      attemptsFor(5),
+      5,
+      NOW,
+    );
+
+    expect(isLessonUnlocked(snapshot.results, LESSONS[1].id)).toBe(false);
+  });
+
+  it("ยังอัปเดตความจำ ความชำนาญ และคะแนนความสามารถตามปกติ", () => {
+    const before = createInitialProgress();
+    const { snapshot } = applyReviewResult(before, attemptsFor(5), 5, NOW);
+    const wordId = LESSON.wordIds[0];
+
+    expect(snapshot.cards[wordId]).toBeDefined();
+    expect(snapshot.mastery[wordId].recognize).toBeGreaterThan(0);
+    expect(snapshot.profile.elo).toBeGreaterThan(before.profile.elo);
+    expect(snapshot.profile.totalAttempts).toBe(5);
+  });
+
+  it("ให้ XP และต่อไฟเหมือนด่านปกติ", () => {
+    const { snapshot, summary } = applyReviewResult(
+      createInitialProgress(),
+      attemptsFor(5),
+      5,
+      NOW,
+    );
+
+    expect(summary.xpEarned).toBeGreaterThan(0);
+    expect(snapshot.profile.xp).toBe(summary.xpEarned);
+    expect(summary.streakDays).toBe(1);
+  });
+
+  it("ไม่มีโบนัสผ่านครั้งแรก เพราะทบทวนเล่นซ้ำได้ทุกวัน", () => {
+    const review = applyReviewResult(
+      createInitialProgress(),
+      attemptsFor(5),
+      5,
+      NOW,
+    );
+    const lesson = play(createInitialProgress(), 5);
+
+    expect(review.summary.xpEarned).toBeLessThan(lesson.summary.xpEarned);
+  });
+
+  it("บอกว่าเคลียร์คำที่ถึงกำหนดไปกี่คำ", () => {
+    const { summary } = applyReviewResult(
+      createInitialProgress(),
+      attemptsFor(3),
+      3,
+      NOW,
+    );
+
+    expect(summary.dueCleared).toBe(3);
   });
 });

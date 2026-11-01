@@ -6,6 +6,7 @@ import { UNITS, WORDS, getUnit, getWord, wordsInUnit } from "./index";
 import { fillSentence, sentenceWithGap, splitSentence } from "./sentence";
 import {
   buildItems,
+  buildReviewItems,
   chunkEvenly,
   clozeLevelFor,
   pictureVariantFor,
@@ -292,5 +293,58 @@ describe("ประโยคตัวอย่างของเกมเติ�
     for (const word of WORDS) {
       expect(sentenceWithGap(word.sentence), word.id).not.toContain(BLANK);
     }
+  });
+});
+
+describe("buildReviewItems", () => {
+  const wordIds = LESSONS[0].wordIds.concat(LESSONS[1].wordIds);
+
+  it("ถามหนึ่งข้อต่อหนึ่งคำ ไม่มากกว่านั้น", () => {
+    const items = buildReviewItems(wordIds);
+
+    expect(items.length).toBe(wordIds.length);
+    expect(items.flatMap((item) => item.wordIds)).toEqual(wordIds);
+  });
+
+  it("ไม่มีโหมดจับคู่ เพราะจับคู่เอาคำตอบมาวางให้เห็นอยู่แล้ว", () => {
+    // การทบทวนต้องการรู้ว่าเด็ก "นึกคำออกเอง" หรือเปล่า
+    const kinds = new Set(buildReviewItems(wordIds).map((item) => item.kind));
+
+    expect(kinds.has("match")).toBe(false);
+  });
+
+  it("หมุนโหมดไม่ให้เจอเกมเดิมติดกันทั้งชุด", () => {
+    const kinds = buildReviewItems(wordIds).map((item) => item.kind);
+
+    expect(new Set(kinds).size).toBe(3);
+  });
+
+  it("id ของทุกข้อไม่ซ้ำกัน เพราะใช้เป็น key และเป็น seed ของการสุ่ม", () => {
+    const ids = buildReviewItems(wordIds).map((item) => item.id);
+
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("ความชำนาญสูงขึ้นแล้วได้โหมดย่อยที่ยากขึ้น", () => {
+    const easy = buildReviewItems(wordIds, () => ({ recognize: 0, write: 0 }));
+    const hard = buildReviewItems(wordIds, () => ({ recognize: 5, write: 5 }));
+
+    const levels = (items: ReturnType<typeof buildReviewItems>) =>
+      items.flatMap((item) =>
+        item.kind === "cloze"
+          ? [item.level]
+          : item.kind === "picture"
+            ? [item.variant]
+            : [],
+      );
+
+    expect(levels(easy)).toContain("bank");
+    expect(levels(easy)).toContain("choose");
+    expect(levels(hard)).toContain("type");
+    expect(levels(hard)).toContain("spell");
+  });
+
+  it("ชุดว่างก็คืนอาร์เรย์ว่าง ไม่พัง", () => {
+    expect(buildReviewItems([])).toEqual([]);
   });
 });

@@ -116,7 +116,8 @@ G10 Story Quest     O     O     O     .      O       O
 ```
 +-------------------- เบราว์เซอร์ (PWA ใช้บนแท็บเล็ต เล่นออฟไลน์บางส่วนได้) ---------------------+
 |  Next.js App Router + React                                                                  |
-|   /learn         แผนที่ด่าน (skill tree)                                                      |
+|   /learn         แผนที่ด่าน (skill tree) + ป้ายจำนวนคำที่ถึงกำหนดทบทวน                          |
+|   /review        ด่านทบทวนรายวันจากคิว FSRS                                                   |
 |   /play/[mode]   เอนจินเกม G1-G12 (1 component ต่อ 1 โหมด)                                    |
 |   /chat          AI Chat Buddy (ไมค์ + สตรีมข้อความ + เสียงตอบ)                                |
 |   /read          Read Aloud (ไฮไลต์แบบคาราโอเกะ)                                              |

@@ -45,7 +45,7 @@
 | T203 | **G4 ดูภาพเติมคำ** (เลือกคำ / สะกด / พูดชื่อ) | M | AI | ⚠️ **2 ใน 3 โหมดย่อย** (เลือกคำ + สะกด) · โหมดพูดชื่อภาพต้องรอ STT ที่ T305 | `src/components/games/picture-game.tsx` |
 | T204 | **G7 ฟังแล้วเลือก** | S | AI | ✅ **เสร็จแล้ว** ตัวเลือกเป็นภาพล้วน ไม่โชว์คำสะกด เด็กที่อ่านไม่ออกเล่นได้ | `src/components/games/listen-game.tsx` |
 | T205 | ชุดภาพประกอบ 120 คำ (OpenMoji + AI-gen ที่ขาด) + optimize | M | AI | T106 | ภาพครบทุกคำ โหลดเร็ว (webp) |
-| T206 | **G12 ด่านทบทวนรายวัน** จากคิว FSRS | S | AI | T102,T201 | กดเล่นแล้วได้คำที่ใกล้ลืม · จุดที่ควรเอา `selectByDifficulty` มาใช้จริง |
+| T206 | **G12 ด่านทบทวนรายวัน** จากคิว FSRS | S | AI | ✅ **เสร็จแล้ว** · เรียงตาม retrievability (ใกล้ลืมสุดก่อน) · คำถึงกำหนดไม่พอจะเติมด้วย `selectByDifficulty` | `src/lib/srs/review-deck.ts`, `src/components/review/` |
 
 ## E3 · AI Chat Buddy (เฟส P2 → P3)
 

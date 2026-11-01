@@ -7,9 +7,11 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import {
   applyLessonResult,
+  applyReviewResult,
   createInitialProgress,
   type LessonSummary,
   type ProgressSnapshot,
+  type ReviewSummary,
 } from "@/lib/progress/session";
 import {
   lessonResultSchema,
@@ -40,6 +42,7 @@ type ProgressStore = ProgressSnapshot & {
   /** อ่านค่าจาก localStorage เสร็จแล้วหรือยัง */
   hydrated: boolean;
   finishLesson: (lessonId: string, attempts: AttemptDraft[]) => LessonSummary;
+  finishReview: (attempts: AttemptDraft[], dueCleared: number) => ReviewSummary;
   reset: () => void;
 };
 
@@ -62,6 +65,25 @@ export const useProgressStore = create<ProgressStore>()(
           { profile, cards, mastery, wordDifficulty, results },
           lessonId,
           attempts,
+          now,
+        );
+
+        set(snapshot);
+        return summary;
+      },
+
+      finishReview(drafts, dueCleared) {
+        const now = new Date();
+        const attempts: Attempt[] = drafts.map((draft) => ({
+          ...draft,
+          at: now.toISOString(),
+        }));
+
+        const { profile, cards, mastery, wordDifficulty, results } = get();
+        const { snapshot, summary } = applyReviewResult(
+          { profile, cards, mastery, wordDifficulty, results },
+          attempts,
+          dueCleared,
           now,
         );
 
