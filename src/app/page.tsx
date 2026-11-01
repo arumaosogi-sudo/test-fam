@@ -1,0 +1,82 @@
+import Link from "next/link";
+
+import { Milo } from "@/components/mascot/milo";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { Card, CardNote, CardTitle } from "@/components/ui/card";
+import { LevelBadge } from "@/components/ui/level-badge";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+
+const PLANNED_MODES = [
+  { icon: "💬", title: "คุยกับ Milo", note: "พูดกับ AI แล้วได้ทั้งข้อความและเสียงตอบ" },
+  { icon: "✏️", title: "เติมคำที่ขาด", note: "เลือกจากคลังคำ ลากตัวอักษร หรือพิมพ์เอง" },
+  { icon: "🔗", title: "จับคู่คำ", note: "จับคู่คำอังกฤษกับคำแปลไทย" },
+  { icon: "🖼️", title: "ดูภาพเติมคำ", note: "เห็นภาพแล้วเลือก สะกด หรือพูดชื่อ" },
+  { icon: "🗣️", title: "ออกเสียง", note: "ให้คะแนนการออกเสียงและบอกจุดที่เพี้ยน" },
+  { icon: "📖", title: "อ่านออกเสียง", note: "อ่านเรื่องสั้นแบบไฮไลต์ตามเสียง" },
+];
+
+export default function HomePage() {
+  return (
+    <main className="mx-auto w-full max-w-4xl px-4 py-10">
+      <div className="mb-8 flex justify-end">
+        <ThemeToggle />
+      </div>
+
+      <section className="flex flex-col items-center gap-6 text-center">
+        <Milo state="idle" size={200} />
+
+        <div className="space-y-3">
+          <h1 className="text-kid-3xl font-extrabold">LinguaKids</h1>
+          <p className="text-ink-muted text-kid-lg mx-auto max-w-xl font-bold">
+            ฝึกคำศัพท์ ฟัง พูด และอ่านภาษาอังกฤษ สำหรับเด็กอนุบาลถึงประถม
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            <LevelBadge level="Pre-A1" withGrade />
+            <LevelBadge level="A1" withGrade />
+            <LevelBadge level="A2" withGrade />
+            <LevelBadge level="B1" withGrade />
+          </div>
+        </div>
+
+        <Button size="lg" variant="accent" disabled>
+          เริ่มเล่น (ยังไม่เปิด)
+        </Button>
+
+        <Link
+          href="/styleguide"
+          className={buttonVariants({ variant: "neutral", size: "md" })}
+        >
+          ดู design system
+        </Link>
+      </section>
+
+      <section className="mt-14 space-y-4">
+        <h2 className="text-kid-xl font-extrabold">โหมดที่วางแผนไว้</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {PLANNED_MODES.map((mode) => (
+            <Card key={mode.title}>
+              <span className="text-kid-2xl" aria-hidden>
+                {mode.icon}
+              </span>
+              <CardTitle className="mt-1">{mode.title}</CardTitle>
+              <CardNote>{mode.note}</CardNote>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-14">
+        <Card className="bg-warn-soft border-warn">
+          <CardTitle>สถานะโปรเจกต์</CardTitle>
+          <CardNote className="text-ink">
+            ขณะนี้เสร็จเฉพาะเฟส P0 คือโครงโปรเจกต์กับ design system ยังไม่มีเกม
+            ยังไม่มีฐานข้อมูล และยังไม่ได้ต่อ AI · แผนงานทั้งหมดอยู่ใน{" "}
+            <code className="font-bold">docs/PLAN.md</code> และรายการงานอยู่ใน{" "}
+            <code className="font-bold">docs/TASKS.md</code>
+          </CardNote>
+        </Card>
+      </section>
+    </main>
+  );
+}

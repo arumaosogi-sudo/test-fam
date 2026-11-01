@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   LinguaKids design tokens
+   ----------------------------------------------------------------------------
+   ทุก token เป็น "semantic" (bg / surface / ink / primary ...) ไม่ใช่ชื่อสี
+   เวลาเปลี่ยนธีมเราสลับค่าตัวแปรทั้งชุด component จึงไม่ต้องมี dark: variant เลย
+   ธีมสลับได้ 2 ทาง: ตามระบบ (prefers-color-scheme) และบังคับด้วย
+   <html data-theme="light|dark">
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* พื้นหลังอุ่นเล็กน้อย ไม่ใช่ขาวจัด เพื่อลดการล้าตาเด็ก */
+  --bg: #fffdf8;
+  --surface: #ffffff;
+  --surface-2: #f6f2e7;
+  --ink: #1b2a33;
+  --ink-muted: #566b77;
+  --border: #e5ded0;
+
+  /* primary: เขียวมินต์เข้ม — ผ่าน AA บนพื้นขาว (อัตราส่วน ~5.2:1) */
+  --primary: #0a7a71;
+  --primary-edge: #06564f;
+  --primary-soft: #d9f2ef;
+  --primary-ink: #ffffff;
+
+  /* accent: ส้มโคราล ใช้ตัวหนังสือสีเข้มเพราะพื้นสว่างเกินกว่าจะใช้ขาว */
+  --accent: #ff8a5b;
+  --accent-edge: #d9603a;
+  --accent-soft: #ffe8de;
+  --accent-ink: #532206;
+
+  --success: #1f8442;
+  --success-edge: #15602f;
+  --success-soft: #ddf5e3;
+  --success-ink: #ffffff;
+
+  --warn: #ffc53d;
+  --warn-edge: #d9a018;
+  --warn-soft: #fff4d6;
+  --warn-ink: #4a3300;
+
+  /* "ผิด" ใช้แดงนวล ไม่ใช่แดงดุ — เด็กไม่ควรรู้สึกถูกลงโทษ */
+  --danger: #cf3b3b;
+  --danger-edge: #a32c2c;
+  --danger-soft: #ffe4e1;
+  --danger-ink: #ffffff;
+
+  --star: #ffb020;
+  --focus: #1b7fd4;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0f1a20;
+  --surface: #16242c;
+  --surface-2: #1e3038;
+  --ink: #eef5f4;
+  --ink-muted: #9fb3bd;
+  --border: #2a3f49;
+
+  --primary: #27b5a8;
+  --primary-edge: #15837a;
+  --primary-soft: #0c3a37;
+  --primary-ink: #052b28;
+
+  --accent: #ff9b70;
+  --accent-edge: #d9693f;
+  --accent-soft: #3a2017;
+  --accent-ink: #3d1704;
+
+  --success: #3fc46c;
+  --success-edge: #268a48;
+  --success-soft: #0e2f1a;
+  --success-ink: #05240f;
+
+  --warn: #ffd166;
+  --warn-edge: #d9a92f;
+  --warn-soft: #352a0e;
+  --warn-ink: #3a2a00;
+
+  --danger: #ff7b7b;
+  --danger-edge: #c74f4f;
+  --danger-soft: #3a1b1b;
+  --danger-ink: #330a0a;
+
+  --star: #ffc24d;
+  --focus: #6cb6f5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #0f1a20;
+    --surface: #16242c;
+    --surface-2: #1e3038;
+    --ink: #eef5f4;
+    --ink-muted: #9fb3bd;
+    --border: #2a3f49;
+
+    --primary: #27b5a8;
+    --primary-edge: #15837a;
+    --primary-soft: #0c3a37;
+    --primary-ink: #052b28;
+
+    --accent: #ff9b70;
+    --accent-edge: #d9693f;
+    --accent-soft: #3a2017;
+    --accent-ink: #3d1704;
+
+    --success: #3fc46c;
+    --success-edge: #268a48;
+    --success-soft: #0e2f1a;
+    --success-ink: #05240f;
+
+    --warn: #ffd166;
+    --warn-edge: #d9a92f;
+    --warn-soft: #352a0e;
+    --warn-ink: #3a2a00;
+
+    --danger: #ff7b7b;
+    --danger-edge: #c74f4f;
+    --danger-soft: #3a1b1b;
+    --danger-ink: #330a0a;
+
+    --star: #ffc24d;
+    --focus: #6cb6f5;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-edge: var(--primary-edge);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-ink: var(--primary-ink);
+
+  --color-accent: var(--accent);
+  --color-accent-edge: var(--accent-edge);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+
+  --color-success: var(--success);
+  --color-success-edge: var(--success-edge);
+  --color-success-soft: var(--success-soft);
+  --color-success-ink: var(--success-ink);
+
+  --color-warn: var(--warn);
+  --color-warn-edge: var(--warn-edge);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-ink: var(--warn-ink);
+
+  --color-danger: var(--danger);
+  --color-danger-edge: var(--danger-edge);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-ink: var(--danger-ink);
+
+  --color-star: var(--star);
+  --color-focus: var(--focus);
+
+  /* Nunito มุมกลมอ่านง่ายสำหรับเด็ก, Noto Sans Thai รับภาษาไทย */
+  --font-sans: var(--font-nunito), var(--font-noto-thai), ui-sans-serif, system-ui,
+    sans-serif;
+
+  /* มุมโค้งเยอะ = รู้สึกปลอดภัย ไม่แหลมคม */
+  --radius-tile: 1.25rem;
+  --radius-card: 1.75rem;
+  --radius-pill: 999px;
+
+  /* ขนาดตัวอักษรฐาน 18px เพราะผู้ใช้คือเด็ก ไม่ใช่ 16px แบบเว็บทั่วไป */
+  --text-kid-sm: 1rem;
+  --text-kid-sm--line-height: 1.6;
+  --text-kid: 1.125rem;
+  --text-kid--line-height: 1.6;
+  --text-kid-lg: 1.375rem;
+  --text-kid-lg--line-height: 1.5;
+  --text-kid-xl: 1.75rem;
+  --text-kid-xl--line-height: 1.35;
+  --text-kid-2xl: 2.25rem;
+  --text-kid-2xl--line-height: 1.25;
+  --text-kid-3xl: 3rem;
+  --text-kid-3xl--line-height: 1.15;
+
+  --shadow-card: 0 10px 28px -16px rgb(16 32 40 / 0.22);
+  --shadow-float: 0 18px 40px -18px rgb(16 32 40 / 0.32);
+}
+
+@layer base {
+  html {
+    /* ปล่อยให้เด็ก/ผู้ปกครองซูมได้ ไม่ล็อก user-scalable */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-size: var(--text-kid);
+    line-height: 1.6;
+  }
+
+  /* โฟกัสต้องเห็นชัด เพราะต้องเล่นด้วยคีย์บอร์ดได้ทั้งแอป */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  button {
+    /* กันข้อความในปุ่มถูกลากเป็น selection ตอนเด็กกดรัว ๆ */
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ปุ่มสไตล์ "กดได้" — มีขอบล่างหนาแล้วยุบลงเวลากด (ให้ feedback ทางสายตา)
+   ใช้ร่วมกับ --edge ที่แต่ละ variant กำหนดมา */
+@utility pressable {
+  box-shadow: 0 4px 0 0 var(--edge);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease;
+}
+
+@utility pressable-sunk {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 var(--edge);
+}
+
+/* เคารพการตั้งค่าของผู้ใช้ที่ไม่อยากเห็นแอนิเมชัน (a11y) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
