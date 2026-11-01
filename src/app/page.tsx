@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Milo } from "@/components/mascot/milo";
-import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { LevelBadge } from "@/components/ui/level-badge";
@@ -39,9 +38,12 @@ export default function HomePage() {
           </div>
         </div>
 
-        <Button size="lg" variant="accent" disabled>
-          เริ่มเล่น (ยังไม่เปิด)
-        </Button>
+        <Link
+          href="/learn"
+          className={buttonVariants({ variant: "accent", size: "xl" })}
+        >
+          เริ่มเล่น
+        </Link>
 
         <Link
           href="/styleguide"
@@ -70,9 +72,10 @@ export default function HomePage() {
         <Card className="bg-warn-soft border-warn">
           <CardTitle>สถานะโปรเจกต์</CardTitle>
           <CardNote className="text-ink">
-            ขณะนี้เสร็จเฉพาะเฟส P0 คือโครงโปรเจกต์กับ design system ยังไม่มีเกม
-            ยังไม่มีฐานข้อมูล และยังไม่ได้ต่อ AI · แผนงานทั้งหมดอยู่ใน{" "}
-            <code className="font-bold">docs/PLAN.md</code> และรายการงานอยู่ใน{" "}
+            เล่นได้แล้วเฉพาะโหมดจับคู่คำ บนคลังคำ Pre-A1 จำนวน 120 คำ
+            พร้อมระบบทบทวนอัตโนมัติ ดาว XP และไฟต่อเนื่อง · ความคืบหน้าเก็บไว้ในเครื่องนี้
+            ยังไม่มีบัญชีผู้ใช้ และยังไม่ได้ต่อ AI · แผนงานอยู่ใน{" "}
+            <code className="font-bold">docs/PLAN.md</code> รายการงานอยู่ใน{" "}
             <code className="font-bold">docs/TASKS.md</code>
           </CardNote>
         </Card>

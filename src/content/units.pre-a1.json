@@ -1,0 +1,82 @@
+[
+  {
+    "id": "u-colors",
+    "cefr": "Pre-A1",
+    "order": 1,
+    "titleTh": "สี",
+    "titleEn": "Colors",
+    "emoji": "🎨"
+  },
+  {
+    "id": "u-numbers",
+    "cefr": "Pre-A1",
+    "order": 2,
+    "titleTh": "ตัวเลข 1–10",
+    "titleEn": "Numbers",
+    "emoji": "🔢"
+  },
+  {
+    "id": "u-animals",
+    "cefr": "Pre-A1",
+    "order": 3,
+    "titleTh": "สัตว์",
+    "titleEn": "Animals",
+    "emoji": "🐘"
+  },
+  {
+    "id": "u-family",
+    "cefr": "Pre-A1",
+    "order": 4,
+    "titleTh": "ครอบครัว",
+    "titleEn": "Family",
+    "emoji": "👪"
+  },
+  {
+    "id": "u-body",
+    "cefr": "Pre-A1",
+    "order": 5,
+    "titleTh": "ร่างกาย",
+    "titleEn": "My Body",
+    "emoji": "✋"
+  },
+  {
+    "id": "u-food",
+    "cefr": "Pre-A1",
+    "order": 6,
+    "titleTh": "อาหารและเครื่องดื่ม",
+    "titleEn": "Food & Drinks",
+    "emoji": "🍚"
+  },
+  {
+    "id": "u-classroom",
+    "cefr": "Pre-A1",
+    "order": 7,
+    "titleTh": "ในห้องเรียน",
+    "titleEn": "In the Classroom",
+    "emoji": "🏫"
+  },
+  {
+    "id": "u-things",
+    "cefr": "Pre-A1",
+    "order": 8,
+    "titleTh": "ของใช้และของเล่น",
+    "titleEn": "Things & Toys",
+    "emoji": "🧸"
+  },
+  {
+    "id": "u-adjectives",
+    "cefr": "Pre-A1",
+    "order": 9,
+    "titleTh": "คำบอกลักษณะ",
+    "titleEn": "Describing Words",
+    "emoji": "🔥"
+  },
+  {
+    "id": "u-actions",
+    "cefr": "Pre-A1",
+    "order": 10,
+    "titleTh": "คำกริยา",
+    "titleEn": "Action Words",
+    "emoji": "🏃"
+  }
+]

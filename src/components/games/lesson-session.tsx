@@ -1,0 +1,190 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+
+import { Milo } from "@/components/mascot/milo";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { Card, CardNote, CardTitle } from "@/components/ui/card";
+import { ProgressBar } from "@/components/ui/progress-bar";
+import { SpeakerButton } from "@/components/ui/speaker-button";
+import { StarRating } from "@/components/ui/star-rating";
+import { getWord } from "@/lib/content";
+import { buildItems, getLesson, lessonWords } from "@/lib/content/lessons";
+import type { LessonSummary } from "@/lib/progress/session";
+import { nextLessonId } from "@/lib/progress/session";
+import { seededRandom } from "@/lib/random";
+import type { AttemptDraft } from "@/lib/types";
+import { useHydrateProgress, useProgressStore } from "@/store/progress-store";
+
+import { MatchGame } from "./match-game";
+
+type LessonSessionProps = {
+  lessonId: string;
+};
+
+export function LessonSession({ lessonId }: LessonSessionProps) {
+  useHydrateProgress();
+
+  const lesson = getLesson(lessonId);
+
+  const hydrated = useProgressStore((state) => state.hydrated);
+  const results = useProgressStore((state) => state.results);
+  const finishLesson = useProgressStore((state) => state.finishLesson);
+
+  // seed จาก id ของด่าน ทำให้ลำดับข้อเหมือนกันทั้งบนเซิร์ฟเวอร์และเบราว์เซอร์
+  const items = useMemo(
+    () => (lesson ? buildItems(lesson, seededRandom(lesson.id)) : []),
+    [lesson],
+  );
+
+  const [itemIndex, setItemIndex] = useState(0);
+  const [attempts, setAttempts] = useState<AttemptDraft[]>([]);
+  const [summary, setSummary] = useState<LessonSummary | null>(null);
+
+  if (!lesson) {
+    return (
+      <Card className="mx-auto mt-10 max-w-md text-center">
+        <CardTitle>ไม่พบด่านนี้</CardTitle>
+        <CardNote>ด่านอาจถูกย้ายหรือพิมพ์ลิงก์ผิด</CardNote>
+        <Link
+          href="/learn"
+          className={`${buttonVariants({ size: "md" })} mt-4`}
+        >
+          กลับไปแผนที่ด่าน
+        </Link>
+      </Card>
+    );
+  }
+
+  // รอให้โหลดความคืบหน้าเสร็จก่อน ไม่งั้นผลการเล่นจะถูกเขียนทับตอน hydrate
+  if (!hydrated) {
+    return (
+      <div className="mt-20 flex flex-col items-center gap-4">
+        <Milo state="idle" size={120} />
+        <p className="text-ink-muted font-bold">กำลังเตรียมด่าน…</p>
+      </div>
+    );
+  }
+
+  function handleItemComplete(itemAttempts: AttemptDraft[]) {
+    const all = [...attempts, ...itemAttempts];
+    setAttempts(all);
+
+    if (itemIndex + 1 < items.length) {
+      setItemIndex(itemIndex + 1);
+      return;
+    }
+
+    setSummary(finishLesson(lessonId, all));
+  }
+
+  function restart() {
+    setItemIndex(0);
+    setAttempts([]);
+    setSummary(null);
+  }
+
+  if (summary) {
+    const upcoming = nextLessonId(results);
+
+    return (
+      <div className="mx-auto max-w-md space-y-5 py-6 text-center">
+        <Milo state={summary.stars >= 2 ? "happy" : "oops"} size={170} />
+
+        <div className="space-y-2">
+          <h1 className="text-kid-2xl font-extrabold">
+            {summary.stars === 3
+              ? "เก่งมาก!"
+              : summary.stars === 2
+                ? "ดีแล้ว!"
+                : "ลองอีกครั้งนะ"}
+          </h1>
+          <div className="flex justify-center">
+            <StarRating value={summary.stars} size="lg" animate />
+          </div>
+        </div>
+
+        <Card className="space-y-2 text-left">
+          <div className="flex justify-between font-bold">
+            <span>ตอบถูก</span>
+            <span>
+              {summary.correctCount}/{summary.totalCount} ข้อ
+            </span>
+          </div>
+          <div className="flex justify-between font-bold">
+            <span>ได้รับ</span>
+            <span className="text-accent-edge">+{summary.xpEarned} XP</span>
+          </div>
+          <div className="flex justify-between font-bold">
+            <span>ไฟต่อเนื่อง</span>
+            <span>🔥 {summary.streakDays} วัน</span>
+          </div>
+          {summary.leveledUp ? (
+            <CardNote className="text-success-edge font-extrabold">
+              🎉 เลเวลขึ้นแล้ว!
+            </CardNote>
+          ) : null}
+          {summary.usedFreeze ? (
+            <CardNote>ใช้ตั๋วกันไฟดับไป 1 ใบ เพราะเมื่อวานไม่ได้เล่น</CardNote>
+          ) : null}
+        </Card>
+
+        <div className="flex flex-col gap-3">
+          {upcoming && upcoming !== lessonId ? (
+            <Link
+              href={`/play/${upcoming}`}
+              className={buttonVariants({ size: "lg", variant: "accent" })}
+            >
+              ด่านถัดไป
+            </Link>
+          ) : null}
+          <Button variant="neutral" size="md" onClick={restart}>
+            เล่นด่านนี้อีกครั้ง
+          </Button>
+          <Link
+            href="/learn"
+            className={buttonVariants({ size: "md", variant: "ghost" })}
+          >
+            กลับไปแผนที่ด่าน
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const item = items[itemIndex];
+  const words = lessonWords({ ...lesson, wordIds: item.wordIds }, getWord);
+
+  return (
+    <div className="mx-auto max-w-xl space-y-5 py-6">
+      <header className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/learn"
+            className={buttonVariants({ size: "sm", variant: "ghost" })}
+          >
+            ← ออก
+          </Link>
+          <span className="text-ink-muted text-kid-sm font-bold">
+            รอบที่ {itemIndex + 1} จาก {items.length}
+          </span>
+        </div>
+        <ProgressBar value={itemIndex} max={items.length} />
+      </header>
+
+      <MatchGame
+        key={item.id}
+        itemId={item.id}
+        words={words}
+        onComplete={handleItemComplete}
+      />
+
+      <Card className="flex flex-wrap items-center justify-center gap-3">
+        <CardNote>กดคำภาษาอังกฤษเพื่อฟังเสียงได้</CardNote>
+        {words[0] ? <SpeakerButton text={words[0].en} size="sm" /> : null}
+      </Card>
+    </div>
+  );
+}

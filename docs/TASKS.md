@@ -21,25 +21,26 @@
 > หมายเหตุ T301 (speech adapter interface) ถูกทำล่วงหน้าไปแล้วบางส่วนใน P0
 > เพราะปุ่มลำโพงจำเป็นต้องใช้ตั้งแต่ design system — ดู `src/lib/speech/`
 
-## E1 · เอนจินกลางการเรียน (เฟส P1)
+## E1 · เอนจินกลางการเรียน (เฟส P1) — ✅ เสร็จแล้ว
 
-| ID | งาน | ขนาด | ใคร | ขึ้นกับ | เสร็จแล้วต้องได้ |
+| ID | งาน | ขนาด | ใคร | สถานะ | ไฟล์ |
 |---|---|---|---|---|---|
-| T101 | นิยาม type กลาง: `Word`, `Phrase`, `Item`, `Attempt`, `SrsCard`, `Mastery`, `Profile` (zod schema) | S | AI | T004 | type เดียวใช้ทั้ง client/server |
-| T102 | **FSRS scheduler** + unit test (due date, lapse, stability) | M | AI | T101 | Vitest ผ่านทุกเคส |
-| T103 | **Elo adaptive selector** + unit test (เลือกข้อที่โอกาสถูก 75–80%) | M | AI | T101 | Vitest ผ่าน + simulation แสดงผล |
-| T104 | ระบบ XP / level / streak / daily goal + streak freeze | S | AI | T101 | logic + test |
-| T105 | Mastery 4 สกิล x 0–5 ดาว ต่อคำ | S | AI | T102 | อัปเดตถูกเมื่อเล่นโหมดต่างกัน |
-| T106 | คลังข้อมูล Pre-A1: **120 คำ** (en, th, pos, cefr, ipa, tag, ภาพ) เป็น JSON | M | ร่วม | T101 | `content/words.pre-a1.json` + คนตรวจคำแปลแล้ว |
-| T107 | Lesson/Unit builder: แปลงคลังคำเป็นด่าน (1 lesson = 3–7 นาที, คละโหมด) | M | AI | T106 | gen ด่านได้อัตโนมัติจากคลังคำ |
-| T108 | หน้า `/learn` แผนที่ด่าน (skill tree) + สถานะล็อก/ผ่าน/ดาว | M | AI | T107 | กดด่านเข้าไปเล่นได้ |
-| T109 | Session runner: โครงกลางที่คุมลำดับข้อ, ชีวิตด่าน, สรุปผลตอนจบ, มอบ XP | M | AI | T103,T104 | ใส่โหมดใหม่เข้าไปได้โดยไม่แก้ core |
+| T101 | นิยาม type กลางด้วย zod schema | S | AI | ✅ | `src/lib/types.ts` |
+| T102 | **FSRS scheduler** + unit test | M | AI | ✅ 14 เทส | `src/lib/srs/fsrs.ts` |
+| T103 | **Elo adaptive selector** + unit test | M | AI | ✅ 19 เทส | `src/lib/adaptive/elo.ts` |
+| T104 | ระบบ XP / level / streak + streak freeze | S | AI | ✅ 22 เทส | `src/lib/progress/xp.ts` |
+| T105 | Mastery 4 ทักษะ x 0–5 ดาว ต่อคำ | S | AI | ✅ 10 เทส | `src/lib/progress/mastery.ts` |
+| T106 | คลังข้อมูล Pre-A1 **120 คำ / 10 หน่วย** | M | ร่วม | ⚠️ ไฟล์พร้อมและมีเทสตรวจคุณภาพ แต่ **ยังไม่มีคนตรวจคำแปลกับคำอ่าน** | `src/content/words.pre-a1.json` |
+| T107 | ตัวสร้างด่านจากคลังคำ (28 ด่าน) | M | AI | ✅ | `src/lib/content/lessons.ts` |
+| T108 | หน้า `/learn` แผนที่ด่าน + สถานะล็อก/ผ่าน/ดาว | M | AI | ✅ | `src/app/learn/page.tsx` |
+| T109 | Session runner: คุมลำดับข้อ สรุปผล มอบ XP | M | AI | ✅ 16 เทส | `src/lib/progress/session.ts` |
+| T110 | เก็บความคืบหน้าในเครื่อง (localStorage) | S | AI | ✅ validate ด้วย zod ตอนอ่านกลับ | `src/store/progress-store.ts` |
 
 ## E2 · เกม 4 โหมดที่คุณระบุ + ฟัง (เฟส P2)
 
 | ID | งาน | ขนาด | ใคร | ขึ้นกับ | เสร็จแล้วต้องได้ |
 |---|---|---|---|---|---|
-| T201 | **G3 จับคู่ EN↔TH** (ลากเส้น + Memory Flip) | M | AI | T109 | เล่นจบด่านได้ มี animation ถูก/ผิด |
+| T201 | **G3 จับคู่ EN↔TH** | M | AI | ✅ **เสร็จแล้ว** (แบบแตะจับคู่ · โหมด Memory Flip ยังไม่ทำ) | `src/components/games/match-game.tsx` |
 | T202 | **G2 เติมคำที่ขาด** 3 ระดับ (คลังคำ / letter tiles / พิมพ์เอง + fuzzy match ใจดี) | M | AI | T109 | ครบ 3 ระดับ + ตรวจสะกดแบบให้คำใบ้ |
 | T203 | **G4 ดูภาพเติมคำ** (เลือกคำ / สะกด / พูดชื่อ) | M | AI | T109,T305 | 3 sub-mode ทำงาน |
 | T204 | **G7 ฟังแล้วเลือก** | S | AI | T109,T301 | เล่นได้แม้ยังอ่านไม่ออก |
