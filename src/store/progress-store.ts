@@ -5,6 +5,7 @@ import { z } from "zod";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { EMPTY_BUDGET, canChat, spendTurn, turnsLeft } from "@/lib/chat/limits";
 import {
   applyLessonResult,
   createInitialProgress,
@@ -34,12 +35,22 @@ const snapshotSchema = z.object({
   mastery: z.record(z.string(), masterySchema),
   wordDifficulty: z.record(z.string(), z.number()),
   results: z.record(z.string(), lessonResultSchema),
+  /**
+   * ใส่ default ไว้เพราะข้อมูลที่เด็กบันทึกไว้ก่อนมีฟีเจอร์แชทจะไม่มีช่องนี้
+   * ถ้าบังคับให้มี การ validate จะไม่ผ่านแล้วความคืบหน้าทั้งหมดจะถูกล้างทิ้ง
+   */
+  chatBudget: z
+    .object({ dateKey: z.string(), used: z.number().int().nonnegative() })
+    .default(EMPTY_BUDGET),
 });
 
 type ProgressStore = ProgressSnapshot & {
   /** อ่านค่าจาก localStorage เสร็จแล้วหรือยัง */
   hydrated: boolean;
   finishLesson: (lessonId: string, attempts: AttemptDraft[]) => LessonSummary;
+  /** ใช้โควตาแชทหนึ่งเทิร์น คืนจำนวนเทิร์นที่เหลือของวันนี้ */
+  spendChatTurn: () => number;
+  canChatNow: () => boolean;
   reset: () => void;
 };
 
@@ -57,9 +68,10 @@ export const useProgressStore = create<ProgressStore>()(
           at: now.toISOString(),
         }));
 
-        const { profile, cards, mastery, wordDifficulty, results } = get();
+        const { profile, cards, mastery, wordDifficulty, results, chatBudget } =
+          get();
         const { snapshot, summary } = applyLessonResult(
-          { profile, cards, mastery, wordDifficulty, results },
+          { profile, cards, mastery, wordDifficulty, results, chatBudget },
           lessonId,
           attempts,
           now,
@@ -67,6 +79,17 @@ export const useProgressStore = create<ProgressStore>()(
 
         set(snapshot);
         return summary;
+      },
+
+      spendChatTurn() {
+        const now = new Date();
+        const chatBudget = spendTurn(get().chatBudget, now);
+        set({ chatBudget });
+        return turnsLeft(chatBudget, now);
+      },
+
+      canChatNow() {
+        return canChat(get().chatBudget, new Date());
       },
 
       reset() {
@@ -92,6 +115,7 @@ export const useProgressStore = create<ProgressStore>()(
         mastery: state.mastery,
         wordDifficulty: state.wordDifficulty,
         results: state.results,
+        chatBudget: state.chatBudget,
       }),
       /**
        * ข้อมูลใน localStorage แก้ด้วยมือได้ และอาจเป็นของเวอร์ชันเก่า
