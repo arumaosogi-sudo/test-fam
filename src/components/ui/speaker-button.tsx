@@ -1,6 +1,6 @@
 "use client";
 
-import { Volume2 } from "lucide-react";
+import { Turtle, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { getTts } from "@/lib/speech";
@@ -45,6 +45,10 @@ function useTtsAvailable() {
  *
  * กฎการออกแบบข้อ 1 ของโปรเจกต์: ทุกข้อความบนจอต้องกดฟังเสียงได้
  * เพราะเด็กอนุบาลยังอ่านไม่ออก ปุ่มนี้จึงต้องอยู่ข้างทุกคำศัพท์และทุกประโยค
+ *
+ * ปุ่มฟังช้าใช้ไอคอนเต่าแทนลำโพง เพราะหน้าจอหลายหน้าวางปุ่มฟังปกติกับ
+ * ปุ่มฟังช้าไว้ติดกัน ถ้าใช้ไอคอนเดียวกันทั้งคู่ เด็กที่ยังอ่านไม่ออกจะ
+ * แยกไม่ออกว่าปุ่มไหนคืออะไร (เจอตอนทดสอบหน้าเฉลย)
  */
 export function SpeakerButton({
   text,
@@ -88,11 +92,19 @@ export function SpeakerButton({
         className,
       )}
     >
-      <Volume2
-        className={cn(iconClass[size], speaking && "animate-pulse")}
-        strokeWidth={2.75}
-        aria-hidden
-      />
+      {slow ? (
+        <Turtle
+          className={cn(iconClass[size], speaking && "animate-pulse")}
+          strokeWidth={2.75}
+          aria-hidden
+        />
+      ) : (
+        <Volume2
+          className={cn(iconClass[size], speaking && "animate-pulse")}
+          strokeWidth={2.75}
+          aria-hidden
+        />
+      )}
     </button>
   );
 }

@@ -1,9 +1,14 @@
 import { describe, expect, it } from "vitest";
 
+import { BLANK } from "@/lib/types";
+
 import { UNITS, WORDS, getUnit, getWord, wordsInUnit } from "./index";
+import { fillSentence, sentenceWithGap, splitSentence } from "./sentence";
 import {
   buildItems,
   chunkEvenly,
+  clozeLevelFor,
+  pictureVariantFor,
   LESSONS,
   WORDS_PER_LESSON,
   getLesson,
@@ -148,21 +153,43 @@ describe("ด่าน", () => {
 describe("buildItems", () => {
   const lesson = LESSONS[0];
 
-  it("สร้างสองรอบ และแต่ละรอบครอบคลุมคำของด่าน", () => {
+  it("ให้ทุกคำของด่านครบทั้งสามทาง: จับคู่ ฟัง และผลิตคำเอง", () => {
     const items = buildItems(lesson, () => 0);
 
-    expect(items.length).toBe(2);
-    for (const item of items) {
-      expect(item.kind).toBe("match");
-      expect(new Set(item.wordIds).size).toBe(item.wordIds.length);
-      for (const wordId of item.wordIds) {
-        expect(lesson.wordIds).toContain(wordId);
-      }
+    const match = items.filter((item) => item.kind === "match");
+    expect(match.length).toBe(1);
+    expect(new Set(match[0].wordIds)).toEqual(new Set(lesson.wordIds));
+
+    const asked = (kinds: string[]) =>
+      new Set(
+        items
+          .filter((item) => kinds.includes(item.kind))
+          .flatMap((item) => item.wordIds),
+      );
+
+    // ฟังหนึ่งข้อต่อคำ และผลิตคำเองหนึ่งข้อต่อคำ ไม่มีคำไหนตกหล่น
+    expect(asked(["listen"])).toEqual(new Set(lesson.wordIds));
+    expect(asked(["picture", "cloze"])).toEqual(new Set(lesson.wordIds));
+  });
+
+  it("id ของทุกข้อไม่ซ้ำกัน เพราะใช้เป็น key และเป็น seed ของการสุ่ม", () => {
+    for (const current of LESSONS) {
+      const ids = buildItems(current, () => 0).map((item) => item.id);
+      expect(new Set(ids).size, current.id).toBe(ids.length);
     }
   });
 
-  it("จำนวนข้อที่ต้องตอบทั้งด่านเท่ากับผลรวมของทุกรอบ", () => {
-    expect(totalAnswersInLesson(lesson)).toBe(lesson.wordIds.length * 2);
+  it("ข้อผลิตคำสลับโหมดกัน ไม่ให้เจอเกมเดียวห้าจอติด", () => {
+    const produce = buildItems(lesson, () => 0).filter(
+      (item) => item.kind === "picture" || item.kind === "cloze",
+    );
+
+    expect(produce.length).toBeGreaterThan(1);
+    expect(new Set(produce.map((item) => item.kind)).size).toBe(2);
+  });
+
+  it("จำนวนข้อที่ต้องตอบทั้งด่านคือสามข้อต่อหนึ่งคำ", () => {
+    expect(totalAnswersInLesson(lesson)).toBe(lesson.wordIds.length * 3);
   });
 
   it("ลำดับคำสลับกันได้ตามตัวสุ่มที่ส่งเข้าไป", () => {
@@ -170,5 +197,100 @@ describe("buildItems", () => {
     const reversed = buildItems(lesson, () => 0.999)[0].wordIds;
 
     expect(new Set(ordered)).toEqual(new Set(reversed));
+  });
+
+  it("ความชำนาญสูงขึ้นแล้วได้โหมดย่อยที่ยากขึ้น", () => {
+    const easy = buildItems(lesson, () => 0, () => ({ recognize: 0, write: 0 }));
+    const hard = buildItems(lesson, () => 0, () => ({ recognize: 5, write: 5 }));
+
+    const levels = (items: ReturnType<typeof buildItems>) =>
+      items.flatMap((item) =>
+        item.kind === "cloze"
+          ? [item.level]
+          : item.kind === "picture"
+            ? [item.variant]
+            : [],
+      );
+
+    expect(levels(easy)).toContain("bank");
+    expect(levels(easy)).toContain("choose");
+    expect(levels(hard)).toContain("type");
+    expect(levels(hard)).toContain("spell");
+  });
+});
+
+describe("clozeLevelFor / pictureVariantFor", () => {
+  it("ไล่ระดับจากจำคำได้ ไปต่อตัวอักษร ไปพิมพ์เอง", () => {
+    expect(clozeLevelFor({ recognize: 0, write: 0 })).toBe("bank");
+    expect(clozeLevelFor({ recognize: 1, write: 0 })).toBe("bank");
+    expect(clozeLevelFor({ recognize: 2, write: 0 })).toBe("tiles");
+    expect(clozeLevelFor({ recognize: 5, write: 2 })).toBe("tiles");
+    expect(clozeLevelFor({ recognize: 5, write: 3 })).toBe("type");
+  });
+
+  it("เกมภาพเปลี่ยนเป็นสะกดคำตอนจำคำได้แล้ว ตรงกับขั้นแรกของเกมเติมคำ", () => {
+    expect(pictureVariantFor({ recognize: 1, write: 0 })).toBe("choose");
+    expect(pictureVariantFor({ recognize: 2, write: 0 })).toBe("spell");
+  });
+
+  it("ระดับความยากเดินหน้าได้จริง ไม่ล็อกตัวเองอยู่ที่ขั้นง่ายสุด", () => {
+    // ขั้นง่ายสุดฝึกแค่การจำคำ ถ้าขั้นถัดไปต้องใช้ดาวเขียนเป็นเกณฑ์
+    // เด็กจะไม่มีทางได้เล่นข้อที่เพิ่มดาวเขียนเลย — เทสนี้กันไม่ให้พลาดซ้ำ
+    const afterRecognizing = { recognize: 2, write: 0 };
+
+    expect(clozeLevelFor(afterRecognizing)).not.toBe("bank");
+    expect(pictureVariantFor(afterRecognizing)).not.toBe("choose");
+  });
+});
+
+/**
+ * ประโยคตัวอย่างเป็นเนื้อหาที่คนทำเนื้อหาจะมาแก้เหมือนคลังคำ
+ * เทสชุดนี้จึงตรวจสิ่งที่ทำให้ "ข้อนั้นเล่นไม่ได้" ไม่ใช่ตรวจสำนวน
+ */
+describe("ประโยคตัวอย่างของเกมเติมคำ", () => {
+  it("ทุกคำมีประโยคที่มีช่องว่างพอดีหนึ่งช่อง", () => {
+    for (const word of WORDS) {
+      const { before, after } = splitSentence(word.sentence);
+      expect(`${before}${BLANK}${after}`, word.id).toBe(word.sentence);
+      expect(word.sentence.split(BLANK).length, word.id).toBe(2);
+    }
+  });
+
+  it("ประโยคไม่เฉลยคำตอบด้วยตัวเอง", () => {
+    for (const word of WORDS) {
+      const around = word.sentence.replace(BLANK, " ");
+      const appearsAlready = new RegExp(`\b${word.en}\b`, "i").test(around);
+
+      // ถ้าคำตอบโผล่อยู่ในประโยคอยู่แล้ว เด็กลอกจากประโยคได้โดยไม่ต้องรู้คำ
+      expect(appearsAlready, `${word.id}: ${word.sentence}`).toBe(false);
+    }
+  });
+
+  it("ประโยคเป็นภาษาอังกฤษล้วน ไม่มีตัวอักษรไทยปน", () => {
+    for (const word of WORDS) {
+      expect(/[฀-๿]/.test(word.sentence), word.id).toBe(false);
+    }
+  });
+
+  it("ประโยคสั้นพอสำหรับ Pre-A1 และจบด้วยเครื่องหมายวรรคตอน", () => {
+    for (const word of WORDS) {
+      const filled = fillSentence(word.sentence, word.en);
+
+      expect(filled.length, `${word.id}: ${filled}`).toBeLessThanOrEqual(45);
+      expect(filled, word.id).toMatch(/[.!?]$/);
+      expect(filled[0], word.id).toBe(filled[0].toUpperCase());
+    }
+  });
+
+  it("ประโยคที่เติมคำแล้วมีคำตอบอยู่จริง", () => {
+    for (const word of WORDS) {
+      expect(fillSentence(word.sentence, word.en), word.id).toContain(word.en);
+    }
+  });
+
+  it("ประโยคที่ใช้อ่านออกเสียงไม่มีสัญลักษณ์ช่องว่างหลุดไปให้เครื่องอ่าน", () => {
+    for (const word of WORDS) {
+      expect(sentenceWithGap(word.sentence), word.id).not.toContain(BLANK);
+    }
   });
 });

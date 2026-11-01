@@ -1,4 +1,11 @@
-import type { Item, Lesson, Word } from "@/lib/types";
+import type {
+  ClozeLevel,
+  GameMode,
+  Item,
+  Lesson,
+  PictureVariant,
+  Word,
+} from "@/lib/types";
 
 import { UNITS, wordsInUnit } from "./index";
 
@@ -7,6 +14,14 @@ export const WORDS_PER_LESSON = 5;
 
 /** คู่คำต่อหนึ่งหน้าจอของเกมจับคู่ */
 export const PAIRS_PER_MATCH_ITEM = 5;
+
+/** โหมดที่ด่านปกติใช้ เรียงตามลำดับที่เด็กจะได้เจอ */
+export const LESSON_MODES: GameMode[] = [
+  "match",
+  "listen",
+  "picture",
+  "cloze",
+];
 
 /**
  * แบ่งรายการออกเป็นกลุ่มที่ "ขนาดใกล้เคียงกัน" ไม่ใช่แบ่งเต็มกลุ่มแล้วเหลือเศษ
@@ -42,8 +57,7 @@ export function buildLessonsForUnit(unitId: string): Lesson[] {
     unitId,
     order: index + 1,
     wordIds: group.map((word) => word.id),
-    // P1 มีโหมดเดียว โหมดอื่นจะถูกเพิ่มในภารกิจ E2
-    modes: ["match"],
+    modes: LESSON_MODES,
   }));
 }
 
@@ -78,24 +92,96 @@ function shuffle<T>(items: T[], random: () => number): T[] {
   return copy;
 }
 
+/** ดาวความชำนาญของคำหนึ่ง เท่าที่ใช้ตัดสินความยากของข้อ */
+export type WordLevel = {
+  /** จำคำได้ 0–5 */
+  recognize: number;
+  /** เขียนคำได้ 0–5 */
+  write: number;
+};
+
+/**
+ * ระดับความช่วยเหลือของเกมเติมคำ ตัดสินจากดาวความชำนาญของคำนั้น
+ *
+ * ใช้ข้อมูลที่เก็บอยู่แล้วแทนการให้เด็กเลือกระดับเอง เพราะเด็กเลือกไม่เป็น
+ * และการไล่ระดับต่อคำ (ไม่ใช่ต่อทั้งแอป) ทำให้คำที่เพิ่งเจอยังมีตัวเลือกให้
+ * ส่วนคำที่คุ้นแล้วต้องเขียนเอง
+ *
+ * ขั้นแรกดูที่ "จำคำได้" ไม่ใช่ "เขียนได้" โดยตั้งใจ: ถ้าใช้ดาวเขียนเป็นเกณฑ์
+ * ของขั้นแรก ระบบจะล็อกตัวเอง เพราะข้อที่เพิ่มดาวเขียนคือข้อที่ต้องมีดาวเขียน
+ * ถึงจะได้เล่น เด็กจึงติดอยู่ที่ระดับง่ายสุดตลอดไป (เจอตอนทดสอบเล่นจริง)
+ * ลำดับนี้ยังตรงกับลำดับการเรียนภาษาด้วย — จำคำได้ก่อน แล้วค่อยผลิตคำเองได้
+ */
+export function clozeLevelFor({ recognize, write }: WordLevel): ClozeLevel {
+  // พิมพ์เองคือขั้นที่ยากที่สุด ต้องต่อตัวอักษรได้คล่องก่อน
+  if (write >= 3) return "type";
+  if (recognize >= 2) return "tiles";
+  return "bank";
+}
+
+/** โหมดย่อยของเกมดูภาพ ใช้เกณฑ์เดียวกับขั้นแรกของเกมเติมคำ */
+export function pictureVariantFor({ recognize }: WordLevel): PictureVariant {
+  return recognize >= 2 ? "spell" : "choose";
+}
+
 /**
  * สร้างหน้าจอที่ต้องเล่นในหนึ่งด่าน
  *
- * ตอนนี้เด็กจะได้เจอคำชุดเดิมสองรอบ (สลับตำแหน่งกัน) เพราะมีโหมดเดียว
- * การเจอซ้ำช่วยความจำอยู่แล้ว แต่พอเปิดโหมดเติมคำกับฟังเสียงในภารกิจ E2
- * รอบที่สองจะเปลี่ยนเป็นคนละโหมดแทนการเล่นซ้ำ
+ * ลำดับคือ จับคู่ทั้งชุด → ฟังทีละคำ → ผลิตคำเองทีละคำ
+ * ไล่จาก "เห็นคำตอบอยู่บนจอ" ไปจนถึง "ต้องนึกคำออกมาเอง" ซึ่งเป็นลำดับ
+ * ที่ความจำถูกใช้งานหนักขึ้นเรื่อย ๆ ไม่ใช่เล่นโหมดเดิมซ้ำสองรอบ
+ *
+ * ด่านหนึ่งจึงมี 3 ข้อต่อหนึ่งคำ (จำได้ / ฟังออก / เขียนได้) ซึ่งตรงกับ
+ * เงื่อนไขว่าคำหนึ่งจะนับว่า "รู้จริง" ต้องผ่านหลายทาง
+ *
+ * @param levelOf ดาวความชำนาญของแต่ละคำ ใช้เลือกระดับความช่วยเหลือของข้อ
  */
 export function buildItems(
   lesson: Lesson,
   random: () => number = Math.random,
+  levelOf: (wordId: string) => WordLevel = () => ({ recognize: 0, write: 0 }),
 ): Item[] {
-  const rounds = 2;
+  const matchWords = shuffle(lesson.wordIds, random).slice(
+    0,
+    PAIRS_PER_MATCH_ITEM,
+  );
 
-  return Array.from({ length: rounds }, (_, round) => ({
-    kind: "match" as const,
-    id: `${lesson.id}-match-${round + 1}`,
-    wordIds: shuffle(lesson.wordIds, random).slice(0, PAIRS_PER_MATCH_ITEM),
-  }));
+  const listenItems: Item[] = shuffle(lesson.wordIds, random).map(
+    (wordId, index) => ({
+      kind: "listen",
+      id: `${lesson.id}-listen-${index + 1}`,
+      wordIds: [wordId],
+    }),
+  );
+
+  // สลับโหมดผลิตคำทีละคำ ไม่ให้เด็กเจอเกมเดียวกันห้าจอติด
+  const produceItems: Item[] = shuffle(lesson.wordIds, random).map(
+    (wordId, index) => {
+      const level = levelOf(wordId);
+
+      if (index % 2 === 0) {
+        return {
+          kind: "picture",
+          id: `${lesson.id}-picture-${index + 1}`,
+          wordIds: [wordId],
+          variant: pictureVariantFor(level),
+        };
+      }
+
+      return {
+        kind: "cloze",
+        id: `${lesson.id}-cloze-${index + 1}`,
+        wordIds: [wordId],
+        level: clozeLevelFor(level),
+      };
+    },
+  );
+
+  return [
+    { kind: "match", id: `${lesson.id}-match-1`, wordIds: matchWords },
+    ...listenItems,
+    ...produceItems,
+  ];
 }
 
 /** จำนวนข้อที่ต้องตอบทั้งด่าน ใช้คำนวณความแม่นยำ */

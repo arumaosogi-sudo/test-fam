@@ -8,17 +8,19 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
-import { SpeakerButton } from "@/components/ui/speaker-button";
 import { StarRating } from "@/components/ui/star-rating";
 import { getWord } from "@/lib/content";
 import { buildItems, getLesson, lessonWords } from "@/lib/content/lessons";
 import type { LessonSummary } from "@/lib/progress/session";
 import { nextLessonId } from "@/lib/progress/session";
 import { seededRandom } from "@/lib/random";
-import type { AttemptDraft } from "@/lib/types";
+import type { AttemptDraft, Item } from "@/lib/types";
 import { useHydrateProgress, useProgressStore } from "@/store/progress-store";
 
+import { ClozeGame } from "./cloze-game";
+import { ListenGame } from "./listen-game";
 import { MatchGame } from "./match-game";
+import { PictureGame } from "./picture-game";
 
 type LessonSessionProps = {
   lessonId: string;
@@ -31,12 +33,24 @@ export function LessonSession({ lessonId }: LessonSessionProps) {
 
   const hydrated = useProgressStore((state) => state.hydrated);
   const results = useProgressStore((state) => state.results);
+  const mastery = useProgressStore((state) => state.mastery);
   const finishLesson = useProgressStore((state) => state.finishLesson);
 
-  // seed จาก id ของด่าน ทำให้ลำดับข้อเหมือนกันทั้งบนเซิร์ฟเวอร์และเบราว์เซอร์
+  /**
+   * seed จาก id ของด่าน ทำให้ลำดับข้อเหมือนกันทั้งบนเซิร์ฟเวอร์และเบราว์เซอร์
+   *
+   * ความชำนาญเข้ามากำหนดว่าแต่ละคำจะได้โหมดย่อยระดับไหน ค่านี้เปลี่ยนเฉพาะ
+   * ตอนเล่นจบด่าน (ไม่ใช่ระหว่างเล่น) รายการข้อจึงไม่สลับกลางด่าน
+   */
   const items = useMemo(
-    () => (lesson ? buildItems(lesson, seededRandom(lesson.id)) : []),
-    [lesson],
+    () =>
+      lesson
+        ? buildItems(lesson, seededRandom(lesson.id), (wordId) => ({
+            recognize: mastery[wordId]?.recognize ?? 0,
+            write: mastery[wordId]?.write ?? 0,
+          }))
+        : [],
+    [lesson, mastery],
   );
 
   const [itemIndex, setItemIndex] = useState(0);
@@ -155,7 +169,79 @@ export function LessonSession({ lessonId }: LessonSessionProps) {
   }
 
   const item = items[itemIndex];
-  const words = lessonWords({ ...lesson, wordIds: item.wordIds }, getWord);
+  // เก็บไว้ในตัวแปรใหม่เพราะ TypeScript ไม่พา narrowing ของ lesson เข้าไปใน closure
+  const activeLesson = lesson;
+
+  /**
+   * เลือก component ตามชนิดของข้อ
+   *
+   * ทุกโหมดคืนผลเป็น AttemptDraft[] รูปแบบเดียวกัน ตัวคุมด่านจึงไม่ต้องรู้ว่า
+   * ข้างในเกมทำอะไร และเพิ่มโหมดใหม่ได้โดยไม่แก้ตรรกะการให้คะแนน
+   */
+  function renderItem(current: Item) {
+    if (current.kind === "match") {
+      return (
+        <MatchGame
+          key={current.id}
+          itemId={current.id}
+          words={lessonWords(
+            { ...activeLesson, wordIds: current.wordIds },
+            getWord,
+          )}
+          onComplete={handleItemComplete}
+        />
+      );
+    }
+
+    const word = getWord(current.wordIds[0]);
+
+    // ป้องกันคลังคำที่ถูกแก้แล้วอ้างถึงคำที่ไม่มีอยู่ — ข้ามข้อนั้นไป
+    // ดีกว่าให้ทั้งด่านจอขาว และไม่บันทึกผลผิด ๆ ว่าเด็กตอบผิด
+    if (!word) {
+      return (
+        <Card className="space-y-3 text-center">
+          <CardTitle>ข้อนี้ยังไม่พร้อม</CardTitle>
+          <CardNote>ไม่พบคำศัพท์ของข้อนี้ในคลังคำ</CardNote>
+          <Button size="md" onClick={() => handleItemComplete([])}>
+            ข้ามไปข้อถัดไป
+          </Button>
+        </Card>
+      );
+    }
+
+    if (current.kind === "listen") {
+      return (
+        <ListenGame
+          key={current.id}
+          itemId={current.id}
+          word={word}
+          onComplete={handleItemComplete}
+        />
+      );
+    }
+
+    if (current.kind === "picture") {
+      return (
+        <PictureGame
+          key={current.id}
+          itemId={current.id}
+          word={word}
+          variant={current.variant}
+          onComplete={handleItemComplete}
+        />
+      );
+    }
+
+    return (
+      <ClozeGame
+        key={current.id}
+        itemId={current.id}
+        word={word}
+        level={current.level}
+        onComplete={handleItemComplete}
+      />
+    );
+  }
 
   return (
     <div className="mx-auto max-w-xl space-y-5 py-6">
@@ -168,23 +254,13 @@ export function LessonSession({ lessonId }: LessonSessionProps) {
             ← ออก
           </Link>
           <span className="text-ink-muted text-kid-sm font-bold">
-            รอบที่ {itemIndex + 1} จาก {items.length}
+            ข้อที่ {itemIndex + 1} จาก {items.length}
           </span>
         </div>
         <ProgressBar value={itemIndex} max={items.length} />
       </header>
 
-      <MatchGame
-        key={item.id}
-        itemId={item.id}
-        words={words}
-        onComplete={handleItemComplete}
-      />
-
-      <Card className="flex flex-wrap items-center justify-center gap-3">
-        <CardNote>กดคำภาษาอังกฤษเพื่อฟังเสียงได้</CardNote>
-        {words[0] ? <SpeakerButton text={words[0].en} size="sm" /> : null}
-      </Card>
+      {renderItem(item)}
     </div>
   );
 }

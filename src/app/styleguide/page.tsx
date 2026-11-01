@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { FeedbackPanel } from "@/components/games/feedback-panel";
+import { LetterTiles } from "@/components/games/letter-tiles";
 import { Milo, type MiloState } from "@/components/mascot/milo";
 import { Button } from "@/components/ui/button";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
@@ -11,6 +13,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { SpeakerButton } from "@/components/ui/speaker-button";
 import { StarRating } from "@/components/ui/star-rating";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { getWord } from "@/lib/content";
 
 const COLOR_TOKENS = [
   { name: "bg", varName: "--bg" },
@@ -41,6 +44,9 @@ const TYPE_SCALE = [
 ];
 
 const MILO_STATES: MiloState[] = ["idle", "happy", "oops", "listening"];
+
+/** คำจริงจากคลังคำ จะได้เห็นว่าแถบเฉลยหน้าตาเป็นยังไงกับข้อมูลจริง */
+const DEMO_WORD = getWord("w-cat");
 
 const DEMO_CHOICES = [
   { label: "apple", sublabel: "แอปเปิล", visual: "🍎", correct: true },
@@ -73,6 +79,7 @@ export default function StyleguidePage() {
   const [miloState, setMiloState] = useState<MiloState>("idle");
   const [picked, setPicked] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
+  const [spelled, setSpelled] = useState<string | null>(null);
 
   function tileState(choice: (typeof DEMO_CHOICES)[number]): ChoiceState {
     if (!revealed) return picked === choice.label ? "selected" : "idle";
@@ -171,7 +178,10 @@ export default function StyleguidePage() {
           <span className="text-kid-xl font-extrabold">elephant</span>
           <SpeakerButton text="elephant" />
           <SpeakerButton text="elephant" slow size="sm" />
-          <CardNote>ปุ่มขวาคือโหมด &quot;พูดช้า ๆ&quot;</CardNote>
+          <CardNote>
+            ปุ่มเต่าคือโหมด &quot;พูดช้า ๆ&quot; — ใช้ไอคอนคนละตัวเพราะเด็กที่ยัง
+            อ่านไม่ออกต้องแยกสองปุ่มนี้ออกจากกันได้
+          </CardNote>
         </Card>
       </Section>
 
@@ -220,6 +230,48 @@ export default function StyleguidePage() {
             </Button>
           </div>
         </Card>
+      </Section>
+
+      <Section
+        title="ต่อตัวอักษรเป็นคำ"
+        note="ใช้ในเกมเติมคำระดับกลาง และเกมดูภาพแบบสะกดคำ · ช่องว่างระหว่างคำเติมไว้ให้แล้ว เด็กไม่ต้องเดาว่าต้องเคาะวรรคตรงไหน"
+      >
+        <Card className="space-y-4">
+          <CardNote>ลองสะกดคำว่า &quot;ice cream&quot;</CardNote>
+          <LetterTiles
+            answer="ice cream"
+            seed="styleguide"
+            onSubmit={setSpelled}
+          />
+          {spelled ? (
+            <CardNote>
+              ส่งคำตอบ: &quot;{spelled}&quot;
+            </CardNote>
+          ) : null}
+        </Card>
+      </Section>
+
+      <Section
+        title="แถบเฉลย"
+        note="ขึ้นหลังเด็กตอบทุกข้อ · ตอบผิดไม่ได้แค่บอกว่าผิด แต่โชว์คำตอบ คำแปล คำอ่าน และปุ่มฟังเสียงทันที"
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          {DEMO_WORD ? (
+            <>
+              <FeedbackPanel
+                correct
+                word={DEMO_WORD}
+                onNext={() => undefined}
+              />
+              <FeedbackPanel
+                correct={false}
+                word={DEMO_WORD}
+                sentence="The cat says meow."
+                onNext={() => undefined}
+              />
+            </>
+          ) : null}
+        </div>
       </Section>
 
       <Section title="ความคืบหน้าและดาว">

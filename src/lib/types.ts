@@ -46,16 +46,13 @@ export const gameModeSchema = z.enum([
 ]);
 export type GameMode = z.infer<typeof gameModeSchema>;
 
-/** โหมดไหนฝึกทักษะอะไร ใช้ตอนอัปเดต mastery */
-export const MODE_SKILL: Record<GameMode, Skill> = {
-  match: "recognize",
-  cloze: "write",
-  picture: "recognize",
-  listen: "listen",
-  say: "speak",
-  build: "write",
-  sort: "recognize",
-};
+/**
+ * โหมดไหนฝึกทักษะอะไรอยู่ใน `lib/games/skills.ts` ไม่ใช่ตารางคงที่ในไฟล์นี้
+ * เพราะโหมดเดียวกันฝึกคนละทักษะได้ ขึ้นกับโหมดย่อยที่เด็กได้เล่น
+ */
+
+/** ตัวแทนช่องว่างในประโยคตัวอย่าง */
+export const BLANK = "{}";
 
 export const wordSchema = z.object({
   id: z.string().min(1),
@@ -65,6 +62,19 @@ export const wordSchema = z.object({
   cefr: cefrLevelSchema,
   /** คำอ่านสากล ใช้โชว์ตอนสอนออกเสียง */
   ipa: z.string(),
+  /**
+   * ประโยคตัวอย่างที่มีช่องว่าง `{}` อยู่ตำแหน่งของคำนี้ ใช้ในเกมเติมคำ
+   *
+   * บังคับว่าต้องมีช่องว่างพอดีหนึ่งช่อง เพราะถ้าไม่มีเลยเกมจะไม่มีอะไรให้เติม
+   * และถ้ามีสองช่องจะไม่รู้ว่าคำตอบควรลงช่องไหน — ทั้งสองกรณีควรพังตอน build
+   * ไม่ใช่ตอนเด็กเล่นอยู่
+   */
+  sentence: z
+    .string()
+    .min(1)
+    .refine((value) => value.split(BLANK).length === 2, {
+      message: `ประโยคตัวอย่างต้องมีช่องว่าง ${BLANK} พอดีหนึ่งช่อง`,
+    }),
   /** ภาพประกอบชั่วคราวเป็นอิโมจิ จะแทนที่ด้วยภาพจริงในภารกิจ T205 */
   emoji: z.string().min(1),
   unitId: z.string().min(1),
@@ -90,14 +100,54 @@ export type Lesson = {
   modes: GameMode[];
 };
 
-/** หนึ่ง item = หนึ่งหน้าจอที่เด็กต้องทำ */
+/**
+ * ระดับความช่วยเหลือของเกมเติมคำ ไล่จากง่ายไปยาก (ดู docs/PLAN.md โหมด G2)
+ *
+ * bank  = เลือกจากคำ 3 ตัว — อนุบาลที่ยังสะกดไม่ได้
+ * tiles = ต่อตัวอักษรที่ให้มา — ประถมต้น
+ * type  = พิมพ์เอง ตรวจแบบใจดี — ประถมปลาย
+ */
+export const clozeLevelSchema = z.enum(["bank", "tiles", "type"]);
+export type ClozeLevel = z.infer<typeof clozeLevelSchema>;
+
+/** โหมดย่อยของเกมดูภาพ — `say` (พูดชื่อภาพ) ต้องรอ STT ในเฟส P3 */
+export const pictureVariantSchema = z.enum(["choose", "spell"]);
+export type PictureVariant = z.infer<typeof pictureVariantSchema>;
+
+/**
+ * หนึ่ง item = หนึ่งหน้าจอที่เด็กต้องทำ
+ *
+ * `wordIds` คือคำที่หน้าจอนั้นถาม ใช้นับจำนวนข้อของทั้งด่าน
+ * ส่วนตัวลวงไม่ได้เก็บไว้ในนี้ แต่สุ่มในตอนวาดจาก seed ของ item
+ * (ดู lib/content/distractors.ts) เพื่อให้ตัวข้อมูลด่านเล็กและอ่านง่าย
+ */
 export type MatchItem = {
   kind: "match";
   id: string;
   wordIds: string[];
 };
 
-export type Item = MatchItem;
+export type ClozeItem = {
+  kind: "cloze";
+  id: string;
+  wordIds: string[];
+  level: ClozeLevel;
+};
+
+export type PictureItem = {
+  kind: "picture";
+  id: string;
+  wordIds: string[];
+  variant: PictureVariant;
+};
+
+export type ListenItem = {
+  kind: "listen";
+  id: string;
+  wordIds: string[];
+};
+
+export type Item = MatchItem | ClozeItem | PictureItem | ListenItem;
 
 export const attemptSchema = z.object({
   wordId: z.string(),

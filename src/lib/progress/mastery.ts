@@ -46,9 +46,9 @@ export function isSkillPassed(mastery: Mastery, skill: Skill) {
 /**
  * รู้คำนี้จริงหรือยัง
  *
- * รับ skills เข้ามาได้ เพราะตอนนี้แอปยังมีแต่โหมดที่ฝึก recognize
- * ถ้าบังคับครบ 4 ทักษะตั้งแต่ตอนนี้ จะไม่มีคำไหน "รู้จริง" ได้เลย
- * พอเปิดโหมดฟัง/พูด/เขียนครบแล้วค่อยเรียกโดยไม่ส่ง skills
+ * รับ skills เข้ามาได้ เพราะตอนนี้แอปฝึกได้ 3 ทักษะ (จำคำ ฟัง เขียน)
+ * ยังขาดการพูด ซึ่งต้องรอ STT ในเฟส P3 ถ้าบังคับครบ 4 ทักษะตั้งแต่ตอนนี้
+ * จะไม่มีคำไหน "รู้จริง" ได้เลย พอเปิดโหมดพูดแล้วค่อยเรียกโดยไม่ส่ง skills
  */
 export function isMastered(mastery: Mastery, skills: Skill[] = ALL_SKILLS) {
   return skills.every((skill) => isSkillPassed(mastery, skill));
