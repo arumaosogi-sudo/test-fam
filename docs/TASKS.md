@@ -5,18 +5,21 @@
 
 ---
 
-## E0 · ตั้งต้นโปรเจกต์ (เฟส P0)
+## E0 · ตั้งต้นโปรเจกต์ (เฟส P0) — ✅ เสร็จแล้ว ยกเว้น T001/T002
 
-| ID | งาน | ขนาด | ใคร | ขึ้นกับ | เสร็จแล้วต้องได้ |
+| ID | งาน | ขนาด | ใคร | สถานะ | เสร็จแล้วต้องได้ |
 |---|---|---|---|---|---|
-| T001 | ตัดสินใจ D1–D6 ในหัวข้อ 15 ของ PLAN.md | S | **คุณ** | – | คำตอบครบ 6 ข้อ |
-| T002 | ขอ `ANTHROPIC_API_KEY` + สร้าง Supabase project | S | **คุณ** | T001 | key พร้อมใช้ (วางใน `.env.local` ไม่ commit) |
-| T003 | ตั้งชื่อ/ย้ายโฟลเดอร์โปรเจกต์ + `git init` + `.gitignore` | S | AI | T001 | repo สะอาด commit แรกผ่าน |
-| T004 | scaffold Next.js 15 + TS + Tailwind v4 + ESLint/Prettier | S | AI | T003 | `npm run dev` เปิดได้ |
-| T005 | ติดตั้ง shadcn/ui, framer-motion, dnd-kit, zustand, zod, TanStack Query | S | AI | T004 | import ใช้งานได้ |
-| T006 | **Design system เด็ก**: โทนสี, ฟอนต์ Nunito + Noto Sans Thai, ปุ่มใหญ่, การ์ด, ดาว, ความสูงแตะ 44px, light/dark | M | AI | T005 | หน้า `/styleguide` โชว์ component ครบ |
-| T007 | มาสคอต Milo: ท่า idle / ถูก / ผิด / กำลังฟัง (SVG หรือ Lottie) | M | AI | T006 | 4 สถานะเล่นได้ในหน้า styleguide |
-| T008 | เขียน ADR + README (ตัดสินใจอะไร เพราะอะไร) | S | AI | T001 | `docs/adr/*.md` |
+| T001 | ตัดสินใจ D1–D6 ในหัวข้อ 15 ของ PLAN.md | S | **คุณ** | ⏳ ยังไม่ตอบ — ใช้ค่าที่แนะนำไปก่อน (บันทึกใน ADR-0003 และ ADR-0005) | คำตอบครบ 6 ข้อ |
+| T002 | ขอ `ANTHROPIC_API_KEY` + สร้าง Supabase project | S | **คุณ** | ⏳ ยังไม่มี — ยังไม่จำเป็นจนกว่าจะถึง E3 | key พร้อมใช้ (วางใน `.env.local` ไม่ commit) |
+| T003 | `git init` + `.gitignore` | S | AI | ✅ | repo สะอาด commit แรกผ่าน |
+| T004 | scaffold Next.js + TS + Tailwind v4 + ESLint | S | AI | ✅ ได้ Next.js **16.4.3** (ใหม่กว่าที่วางแผนไว้) | `npm run dev` เปิดได้ |
+| T005 | ติดตั้ง framer-motion, dnd-kit, zustand, zod, TanStack Query, cva | S | AI | ✅ (ไม่ใช้ shadcn/ui — ดู ADR-0004) | import ใช้งานได้ |
+| T006 | **Design system เด็ก**: โทนสี, ฟอนต์ Nunito + Noto Sans Thai, ปุ่มใหญ่, การ์ด, ดาว, ความสูงแตะ 44px, light/dark | M | AI | ✅ | หน้า `/styleguide` โชว์ component ครบ |
+| T007 | มาสคอต Milo: ท่า idle / ถูก / ผิด / กำลังฟัง | M | AI | ✅ SVG ล้วน + framer-motion | 4 สถานะเล่นได้ในหน้า styleguide |
+| T008 | เขียน ADR + README | S | AI | ✅ ADR 5 ฉบับ | `docs/adr/*.md` |
+
+> หมายเหตุ T301 (speech adapter interface) ถูกทำล่วงหน้าไปแล้วบางส่วนใน P0
+> เพราะปุ่มลำโพงจำเป็นต้องใช้ตั้งแต่ design system — ดู `src/lib/speech/`
 
 ## E1 · เอนจินกลางการเรียน (เฟส P1)
 

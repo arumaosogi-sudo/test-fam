@@ -146,8 +146,8 @@ G10 Story Quest     O     O     O     .      O       O
 
 | ชั้น | เลือก | เหตุผล |
 |---|---|---|
-| Framework | **Next.js 15 (App Router) + TypeScript** | ต้องมี backend เพื่อซ่อน API key (ห้ามเรียก Claude จากเบราว์เซอร์ตรง ๆ) + สตรีมคำตอบได้ + deploy ง่าย |
-| UI | **Tailwind CSS v4 + shadcn/ui** | เร็ว คุม design token ได้ ทำธีมเด็ก (สีสด ปุ่มใหญ่ มุมโค้ง) ได้สบาย |
+| Framework | **Next.js 16.4 (App Router) + TypeScript** — ติดตั้งแล้ว | ต้องมี backend เพื่อซ่อน API key (ห้ามเรียก Claude จากเบราว์เซอร์ตรง ๆ) + สตรีมคำตอบได้ + deploy ง่าย |
+| UI | **Tailwind CSS v4** + component ที่เขียนเอง (ไม่ใช้ shadcn/ui ฝั่งเด็ก — ดู [ADR-0004](adr/0004-custom-ui-components.md)) | เร็ว คุม design token ได้ ทำธีมเด็ก (สีสด ปุ่มใหญ่ มุมโค้ง) ได้สบาย |
 | Animation | **Framer Motion** + Lottie สำหรับมาสคอต | ความ "ฉ่ำ" ของแอปเด็กมาจาก animation feedback เป็นเรื่องจำเป็น ไม่ใช่ของฟุ่มเฟือย |
 | Drag & Drop | **dnd-kit** | รองรับ touch + คีย์บอร์ด + screen reader ซึ่งเกมจับคู่และเรียงประโยคต้องใช้ |
 | State | Zustand + TanStack Query | เบา เข้าใจง่าย |
@@ -340,7 +340,7 @@ MVP ที่เล่นได้จริงราว 2–3 สัปดาห
 
 | เฟส | ได้อะไร | ขึ้นกับ |
 |---|---|---|
-| **P0** ตั้งต้น | repo + Next.js + Tailwind + design system เด็ก (สี/ฟอนต์/ปุ่ม/การ์ด/มาสคอต) + ADR | D1–D6 |
+| **P0** ตั้งต้น ✅ **เสร็จแล้ว** | repo + Next.js + Tailwind + design system เด็ก (สี/ฟอนต์/ปุ่ม/การ์ด/มาสคอต) + ADR | D1–D6 |
 | **P1** เอนจินกลาง | data model, seed 120 คำ, FSRS, Elo, XP/streak, แผนที่ด่าน, เกม G3 จับคู่เป็นตัวแรก | P0 |
 | **P2** 4 โหมดที่ขอ | G2 เติมคำ, G4 ภาพ-คำ, G7 ฟัง-เลือก, G1 แชท (เวอร์ชันพิมพ์ก่อน) | P1 |
 | **P3** เสียง | TTS ทุกหน้า, ไมค์ + STT, G5 ให้คะแนนออกเสียง, G6 อ่านออกเสียง, แชทด้วยเสียงเต็มรูปแบบ | P2 + D2 |
