@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { ChoiceTile } from "@/components/ui/choice-tile";
 import { SpeakerButton } from "@/components/ui/speaker-button";
+import { WordImage } from "@/components/ui/word-image";
 import { buildChoices } from "@/lib/content/distractors";
 import { normalizeAnswer } from "@/lib/games/spelling";
 import { skillForPictureVariant } from "@/lib/games/skills";
@@ -81,9 +82,7 @@ export function PictureGame({
       </p>
 
       <div className="bg-surface-2 rounded-card border-border flex flex-col items-center gap-2 border-2 py-6">
-        <span className="text-[5rem] leading-none" aria-hidden>
-          {word.emoji}
-        </span>
+        <WordImage wordId={word.id} className="size-32" />
         <span className="sr-only">ภาพของคำว่า {word.th}</span>
         {/* คำแปลไทยเป็นคำใบ้เฉพาะโหมดสะกด เพราะโหมดเลือกคำถ้าโชว์ไทยด้วย
             เด็กจะจับคู่ไทยกับภาพแล้วเดาคำอังกฤษได้โดยไม่ต้องอ่าน */}

@@ -1,4 +1,5 @@
 import type {
+  CefrLevel,
   ClozeLevel,
   GameMode,
   Item,
@@ -11,6 +12,9 @@ import { UNITS, wordsInUnit } from "./index";
 
 /** คำต่อหนึ่งด่าน — 5 คำคือจำนวนที่เด็กอนุบาลรับไหวในหนึ่งรอบ */
 export const WORDS_PER_LESSON = 5;
+
+/** ระดับความช่วยเหลือเรียงจากง่ายไปยาก ใช้เทียบว่าอันไหนยากกว่ากัน */
+const CLOZE_ORDER: ClozeLevel[] = ["bank", "tiles", "type"];
 
 /** คู่คำต่อหนึ่งหน้าจอของเกมจับคู่ */
 export const PAIRS_PER_MATCH_ITEM = 5;
@@ -112,16 +116,41 @@ export type WordLevel = {
  * ถึงจะได้เล่น เด็กจึงติดอยู่ที่ระดับง่ายสุดตลอดไป (เจอตอนทดสอบเล่นจริง)
  * ลำดับนี้ยังตรงกับลำดับการเรียนภาษาด้วย — จำคำได้ก่อน แล้วค่อยผลิตคำเองได้
  */
-export function clozeLevelFor({ recognize, write }: WordLevel): ClozeLevel {
+export function clozeLevelFor(
+  { recognize, write }: WordLevel,
+  floor: ClozeLevel = "bank",
+): ClozeLevel {
   // พิมพ์เองคือขั้นที่ยากที่สุด ต้องต่อตัวอักษรได้คล่องก่อน
-  if (write >= 3) return "type";
-  if (recognize >= 2) return "tiles";
-  return "bank";
+  const earned: ClozeLevel =
+    write >= 3 ? "type" : recognize >= 2 ? "tiles" : "bank";
+
+  return CLOZE_ORDER.indexOf(earned) >= CLOZE_ORDER.indexOf(floor)
+    ? earned
+    : floor;
 }
 
 /** โหมดย่อยของเกมดูภาพ ใช้เกณฑ์เดียวกับขั้นแรกของเกมเติมคำ */
-export function pictureVariantFor({ recognize }: WordLevel): PictureVariant {
-  return recognize >= 2 ? "spell" : "choose";
+export function pictureVariantFor(
+  { recognize }: WordLevel,
+  floor: ClozeLevel = "bank",
+): PictureVariant {
+  return recognize >= 2 || floor !== "bank" ? "spell" : "choose";
+}
+
+/**
+ * พื้นความยากขั้นต่ำตามระดับที่ผู้เรียนเลือกเอง
+ *
+ * เด็ก ป.5 ที่เพิ่งเปิดแอปไม่ควรต้องไล่กดเลือกจากสามตัวเลือกไปทั้งหน่วย
+ * กว่าดาวความชำนาญจะขึ้นพอให้ได้พิมพ์เอง ระดับที่เลือกจึงเป็น "พื้น"
+ * ที่ข้อจะไม่ง่ายไปกว่านี้ ส่วนดาวความชำนาญยังดันให้ยากขึ้นได้อีกตามเดิม
+ *
+ * เลือกวิธีนี้แทนการข้ามเนื้อหา เพราะคลังคำตอนนี้มีแค่ระดับ Pre-A1
+ * การให้ "เลือกระดับแล้วข้ามบท" จะกลายเป็นข้ามไปเจอความว่างเปล่า
+ */
+export function levelFloorFor(cefr: CefrLevel): ClozeLevel {
+  if (cefr === "Pre-A1") return "bank";
+  if (cefr === "A1") return "tiles";
+  return "type";
 }
 
 /**
@@ -140,6 +169,7 @@ export function buildItems(
   lesson: Lesson,
   random: () => number = Math.random,
   levelOf: (wordId: string) => WordLevel = () => ({ recognize: 0, write: 0 }),
+  floor: ClozeLevel = "bank",
 ): Item[] {
   const matchWords = shuffle(lesson.wordIds, random).slice(
     0,
@@ -164,7 +194,7 @@ export function buildItems(
           kind: "picture",
           id: `${lesson.id}-picture-${index + 1}`,
           wordIds: [wordId],
-          variant: pictureVariantFor(level),
+          variant: pictureVariantFor(level, floor),
         };
       }
 
@@ -172,7 +202,7 @@ export function buildItems(
         kind: "cloze",
         id: `${lesson.id}-cloze-${index + 1}`,
         wordIds: [wordId],
-        level: clozeLevelFor(level),
+        level: clozeLevelFor(level, floor),
       };
     },
   );
@@ -197,6 +227,7 @@ export function buildItems(
 export function buildReviewItems(
   wordIds: string[],
   levelOf: (wordId: string) => WordLevel = () => ({ recognize: 0, write: 0 }),
+  floor: ClozeLevel = "bank",
 ): Item[] {
   return wordIds.map((wordId, index) => {
     const level = levelOf(wordId);
@@ -214,14 +245,14 @@ export function buildReviewItems(
           kind: "picture",
           id: `review-picture-${wordId}`,
           wordIds: [wordId],
-          variant: pictureVariantFor(level),
+          variant: pictureVariantFor(level, floor),
         };
       default:
         return {
           kind: "cloze",
           id: `review-cloze-${wordId}`,
           wordIds: [wordId],
-          level: clozeLevelFor(level),
+          level: clozeLevelFor(level, floor),
         };
     }
   });

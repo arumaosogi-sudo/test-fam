@@ -5,6 +5,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ChoiceTile } from "@/components/ui/choice-tile";
 import { SpeakerButton } from "@/components/ui/speaker-button";
+import { WordImage } from "@/components/ui/word-image";
 import { buildChoices } from "@/lib/content/distractors";
 import { fillSentence, sentenceWithGap, splitSentence } from "@/lib/content/sentence";
 import { skillForClozeLevel } from "@/lib/games/skills";
@@ -134,9 +135,7 @@ export function ClozeGame({
 
       {/* คำใบ้: ภาพกับคำแปลไทยของคำที่หายไป เด็กที่อ่านประโยคไม่ออกยังเล่นได้ */}
       <div className="flex items-center justify-center gap-3">
-        <span className="text-kid-2xl" aria-hidden>
-          {word.emoji}
-        </span>
+        <WordImage wordId={word.id} className="size-14" />
         <span className="text-kid-lg font-extrabold">{word.th}</span>
       </div>
 

@@ -3,6 +3,7 @@
 import { Flame, Lock } from "lucide-react";
 import Link from "next/link";
 
+import { LevelPicker } from "@/components/learn/level-picker";
 import { Milo } from "@/components/mascot/milo";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
@@ -28,6 +29,7 @@ export default function LearnPage() {
   const results = useProgressStore((state) => state.results);
   const mastery = useProgressStore((state) => state.mastery);
   const cards = useProgressStore((state) => state.cards);
+  const setLevel = useProgressStore((state) => state.setLevel);
 
   // นาฬิกาอ่านได้เฉพาะหลัง mount ตอน build ยังไม่รู้ว่าเด็กจะเปิดหน้านี้วันไหน
   const now = useNow();
@@ -83,6 +85,14 @@ export default function LearnPage() {
           </div>
         </div>
       </Card>
+
+      {/* เด็กที่ยังไม่เคยตอบข้อไหนเลย ให้เลือกระดับก่อน จะได้ไม่ต้องไล่กด
+          ตัวเลือกง่าย ๆ ทั้งหน่วยกว่าจะได้เจอข้อที่สมวัย */}
+      <LevelPicker
+        value={profile.cefr}
+        onChange={setLevel}
+        welcome={profile.totalAttempts === 0}
+      />
 
       {upcoming ? (
         <Link

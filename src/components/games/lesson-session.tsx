@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { StarRating } from "@/components/ui/star-rating";
-import { buildItems, getLesson } from "@/lib/content/lessons";
+import { buildItems, getLesson, levelFloorFor } from "@/lib/content/lessons";
 import type { LessonSummary } from "@/lib/progress/session";
 import { nextLessonId } from "@/lib/progress/session";
 import { seededRandom } from "@/lib/random";
@@ -30,6 +30,7 @@ export function LessonSession({ lessonId }: LessonSessionProps) {
   const hydrated = useProgressStore((state) => state.hydrated);
   const results = useProgressStore((state) => state.results);
   const mastery = useProgressStore((state) => state.mastery);
+  const cefr = useProgressStore((state) => state.profile.cefr);
   const finishLesson = useProgressStore((state) => state.finishLesson);
 
   /**
@@ -41,12 +42,17 @@ export function LessonSession({ lessonId }: LessonSessionProps) {
   const items = useMemo(
     () =>
       lesson
-        ? buildItems(lesson, seededRandom(lesson.id), (wordId) => ({
-            recognize: mastery[wordId]?.recognize ?? 0,
-            write: mastery[wordId]?.write ?? 0,
-          }))
+        ? buildItems(
+            lesson,
+            seededRandom(lesson.id),
+            (wordId) => ({
+              recognize: mastery[wordId]?.recognize ?? 0,
+              write: mastery[wordId]?.write ?? 0,
+            }),
+            levelFloorFor(cefr),
+          )
         : [],
-    [lesson, mastery],
+    [lesson, mastery, cefr],
   );
 
   const [itemIndex, setItemIndex] = useState(0);

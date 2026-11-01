@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { StarRating } from "@/components/ui/star-rating";
-import { buildReviewItems } from "@/lib/content/lessons";
+import { buildReviewItems, levelFloorFor } from "@/lib/content/lessons";
 import type { ReviewSummary } from "@/lib/progress/session";
 import { seededRandom } from "@/lib/random";
 import { useNow } from "@/lib/use-now";
@@ -56,6 +56,7 @@ function ReviewDeckRunner({ now }: { now: Date }) {
   const mastery = useProgressStore((state) => state.mastery);
   const wordDifficulty = useProgressStore((state) => state.wordDifficulty);
   const elo = useProgressStore((state) => state.profile.elo);
+  const cefr = useProgressStore((state) => state.profile.cefr);
   const finishReview = useProgressStore((state) => state.finishReview);
 
   const [deck] = useState(() =>
@@ -70,11 +71,15 @@ function ReviewDeckRunner({ now }: { now: Date }) {
 
   const items = useMemo(
     () =>
-      buildReviewItems(deck.wordIds, (wordId) => ({
-        recognize: mastery[wordId]?.recognize ?? 0,
-        write: mastery[wordId]?.write ?? 0,
-      })),
-    [deck, mastery],
+      buildReviewItems(
+        deck.wordIds,
+        (wordId) => ({
+          recognize: mastery[wordId]?.recognize ?? 0,
+          write: mastery[wordId]?.write ?? 0,
+        }),
+        levelFloorFor(cefr),
+      ),
+    [deck, mastery, cefr],
   );
 
   const [itemIndex, setItemIndex] = useState(0);

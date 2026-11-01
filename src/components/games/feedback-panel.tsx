@@ -4,6 +4,7 @@ import { Check, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { SpeakerButton } from "@/components/ui/speaker-button";
+import { WordImage } from "@/components/ui/word-image";
 import type { Word } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -62,9 +63,7 @@ export function FeedbackPanel({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-kid-xl" aria-hidden>
-          {word.emoji}
-        </span>
+        <WordImage wordId={word.id} className="size-11" />
         <div className="min-w-0">
           <p className="text-kid-lg text-ink font-extrabold">{word.en}</p>
           <p className="text-ink-muted text-kid-sm font-bold">

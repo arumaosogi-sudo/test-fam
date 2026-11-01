@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ChoiceTile } from "@/components/ui/choice-tile";
 import { SpeakerButton } from "@/components/ui/speaker-button";
+import { WordImage } from "@/components/ui/word-image";
 import { buildChoices } from "@/lib/content/distractors";
 import { seededRandom } from "@/lib/random";
 import { getTts } from "@/lib/speech";
@@ -80,7 +81,7 @@ export function ListenGame({ itemId, word, onComplete }: ListenGameProps) {
             key={choice.id}
             // ไม่แสดงคำอังกฤษ ให้เด็กตัดสินจากภาพและความหมาย
             label={choice.th}
-            visual={choice.emoji}
+            visual={<WordImage wordId={choice.id} className="size-16" />}
             state={
               !answered
                 ? "idle"

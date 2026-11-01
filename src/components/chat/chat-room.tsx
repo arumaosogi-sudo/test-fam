@@ -1,6 +1,6 @@
 "use client";
 
-import { Languages, Send } from "lucide-react";
+import { ChevronDown, Languages, Send } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
@@ -116,6 +116,7 @@ export function ChatRoom() {
 
   const [unitId, setUnitId] = useState(UNITS[0]?.id ?? "");
   const opening = useMemo(() => openingFor(unitId), [unitId]);
+  const currentUnit = getUnit(unitId);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -124,6 +125,7 @@ export function ChatRoom() {
   const [notice, setNotice] = useState<string | null>(null);
   const [concerned, setConcerned] = useState(false);
   const [thaiShown, setThaiShown] = useState<string[]>([]);
+  const [topicOpen, setTopicOpen] = useState(false);
 
   const nextId = useRef(0);
   const bottom = useRef<HTMLDivElement>(null);
@@ -140,6 +142,7 @@ export function ChatRoom() {
 
   function changeTopic(id: string) {
     setUnitId(id);
+    setTopicOpen(false);
     setMessages([]);
     setSuggestions([]);
     setNotice(null);
@@ -270,27 +273,49 @@ export function ChatRoom() {
         </div>
       </header>
 
-      <div
-        className="flex flex-wrap gap-2"
-        role="group"
-        aria-label="เลือกหัวข้อที่จะคุย"
-      >
-        {UNITS.map((unit) => (
-          <button
-            key={unit.id}
-            type="button"
-            onClick={() => changeTopic(unit.id)}
-            aria-pressed={unit.id === unitId}
-            className={cn(
-              "rounded-pill border-2 px-3 py-1.5 text-kid-sm font-extrabold",
-              unit.id === unitId
-                ? "bg-primary border-primary text-primary-ink"
-                : "bg-surface border-border text-ink",
-            )}
+{/* หัวข้อย่อไว้บรรทัดเดียว กางเฉพาะตอนจะเปลี่ยน — สิบหัวข้อเรียงเต็มจอ
+          กินที่จนเหลือพื้นที่ให้บทสนทนาน้อยเกินไป ซึ่งคือสิ่งที่เด็กมาทำจริง */}
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setTopicOpen(!topicOpen)}
+          aria-expanded={topicOpen}
+          className="pressable active:pressable-sunk rounded-pill [--edge:var(--border)] bg-surface border-border text-ink text-kid-sm inline-flex items-center gap-2 border-2 px-4 py-2 font-extrabold"
+        >
+          <span>คุยเรื่อง</span>
+          <span>{currentUnit?.emoji}</span>
+          <span>{currentUnit?.titleTh}</span>
+          <ChevronDown
+            className={cn("size-5 transition-transform", topicOpen && "rotate-180")}
+            strokeWidth={2.75}
+            aria-hidden
+          />
+        </button>
+
+        {topicOpen ? (
+          <div
+            role="group"
+            aria-label="เลือกหัวข้อที่จะคุย"
+            className="bg-surface border-border rounded-card shadow-card absolute z-10 mt-2 grid w-full grid-cols-2 gap-2 border-2 p-3 sm:grid-cols-3"
           >
-            {unit.emoji} {unit.titleTh}
-          </button>
-        ))}
+            {UNITS.map((unit) => (
+              <button
+                key={unit.id}
+                type="button"
+                onClick={() => changeTopic(unit.id)}
+                aria-pressed={unit.id === unitId}
+                className={cn(
+                  "rounded-pill text-kid-sm border-2 px-3 py-2 font-extrabold",
+                  unit.id === unitId
+                    ? "bg-primary border-primary text-primary-ink"
+                    : "bg-surface-2 border-border text-ink",
+                )}
+              >
+                {unit.emoji} {unit.titleTh}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div

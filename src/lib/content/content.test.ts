@@ -1,3 +1,6 @@
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { BLANK } from "@/lib/types";
@@ -9,6 +12,7 @@ import {
   buildReviewItems,
   chunkEvenly,
   clozeLevelFor,
+  levelFloorFor,
   pictureVariantFor,
   LESSONS,
   WORDS_PER_LESSON,
@@ -346,5 +350,81 @@ describe("buildReviewItems", () => {
 
   it("ชุดว่างก็คืนอาร์เรย์ว่าง ไม่พัง", () => {
     expect(buildReviewItems([])).toEqual([]);
+  });
+});
+
+describe("ภาพประกอบคำศัพท์", () => {
+  const dir = join(process.cwd(), "public", "words");
+
+  it("ทุกคำมีไฟล์ภาพของตัวเอง", () => {
+    // ภาพอ้างด้วยรหัสคำ ถ้าเพิ่มคำใหม่แล้วลืมใส่ภาพ จะขึ้นเป็นรูปแตกให้เด็กเห็น
+    for (const word of WORDS) {
+      expect(existsSync(join(dir, `${word.id}.svg`)), word.id).toBe(true);
+    }
+  });
+
+  it("ไม่มีไฟล์ภาพที่ไม่มีคำรองรับ", () => {
+    const owned = new Set(WORDS.map((word) => `${word.id}.svg`));
+    const orphans = readdirSync(dir).filter(
+      (file) => file.endsWith(".svg") && !owned.has(file),
+    );
+
+    expect(orphans).toEqual([]);
+  });
+
+  it("ไฟล์เป็น SVG จริง ไม่ใช่หน้า error ที่ดาวน์โหลดมา", () => {
+    for (const word of WORDS) {
+      const svg = readFileSync(join(dir, `${word.id}.svg`), "utf8");
+      expect(svg.trimStart().startsWith("<svg"), word.id).toBe(true);
+    }
+  });
+
+  it("มีไฟล์แจ้งสัญญาอนุญาตอยู่กับชุดภาพ", () => {
+    // ภาพชุดนี้เป็น CC BY-SA 4.0 ซึ่งบังคับให้ต้องให้เครดิต
+    const license = readFileSync(join(dir, "LICENSE.md"), "utf8");
+
+    expect(license).toContain("OpenMoji");
+    expect(license).toContain("CC BY-SA 4.0");
+  });
+});
+
+describe("ระดับที่ผู้เรียนเลือกเอง", () => {
+  it("ระดับยิ่งสูง พื้นความยากยิ่งสูง ไม่มีระดับไหนย้อนกลับ", () => {
+    expect(levelFloorFor("Pre-A1")).toBe("bank");
+    expect(levelFloorFor("A1")).toBe("tiles");
+    expect(levelFloorFor("A2")).toBe("type");
+    expect(levelFloorFor("B1")).toBe("type");
+    expect(levelFloorFor("C1")).toBe("type");
+  });
+
+  it("พื้นความยากดันข้อขึ้น แม้เด็กยังไม่มีดาวความชำนาญเลย", () => {
+    // เด็ก ป.5 ที่เพิ่งเปิดแอปไม่ควรต้องไล่กดเลือกจากสามตัวเลือกไปทั้งหน่วย
+    const fresh = { recognize: 0, write: 0 };
+
+    expect(clozeLevelFor(fresh, "bank")).toBe("bank");
+    expect(clozeLevelFor(fresh, "tiles")).toBe("tiles");
+    expect(clozeLevelFor(fresh, "type")).toBe("type");
+    expect(pictureVariantFor(fresh, "tiles")).toBe("spell");
+  });
+
+  it("ความชำนาญยังดันให้ยากกว่าพื้นได้ แต่พื้นไม่เคยดึงลง", () => {
+    const skilled = { recognize: 5, write: 5 };
+
+    // เก่งแล้วได้พิมพ์เอง แม้เลือกระดับต่ำสุด
+    expect(clozeLevelFor(skilled, "bank")).toBe("type");
+    // และพื้นไม่ทำให้ข้อง่ายลงกว่าที่ความชำนาญถึง
+    expect(clozeLevelFor(skilled, "tiles")).toBe("type");
+  });
+
+  it("ส่งพื้นความยากเข้า buildItems แล้วข้อยากขึ้นจริงทั้งด่าน", () => {
+    const lesson = LESSONS[0];
+    const easy = buildItems(lesson, () => 0, undefined, "bank");
+    const hard = buildItems(lesson, () => 0, undefined, "type");
+
+    const clozeLevels = (items: ReturnType<typeof buildItems>) =>
+      items.flatMap((item) => (item.kind === "cloze" ? [item.level] : []));
+
+    expect(clozeLevels(easy).every((level) => level === "bank")).toBe(true);
+    expect(clozeLevels(hard).every((level) => level === "type")).toBe(true);
   });
 });

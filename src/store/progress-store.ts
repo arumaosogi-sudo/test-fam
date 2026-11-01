@@ -13,6 +13,7 @@ import {
   type ProgressSnapshot,
   type ReviewSummary,
 } from "@/lib/progress/session";
+import type { CefrLevel } from "@/lib/types";
 import {
   lessonResultSchema,
   masterySchema,
@@ -43,6 +44,7 @@ type ProgressStore = ProgressSnapshot & {
   hydrated: boolean;
   finishLesson: (lessonId: string, attempts: AttemptDraft[]) => LessonSummary;
   finishReview: (attempts: AttemptDraft[], dueCleared: number) => ReviewSummary;
+  setLevel: (cefr: CefrLevel) => void;
   reset: () => void;
 };
 
@@ -89,6 +91,10 @@ export const useProgressStore = create<ProgressStore>()(
 
         set(snapshot);
         return summary;
+      },
+
+      setLevel(cefr) {
+        set({ profile: { ...get().profile, cefr } });
       },
 
       reset() {

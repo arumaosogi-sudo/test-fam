@@ -44,7 +44,7 @@
 | T202 | **G2 เติมคำที่ขาด** 3 ระดับ (คลังคำ / letter tiles / พิมพ์เอง + fuzzy match ใจดี) | M | AI | ✅ **เสร็จแล้ว** ครบ 3 ระดับ · ระดับเลือกเองตามดาวความชำนาญของแต่ละคำ | `src/components/games/cloze-game.tsx`, `src/lib/games/spelling.ts` |
 | T203 | **G4 ดูภาพเติมคำ** (เลือกคำ / สะกด / พูดชื่อ) | M | AI | ⚠️ **2 ใน 3 โหมดย่อย** (เลือกคำ + สะกด) · โหมดพูดชื่อภาพต้องรอ STT ที่ T305 | `src/components/games/picture-game.tsx` |
 | T204 | **G7 ฟังแล้วเลือก** | S | AI | ✅ **เสร็จแล้ว** ตัวเลือกเป็นภาพล้วน ไม่โชว์คำสะกด เด็กที่อ่านไม่ออกเล่นได้ | `src/components/games/listen-game.tsx` |
-| T205 | ชุดภาพประกอบ 120 คำ (OpenMoji + AI-gen ที่ขาด) + optimize | M | AI | T106 | ภาพครบทุกคำ โหลดเร็ว (webp) |
+| T205 | ชุดภาพประกอบ 120 คำ | M | AI | ✅ **เสร็จแล้ว** · OpenMoji SVG ครบ 120 คำ รวม 525 KB · มีเทสกันคำที่ไม่มีภาพและภาพที่ไม่มีคำ | `public/words/` |
 | T206 | **G12 ด่านทบทวนรายวัน** จากคิว FSRS | S | AI | ✅ **เสร็จแล้ว** · เรียงตาม retrievability (ใกล้ลืมสุดก่อน) · คำถึงกำหนดไม่พอจะเติมด้วย `selectByDifficulty` | `src/lib/srs/review-deck.ts`, `src/components/review/` |
 
 ## E3 · AI Chat Buddy (เฟส P2 → P3)

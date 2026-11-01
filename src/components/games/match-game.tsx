@@ -1,8 +1,9 @@
 "use client";
 
 import { Check, X } from "lucide-react";
-import { useMemo, useRef, useState, type MouseEvent } from "react";
+import { useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
+import { WordImage } from "@/components/ui/word-image";
 import { shuffleDistinct } from "@/lib/random";
 import { getTts } from "@/lib/speech";
 import type { AttemptDraft, Word } from "@/lib/types";
@@ -32,13 +33,13 @@ const tileTone: Record<TileState, string> = {
 
 function MatchTile({
   label,
-  caption,
+  visual,
   state,
   onClick,
   disabled,
 }: {
   label: string;
-  caption?: string;
+  visual?: ReactNode;
   state: TileState;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   disabled: boolean;
@@ -55,11 +56,7 @@ function MatchTile({
         state === "matched" && "opacity-60",
       )}
     >
-      {caption ? (
-        <span className="text-kid-xl leading-none" aria-hidden>
-          {caption}
-        </span>
-      ) : null}
+      {visual}
       <span className="text-kid-lg leading-tight">{label}</span>
       {state === "matched" ? (
         <Check
@@ -223,7 +220,7 @@ export function MatchGame({ itemId, words, onComplete }: MatchGameProps) {
             <MatchTile
               key={`th-${word.id}`}
               label={word.th}
-              caption={word.emoji}
+              visual={<WordImage wordId={word.id} className="size-9" />}
               state={tileState("th", word.id)}
               disabled={locked || matched.includes(word.id)}
               onClick={(event) => handlePick(event, "th", word.id)}
