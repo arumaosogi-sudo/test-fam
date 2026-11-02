@@ -46,12 +46,24 @@ export default function HomePage() {
           เริ่มเล่น
         </Link>
 
-        <Link
-          href="/styleguide"
-          className={buttonVariants({ variant: "neutral", size: "md" })}
-        >
-          ดู design system
-        </Link>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            href="/styleguide"
+            className={buttonVariants({ variant: "neutral", size: "md" })}
+          >
+            ดู design system
+          </Link>
+          {/*
+            ลิงก์เครดิตต้องอยู่ที่ที่ผู้ใช้เห็นได้ ไม่ใช่ซ่อนไว้
+            เพราะเป็นเงื่อนไขของสัญญา CC BY-SA ของข้อมูลที่แอปนี้ใช้
+          */}
+          <Link
+            href="/credits"
+            className={buttonVariants({ variant: "ghost", size: "md" })}
+          >
+            เครดิตและสัญญาอนุญาต
+          </Link>
+        </div>
       </section>
 
       <section className="mt-14 space-y-4">
@@ -73,9 +85,10 @@ export default function HomePage() {
         <Card className="bg-warn-soft border-warn">
           <CardTitle>สถานะโปรเจกต์</CardTitle>
           <CardNote className="text-ink">
-            เล่นได้แล้ว 5 โหมด (จับคู่คำ ฟังแล้วเลือก ดูภาพเติมคำ เติมคำในประโยค
-            และพูดให้ฟัง) บนคลังคำ 339 คำ 36 หน่วย พร้อมด่านทบทวนอัตโนมัติ
-            ดาว XP ไฟต่อเนื่อง และแชทกับ AI · การตรวจเสียงพูดใช้ตัวถอดเสียงของ
+            เล่นได้แล้ว 6 โหมด (จับคู่คำ ฟังแล้วเลือก ดูภาพเติมคำ เติมคำในประโยค
+            พูดให้ฟัง และอ่านออกเสียง) บนคลังคำ 339 คำ 36 หน่วย กับเรื่องอ่าน
+            20 เรื่อง พร้อมด่านทบทวนอัตโนมัติ ด่านรวมทุกหัวข้อ ดาว XP
+            ไฟต่อเนื่อง และแชทกับ AI · การตรวจเสียงพูดใช้ตัวถอดเสียงของ
             เบราว์เซอร์ จึงบอกได้ว่า “ฟังออกเป็นคำนี้ไหม” แต่ยังให้คะแนนราย
             หน่วยเสียงไม่ได้ · ความคืบหน้าเก็บไว้ในเครื่องนี้ ยังไม่มีบัญชีผู้ใช้
             · แผนงานอยู่ใน{" "}

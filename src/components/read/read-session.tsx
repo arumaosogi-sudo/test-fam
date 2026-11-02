@@ -136,9 +136,16 @@ export function ReadSession() {
     );
   }
 
-  const sorted = [...READINGS].sort(
-    (a, b) => CEFR_ORDER.indexOf(a.cefr) - CEFR_ORDER.indexOf(b.cefr),
-  );
+  /**
+   * จัดกลุ่มตามระดับ ไม่ใช่เรียงเป็นแถวยาว
+   *
+   * 20 เรื่องในลิสต์เดียวทำให้เด็กต้องเลื่อนหาเอง และมองไม่ออกว่าเรื่องไหน
+   * อยู่ระดับตัวเอง หัวข้อระดับทำให้เลือกได้โดยไม่ต้องอ่านทุกชื่อเรื่อง
+   */
+  const levels = CEFR_ORDER.map((level) => ({
+    level,
+    items: READINGS.filter((item) => item.cefr === level),
+  })).filter((group) => group.items.length > 0);
 
   return (
     <div className="mx-auto max-w-xl space-y-5 py-6">
@@ -153,30 +160,39 @@ export function ReadSession() {
         </div>
         <h1 className="text-kid-2xl font-extrabold">อ่านออกเสียง</h1>
         <p className="text-ink-muted text-kid-sm font-bold">
-          เลือกเรื่องแล้วอ่านให้ฟัง ทุกเรื่องใช้แต่คำที่มีในคลังคำของแอป
+          เลือกเรื่องแล้วอ่านให้ฟัง · {READINGS.length} เรื่อง
+          ทุกเรื่องใช้แต่คำที่มีในคลังคำของแอป
         </p>
       </header>
 
-      <div className="grid gap-3">
-        {sorted.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setReading(item)}
-            className="pressable active:pressable-sunk bg-surface-1 border-border rounded-card [--edge:var(--border)] space-y-1 border-2 p-4 text-left"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-kid-lg font-extrabold">
-                {item.titleEn}
-              </span>
-              <LevelBadge level={item.cefr} />
-            </div>
-            <p className="text-ink-muted text-kid-sm font-bold">
-              {item.titleTh} · {item.sentences.length} ประโยค
-            </p>
-          </button>
-        ))}
-      </div>
+      {levels.map((group) => (
+        <section key={group.level} className="space-y-3">
+          <div className="flex items-center gap-2">
+            <LevelBadge level={group.level} withGrade />
+            <span className="text-ink-muted text-kid-sm font-bold">
+              {group.items.length} เรื่อง
+            </span>
+          </div>
+
+          <div className="grid gap-3">
+            {group.items.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setReading(item)}
+                className="pressable active:pressable-sunk bg-surface-1 border-border rounded-card [--edge:var(--border)] space-y-1 border-2 p-4 text-left"
+              >
+                <span className="text-kid-lg block font-extrabold">
+                  {item.titleEn}
+                </span>
+                <p className="text-ink-muted text-kid-sm font-bold">
+                  {item.titleTh} · {item.sentences.length} ประโยค
+                </p>
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

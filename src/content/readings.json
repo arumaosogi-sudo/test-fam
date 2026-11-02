@@ -15,7 +15,11 @@
     ],
     "question": {
       "promptTh": "แมวในเรื่องนี้สีอะไร",
-      "choicesTh": ["ดำกับขาว", "แดงกับขาว", "ดำกับเหลือง"],
+      "choicesTh": [
+        "ดำกับขาว",
+        "แดงกับขาว",
+        "ดำกับเหลือง"
+      ],
       "answerIndex": 0
     }
   },
@@ -35,7 +39,11 @@
     ],
     "question": {
       "promptTh": "ในกระเป๋ามีดินสอกี่แท่ง",
-      "choicesTh": ["สองแท่ง", "หนึ่งแท่ง", "สามแท่ง"],
+      "choicesTh": [
+        "สองแท่ง",
+        "หนึ่งแท่ง",
+        "สามแท่ง"
+      ],
       "answerIndex": 0
     }
   },
@@ -56,7 +64,107 @@
     ],
     "question": {
       "promptTh": "แม่ทำอาชีพอะไร",
-      "choicesTh": ["แม่ครัว", "ชาวนา", "ศิลปิน"],
+      "choicesTh": [
+        "แม่ครัว",
+        "ชาวนา",
+        "ศิลปิน"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-dog",
+    "cefr": "Pre-A1",
+    "titleTh": "หมาของฉัน",
+    "titleEn": "My Dog",
+    "sentences": [
+      "I have a dog.",
+      "My dog is big and brown.",
+      "He likes to run and jump.",
+      "He can swim in the river.",
+      "He eats rice and chicken.",
+      "He sleeps on the floor.",
+      "My dog is my friend."
+    ],
+    "question": {
+      "promptTh": "หมาในเรื่องนี้สีอะไร",
+      "choicesTh": [
+        "น้ำตาล",
+        "ดำ",
+        "ขาว"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-face",
+    "cefr": "Pre-A1",
+    "titleTh": "หน้าของฉัน",
+    "titleEn": "My Face",
+    "sentences": [
+      "This is my face.",
+      "I have two eyes and one nose.",
+      "I have two ears.",
+      "My mouth is small.",
+      "My hair is black and long.",
+      "I wash my face with water.",
+      "I can see and hear."
+    ],
+    "question": {
+      "promptTh": "ผมของฉันสีอะไร",
+      "choicesTh": [
+        "ดำ",
+        "น้ำตาล",
+        "เหลือง"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-food-i-like",
+    "cefr": "Pre-A1",
+    "titleTh": "อาหารที่ฉันชอบ",
+    "titleEn": "Food I Like",
+    "sentences": [
+      "I like bread and milk.",
+      "My sister likes cake and candy.",
+      "My brother likes soup and noodles.",
+      "We drink juice.",
+      "My mother cooks rice and egg.",
+      "We eat with my grandmother.",
+      "The rice is hot and good."
+    ],
+    "question": {
+      "promptTh": "พี่ชายชอบอะไร",
+      "choicesTh": [
+        "ซุปกับก๋วยเตี๋ยว",
+        "เค้กกับลูกอม",
+        "ขนมปังกับนม"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-big-box",
+    "cefr": "Pre-A1",
+    "titleTh": "กล่องใบใหญ่",
+    "titleEn": "The Big Box",
+    "sentences": [
+      "I see a big box.",
+      "The box is red.",
+      "What is in the box?",
+      "A ball and a doll are in the box.",
+      "A small car is in the box too.",
+      "I play with my toys.",
+      "I am happy."
+    ],
+    "question": {
+      "promptTh": "ในกล่องมีอะไร",
+      "choicesTh": [
+        "ลูกบอล ตุ๊กตา และรถ",
+        "หนังสือกับดินสอ",
+        "อาหารกับน้ำ"
+      ],
       "answerIndex": 0
     }
   },
@@ -77,7 +185,11 @@
     ],
     "question": {
       "promptTh": "กระเป๋าอยู่ที่ไหน",
-      "choicesTh": ["ใต้ที่นั่ง", "บนที่นั่ง", "ข้างหลังที่นั่ง"],
+      "choicesTh": [
+        "ใต้ที่นั่ง",
+        "บนที่นั่ง",
+        "ข้างหลังที่นั่ง"
+      ],
       "answerIndex": 0
     }
   },
@@ -98,7 +210,277 @@
     ],
     "question": {
       "promptTh": "ตอนเช้าวันจันทร์ ดื่มอะไร",
-      "choicesTh": ["นม", "น้ำ", "น้ำผลไม้"],
+      "choicesTh": [
+        "นม",
+        "น้ำ",
+        "น้ำผลไม้"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-at-the-park",
+    "cefr": "A1",
+    "titleTh": "ที่สวนสาธารณะ",
+    "titleEn": "At the Park",
+    "sentences": [
+      "On Saturday we go to the park.",
+      "The sky is blue and the sun is warm.",
+      "I see a tree and a garden.",
+      "Ten flowers are red and pink.",
+      "My friend and I ride our bikes.",
+      "We run and laugh.",
+      "The park is beautiful."
+    ],
+    "question": {
+      "promptTh": "วันเสาร์ไปที่ไหน",
+      "choicesTh": [
+        "สวนสาธารณะ",
+        "โรงเรียน",
+        "ทะเล"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-room",
+    "cefr": "A1",
+    "titleTh": "ห้องของฉัน",
+    "titleEn": "My Room",
+    "sentences": [
+      "This is my room.",
+      "My bed is near the window.",
+      "My books are on the table.",
+      "My shoes are under the bed.",
+      "A picture is on the door.",
+      "The room is clean.",
+      "I open the window.",
+      "I feel cool and quiet."
+    ],
+    "question": {
+      "promptTh": "รองเท้าอยู่ที่ไหน",
+      "choicesTh": [
+        "ใต้เตียง",
+        "บนโต๊ะ",
+        "ข้างหน้าต่าง"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-train",
+    "cefr": "A1",
+    "titleTh": "รถไฟ",
+    "titleEn": "The Train",
+    "sentences": [
+      "We go to the station.",
+      "We buy a ticket.",
+      "The train is long and fast.",
+      "We find our seat.",
+      "I see a mountain and a river.",
+      "The train is not slow.",
+      "We come to a new hotel."
+    ],
+    "question": {
+      "promptTh": "รถไฟเป็นอย่างไร",
+      "choicesTh": [
+        "ยาวและเร็ว",
+        "สั้นและช้า",
+        "เล็กและเก่า"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-teacher",
+    "cefr": "A1",
+    "titleTh": "ครูของฉัน",
+    "titleEn": "My Teacher",
+    "sentences": [
+      "My teacher is a good woman.",
+      "She teaches us at school.",
+      "We study and we read books.",
+      "She helps me when I ask a question.",
+      "We draw a picture with crayons.",
+      "I like my teacher."
+    ],
+    "question": {
+      "promptTh": "ครูทำอะไรเมื่อเราถามคำถาม",
+      "choicesTh": [
+        "ช่วยเรา",
+        "ไม่สนใจ",
+        "ให้การบ้าน"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-cold-day",
+    "cefr": "A1",
+    "titleTh": "วันที่อากาศหนาว",
+    "titleEn": "A Cold Day",
+    "sentences": [
+      "This day is cold.",
+      "The wind is strong.",
+      "The water is ice.",
+      "I wear a coat and a hat.",
+      "My hands are cold.",
+      "We start a fire with wood.",
+      "The fire is hot.",
+      "I feel warm."
+    ],
+    "question": {
+      "promptTh": "ก่อไฟด้วยอะไร",
+      "choicesTh": [
+        "ไม้",
+        "น้ำแข็ง",
+        "กระดาษ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-music",
+    "cefr": "A1",
+    "titleTh": "ดนตรี",
+    "titleEn": "Music",
+    "sentences": [
+      "I like music.",
+      "My sister can sing a song.",
+      "She is a singer.",
+      "My brother has a guitar.",
+      "He plays music.",
+      "We dance in the room.",
+      "My father listens and laughs.",
+      "We are happy."
+    ],
+    "question": {
+      "promptTh": "พี่ชายมีอะไร",
+      "choicesTh": [
+        "กีตาร์",
+        "กลอง",
+        "เปียโน"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-numbers",
+    "cefr": "A1",
+    "titleTh": "ตัวเลข",
+    "titleEn": "Numbers",
+    "sentences": [
+      "I can count to twenty.",
+      "Ten and ten are twenty.",
+      "Twenty and ten are thirty.",
+      "Thirty and twenty are fifty.",
+      "Ten tens are one hundred.",
+      "Ten hundreds are one thousand.",
+      "Numbers are not hard."
+    ],
+    "question": {
+      "promptTh": "สิบบวกสิบเท่ากับเท่าไร",
+      "choicesTh": [
+        "ยี่สิบ",
+        "สามสิบ",
+        "สิบห้า"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-months",
+    "cefr": "A1",
+    "titleTh": "เดือนในหนึ่งปี",
+    "titleEn": "The Months",
+    "sentences": [
+      "A year has twelve months.",
+      "January is a cold month.",
+      "In April the flowers are beautiful.",
+      "June and July are hot.",
+      "In October we go to school.",
+      "We like December."
+    ],
+    "question": {
+      "promptTh": "หนึ่งปีมีกี่เดือน",
+      "choicesTh": [
+        "สิบสอง",
+        "สิบ",
+        "สิบห้า"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-friend",
+    "cefr": "A1",
+    "titleTh": "เพื่อนของฉัน",
+    "titleEn": "My Friend",
+    "sentences": [
+      "My friend is a boy.",
+      "His name is different from my name.",
+      "He is strong and funny.",
+      "We meet at school.",
+      "We talk and we play a game.",
+      "When I am sad he helps me.",
+      "A good friend is important."
+    ],
+    "question": {
+      "promptTh": "เพื่อนทำอะไรเมื่อเราเศร้า",
+      "choicesTh": [
+        "ช่วยเรา",
+        "หัวเราะใส่",
+        "ไม่พูดด้วย"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-farmer",
+    "cefr": "A1",
+    "titleTh": "ชาวนา",
+    "titleEn": "The Farmer",
+    "sentences": [
+      "The farmer works in the day.",
+      "He has a cow, a pig and a duck.",
+      "The cow is big and the duck is small.",
+      "He gives them water.",
+      "The farmer is strong.",
+      "He is not late.",
+      "We buy eggs from the farmer."
+    ],
+    "question": {
+      "promptTh": "ชาวนามีสัตว์อะไรบ้าง",
+      "choicesTh": [
+        "วัว หมู และเป็ด",
+        "แมว หมา และนก",
+        "ม้า เสือ และลิง"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-sea",
+    "cefr": "A1",
+    "titleTh": "ทะเล",
+    "titleEn": "The Sea",
+    "sentences": [
+      "We go to the beach.",
+      "The sea is blue and cool.",
+      "I see a big ship.",
+      "My sister swims in the water.",
+      "I find a rock.",
+      "The sun is high.",
+      "We eat cake.",
+      "The beach is beautiful."
+    ],
+    "question": {
+      "promptTh": "ทะเลเป็นสีอะไร",
+      "choicesTh": [
+        "น้ำเงิน",
+        "เขียว",
+        "แดง"
+      ],
       "answerIndex": 0
     }
   }
