@@ -508,3 +508,49 @@ describe("ที่มาของคำแปลไทย", () => {
     expect(fromDictionary / WORDS.length).toBeGreaterThan(0.8);
   });
 });
+
+/**
+ * คำอ่านที่ปนสำเนียงแย่กว่าไม่มีคำอ่านเลย เพราะเด็กเห็นสัญลักษณ์อย่างหนึ่ง
+ * แต่ได้ยินเครื่องอ่านออกเสียงอีกอย่างหนึ่ง เทสชุดนี้คุมไม่ให้หลุดกลับมา
+ */
+describe("คำอ่าน IPA", () => {
+  it("ทุกคำต้องระบุว่าคำอ่านมีอะไรรองรับ", () => {
+    for (const word of WORDS) {
+      expect(["wiktionary", "unverified"], word.id).toContain(word.ipaSource);
+    }
+  });
+
+  it("ไม่มีคำที่คำอ่านยังไม่ได้ตรวจหลงอยู่ในคลัง", () => {
+    const unverified = WORDS.filter((word) => word.ipaSource === "unverified");
+
+    expect(unverified.map((word) => word.id)).toEqual([]);
+  });
+
+  it("คำอ่านอยู่ในเครื่องหมาย / / และไม่ว่าง", () => {
+    for (const word of WORDS) {
+      expect(word.ipa.startsWith("/"), word.id).toBe(true);
+      expect(word.ipa.endsWith("/"), word.id).toBe(true);
+      expect(word.ipa.length, word.id).toBeGreaterThan(3);
+    }
+  });
+
+  it("ไม่มีร่องรอยสำเนียงอังกฤษหลงเหลือ", () => {
+    // สระ əʊ ɜː ɑː ɒ ไม่มีในสำเนียงอเมริกันมาตรฐาน
+    // ส่วน tj dj nj คือการคงเสียง y หลังพยัญชนะ ซึ่งอเมริกันตัดทิ้ง
+    const british = WORDS.filter((word) =>
+      /əʊ|ɜː|ɑː|ɒ|tj|dj|nj/.test(word.ipa),
+    );
+
+    expect(british.map((word) => `${word.en} ${word.ipa}`)).toEqual([]);
+  });
+
+  it("เอกสารคำอ่านบอกที่มาและสำเนียงที่เลือก", () => {
+    const review = readFileSync(
+      join(process.cwd(), "docs", "ipa-review.md"),
+      "utf8",
+    );
+
+    expect(review).toContain("Wiktionary");
+    expect(review).toContain("General American");
+  });
+});

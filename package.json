@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:thai": "node scripts/check-thai.mjs"
+    "check:thai": "node scripts/check-thai.mjs",
+    "check:ipa": "node scripts/check-ipa.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

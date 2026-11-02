@@ -79,7 +79,17 @@ export const wordSchema = z.object({
   thSource: z.enum(["wiktionary", "adapted", "unverified"]),
   pos: partOfSpeechSchema,
   cefr: cefrLevelSchema,
-  /** คำอ่านสากล ใช้โชว์ตอนสอนออกเสียง */
+  /**
+   * ที่มาของคำอ่าน หลักการเดียวกับ thSource (ดู docs/ipa-review.md)
+   * wiktionary = ดึงจาก Wiktionary · unverified = พจนานุกรมไม่มี ต้องให้คนตรวจ
+   */
+  ipaSource: z.enum(["wiktionary", "unverified"]),
+  /**
+   * คำอ่านสากล ใช้โชว์ตอนสอนออกเสียง
+   *
+   * ใช้สำเนียง General American ให้ตรงกับเสียงอ่านในแอปที่ตั้งเป็น en-US
+   * ถ้าปนสำเนียง เด็กจะเห็นสัญลักษณ์อย่างหนึ่งแต่ได้ยินอีกอย่างหนึ่ง
+   */
   ipa: z.string(),
   /**
    * ประโยคตัวอย่างที่มีช่องว่าง `{}` อยู่ตำแหน่งของคำนี้ ใช้ในเกมเติมคำ

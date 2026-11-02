@@ -18,6 +18,7 @@
 | [docs/PLAN.md](docs/PLAN.md) | ไอเดียทั้งหมด โหมดเกม 12 โหมด สถาปัตยกรรม tech stack ความปลอดภัยเด็ก และข้อตัดสินใจที่ยังค้าง |
 | [docs/CREDITS.md](docs/CREDITS.md) | เครดิตและสัญญาอนุญาตของข้อมูลที่นำมาใช้ (OpenMoji · Wiktionary · NGSL) |
 | [docs/thai-review.md](docs/thai-review.md) | คำแปลไทยที่ยังรอคนตรวจ เทียบกับพจนานุกรมเปิดแล้ว (สร้างอัตโนมัติ) |
+| [docs/ipa-review.md](docs/ipa-review.md) | คำอ่าน IPA ที่ตรวจกับพจนานุกรม และสำเนียงที่เลือกใช้ (สร้างอัตโนมัติ) |
 | [docs/CURRICULUM.md](docs/CURRICULUM.md) | หลักสูตรและระดับความยาก อ้างอิงวิธีของ Duolingo · แหล่งคำศัพท์ NGSL/TOEIC และสิ่งที่ขวางการขยายเนื้อหา |
 | [docs/TASKS.md](docs/TASKS.md) | รายการงาน 60 รายการแบ่งเป็น 8 epic พร้อมลำดับที่ควรทำ |
 | [docs/adr/](docs/adr/) | บันทึกการตัดสินใจทางสถาปัตยกรรม (ตัดสินใจอะไร เพราะอะไร ไม่เลือกอะไร) |
