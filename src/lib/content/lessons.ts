@@ -97,6 +97,11 @@ function canCloze(wordId: string): boolean {
   return Boolean(getWord(wordId)?.sentence);
 }
 
+/** คำนี้มีภาพให้ดูไหม — คำนามธรรมอย่าง think หรือ important ไม่มี */
+function canPicture(wordId: string): boolean {
+  return Boolean(getWord(wordId)?.image);
+}
+
 function shuffle<T>(items: T[], random: () => number): T[] {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {
@@ -199,7 +204,7 @@ export function buildItems(
     (wordId, index) => {
       const level = levelOf(wordId);
 
-      if (index % 2 === 0 || !canCloze(wordId)) {
+      if ((index % 2 === 0 && canPicture(wordId)) || !canCloze(wordId)) {
         return {
           kind: "picture",
           id: `${lesson.id}-picture-${index + 1}`,
@@ -251,26 +256,39 @@ export function buildReviewItems(
           wordIds: [wordId],
         };
       case 1:
-        return {
-          kind: "picture",
-          id: `review-picture-${wordId}`,
-          wordIds: [wordId],
-          variant: pictureVariantFor(level, floor),
-        };
+        if (canPicture(wordId)) {
+          return {
+            kind: "picture",
+            id: `review-picture-${wordId}`,
+            wordIds: [wordId],
+            variant: pictureVariantFor(level, floor),
+          };
+        }
+      // ไม่มีภาพก็ตกลงไปใช้ข้อเติมคำแทน
+      // falls through
       default:
-        return canCloze(wordId)
-          ? {
-              kind: "cloze",
-              id: `review-cloze-${wordId}`,
-              wordIds: [wordId],
-              level: clozeLevelFor(level, floor),
-            }
-          : {
-              kind: "picture",
-              id: `review-picture-${wordId}`,
-              wordIds: [wordId],
-              variant: pictureVariantFor(level, floor),
-            };
+        if (canCloze(wordId)) {
+          return {
+            kind: "cloze",
+            id: `review-cloze-${wordId}`,
+            wordIds: [wordId],
+            level: clozeLevelFor(level, floor),
+          };
+        }
+        if (canPicture(wordId)) {
+          return {
+            kind: "picture",
+            id: `review-picture-${wordId}`,
+            wordIds: [wordId],
+            variant: pictureVariantFor(level, floor),
+          };
+        }
+        // ไม่มีทั้งภาพและประโยค เหลือแค่ให้ฟังเสียง ดีกว่าไม่ได้ทบทวนคำนั้นเลย
+        return {
+          kind: "listen",
+          id: `review-listen-${wordId}`,
+          wordIds: [wordId],
+        };
     }
   });
 }

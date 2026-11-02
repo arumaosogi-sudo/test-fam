@@ -220,7 +220,11 @@ export function MatchGame({ itemId, words, onComplete }: MatchGameProps) {
             <MatchTile
               key={`th-${word.id}`}
               label={word.th}
-              visual={<WordImage wordId={word.id} className="size-9" />}
+              visual={
+                word.image ? (
+                  <WordImage wordId={word.id} className="size-9" />
+                ) : undefined
+              }
               state={tileState("th", word.id)}
               disabled={locked || matched.includes(word.id)}
               onClick={(event) => handlePick(event, "th", word.id)}

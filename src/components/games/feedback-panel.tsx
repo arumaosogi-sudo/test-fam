@@ -63,7 +63,9 @@ export function FeedbackPanel({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <WordImage wordId={word.id} className="size-11" />
+        {word.image ? (
+          <WordImage wordId={word.id} className="size-11" />
+        ) : null}
         <div className="min-w-0">
           <p className="text-kid-lg text-ink font-extrabold">{word.en}</p>
           <p className="text-ink-muted text-kid-sm font-bold">

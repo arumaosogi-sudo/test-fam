@@ -55,7 +55,8 @@ export function GameItem({ item, onComplete }: GameItemProps) {
     );
   }
 
-  if (item.kind === "picture") {
+  // เกมดูภาพต้องมีภาพ ปกติ buildItems กรองให้แล้ว อันนี้กันข้อมูลเก่าใน store
+  if (item.kind === "picture" && word.image) {
     return (
       <PictureGame
         itemId={item.id}
@@ -66,24 +67,17 @@ export function GameItem({ item, onComplete }: GameItemProps) {
     );
   }
 
-  // คำที่ยังไม่มีประโยคตัวอย่างเล่นเกมเติมคำไม่ได้ ให้ดูภาพแทน
-  // ปกติ buildItems กรองให้แล้ว อันนี้กันกรณีข้อมูลเก่าที่ค้างอยู่ใน store
+  // มาถึงตรงนี้คือข้อเติมคำ หรือข้อดูภาพของคำที่ไม่มีภาพ
+  // คำที่ไม่มีทั้งภาพและประโยคเหลือแค่ให้ฟังเสียง ดีกว่าจอว่าง
   if (!word.sentence) {
-    return (
-      <PictureGame
-        itemId={item.id}
-        word={word}
-        variant="choose"
-        onComplete={onComplete}
-      />
-    );
+    return <ListenGame itemId={item.id} word={word} onComplete={onComplete} />;
   }
 
   return (
     <ClozeGame
       itemId={item.id}
       word={{ ...word, sentence: word.sentence }}
-      level={item.level}
+      level={item.kind === "cloze" ? item.level : "bank"}
       onComplete={onComplete}
     />
   );

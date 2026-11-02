@@ -29,8 +29,8 @@ import {
 describe("คลังคำ", () => {
   it("มีคำและหน่วยครบตามที่นำเข้าไว้", () => {
     // ตัวเลขนี้เป็นหมุดกันคำหายโดยไม่มีใครรู้ ไม่ใช่เป้าหมายของเนื้อหา
-    expect(WORDS.length).toBe(178);
-    expect(UNITS.length).toBe(17);
+    expect(WORDS.length).toBe(236);
+    expect(UNITS.length).toBe(22);
   });
 
   it("ทุกหน่วยมีคำอยู่จริง ไม่มีหน่วยว่าง", () => {
@@ -63,11 +63,10 @@ describe("คลังคำ", () => {
     }
   });
 
-  it("ทุกคำมีคำแปลไทย คำอ่าน และอิโมจิ", () => {
+  it("ทุกคำมีคำแปลไทยและคำอ่าน", () => {
     for (const word of WORDS) {
       expect(word.th.trim().length, word.id).toBeGreaterThan(0);
       expect(word.ipa.startsWith("/"), `${word.id} คำอ่านต้องอยู่ในเครื่องหมาย /`).toBe(true);
-      expect(word.emoji.length, word.id).toBeGreaterThan(0);
     }
   });
 
@@ -385,15 +384,28 @@ describe("buildReviewItems", () => {
 describe("ภาพประกอบคำศัพท์", () => {
   const dir = join(process.cwd(), "public", "words");
 
-  it("ทุกคำมีไฟล์ภาพของตัวเอง", () => {
-    // ภาพอ้างด้วยรหัสคำ ถ้าเพิ่มคำใหม่แล้วลืมใส่ภาพ จะขึ้นเป็นรูปแตกให้เด็กเห็น
-    for (const word of WORDS) {
+  /** คำนามธรรมอย่าง think หรือ important วาดเป็นภาพไม่ได้ จึงไม่มีไฟล์ภาพ */
+  const withImage = WORDS.filter((word) => word.image);
+
+  it("มีคำที่มีภาพให้ตรวจจริง", () => {
+    expect(withImage.length).toBeGreaterThan(100);
+  });
+
+  it("คำที่บอกว่ามีภาพ ต้องมีไฟล์ภาพจริง", () => {
+    // ถ้าธงกับไฟล์ไม่ตรงกัน เด็กจะเห็นรูปแตกบนจอ
+    for (const word of withImage) {
       expect(existsSync(join(dir, `${word.id}.svg`)), word.id).toBe(true);
     }
   });
 
+  it("คำที่บอกว่าไม่มีภาพ ต้องไม่มีไฟล์ภาพค้างอยู่", () => {
+    for (const word of WORDS.filter((w) => !w.image)) {
+      expect(existsSync(join(dir, `${word.id}.svg`)), word.id).toBe(false);
+    }
+  });
+
   it("ไม่มีไฟล์ภาพที่ไม่มีคำรองรับ", () => {
-    const owned = new Set(WORDS.map((word) => `${word.id}.svg`));
+    const owned = new Set(withImage.map((word) => `${word.id}.svg`));
     const orphans = readdirSync(dir).filter(
       (file) => file.endsWith(".svg") && !owned.has(file),
     );
@@ -402,7 +414,7 @@ describe("ภาพประกอบคำศัพท์", () => {
   });
 
   it("ไฟล์เป็น SVG จริง ไม่ใช่หน้า error ที่ดาวน์โหลดมา", () => {
-    for (const word of WORDS) {
+    for (const word of withImage) {
       const svg = readFileSync(join(dir, `${word.id}.svg`), "utf8");
       expect(svg.trimStart().startsWith("<svg"), word.id).toBe(true);
     }

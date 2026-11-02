@@ -35,6 +35,14 @@ export function ListenGame({ itemId, word, onComplete }: ListenGameProps) {
     [word, itemId],
   );
 
+  /**
+   * โชว์ภาพก็ต่อเมื่อ **ทุกตัวเลือก** มีภาพ
+   *
+   * ถ้าโชว์บ้างไม่โชว์บ้าง ใบที่ไม่มีภาพจะเด่นขึ้นมาทันที เด็กจะเดาถูก
+   * จากหน้าตาของการ์ดแทนที่จะฟังเสียง ซึ่งทำให้ด่านนี้วัดอะไรไม่ได้เลย
+   */
+  const showImages = choices.every((choice) => choice.image);
+
   const elapsed = useItemTimer();
   const [picked, setPicked] = useState<string | null>(null);
   const [attempt, setAttempt] = useState<AttemptDraft | null>(null);
@@ -62,7 +70,7 @@ export function ListenGame({ itemId, word, onComplete }: ListenGameProps) {
   return (
     <div className="space-y-5">
       <p className="text-kid-lg text-center font-extrabold">
-        ฟังแล้วเลือกภาพที่ถูก
+        {showImages ? "ฟังแล้วเลือกภาพที่ถูก" : "ฟังแล้วเลือกคำแปลที่ถูก"}
       </p>
 
       <div className="flex flex-col items-center gap-2">
@@ -81,7 +89,11 @@ export function ListenGame({ itemId, word, onComplete }: ListenGameProps) {
             key={choice.id}
             // ไม่แสดงคำอังกฤษ ให้เด็กตัดสินจากภาพและความหมาย
             label={choice.th}
-            visual={<WordImage wordId={choice.id} className="size-16" />}
+            visual={
+              showImages ? (
+                <WordImage wordId={choice.id} className="size-16" />
+              ) : undefined
+            }
             state={
               !answered
                 ? "idle"

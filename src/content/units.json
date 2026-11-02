@@ -134,5 +134,45 @@
     "titleTh": "ของใช้ประจำวัน",
     "titleEn": "Everyday things",
     "emoji": "👗"
+  },
+  {
+    "id": "u-verbs-1",
+    "cefr": "A1",
+    "order": 18,
+    "titleTh": "คำกริยาที่ใช้บ่อย",
+    "titleEn": "Everyday Verbs",
+    "emoji": "🏃"
+  },
+  {
+    "id": "u-verbs-2",
+    "cefr": "A1",
+    "order": 19,
+    "titleTh": "คำกริยาที่ใช้บ่อย 2",
+    "titleEn": "More Verbs",
+    "emoji": "🙋"
+  },
+  {
+    "id": "u-describe-2",
+    "cefr": "A1",
+    "order": 20,
+    "titleTh": "คำบอกลักษณะ 2",
+    "titleEn": "More Describing Words",
+    "emoji": "📏"
+  },
+  {
+    "id": "u-time",
+    "cefr": "A1",
+    "order": 21,
+    "titleTh": "เวลาและวัน",
+    "titleEn": "Time & Days",
+    "emoji": "📅"
+  },
+  {
+    "id": "u-basics",
+    "cefr": "A1",
+    "order": 22,
+    "titleTh": "คำพื้นฐาน",
+    "titleEn": "Basic Words",
+    "emoji": "💬"
   }
 ]

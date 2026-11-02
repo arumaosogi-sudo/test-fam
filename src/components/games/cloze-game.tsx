@@ -136,7 +136,9 @@ export function ClozeGame({
 
       {/* คำใบ้: ภาพกับคำแปลไทยของคำที่หายไป เด็กที่อ่านประโยคไม่ออกยังเล่นได้ */}
       <div className="flex items-center justify-center gap-3">
-        <WordImage wordId={word.id} className="size-14" />
+        {word.image ? (
+          <WordImage wordId={word.id} className="size-14" />
+        ) : null}
         <span className="text-kid-lg font-extrabold">{word.th}</span>
       </div>
 
