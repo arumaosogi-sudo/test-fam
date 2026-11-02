@@ -286,5 +286,85 @@
     "titleTh": "คำบอกตำแหน่ง",
     "titleEn": "Where Things Are",
     "emoji": "📍"
+  },
+  {
+    "id": "u-a2-weather",
+    "cefr": "A2",
+    "order": 37,
+    "titleTh": "สภาพอากาศ",
+    "titleEn": "Weather",
+    "emoji": "🌦️"
+  },
+  {
+    "id": "u-a2-health",
+    "cefr": "A2",
+    "order": 38,
+    "titleTh": "ร่างกายและสุขภาพ",
+    "titleEn": "Body and Health",
+    "emoji": "🩺"
+  },
+  {
+    "id": "u-a2-food-2",
+    "cefr": "A2",
+    "order": 39,
+    "titleTh": "อาหารเพิ่มเติม",
+    "titleEn": "More Food",
+    "emoji": "🥕"
+  },
+  {
+    "id": "u-a2-kitchen",
+    "cefr": "A2",
+    "order": 40,
+    "titleTh": "ของในครัว",
+    "titleEn": "In the Kitchen",
+    "emoji": "🍳"
+  },
+  {
+    "id": "u-a2-nature-2",
+    "cefr": "A2",
+    "order": 41,
+    "titleTh": "ธรรมชาติเพิ่มเติม",
+    "titleEn": "More Nature",
+    "emoji": "🌲"
+  },
+  {
+    "id": "u-a2-clothes",
+    "cefr": "A2",
+    "order": 42,
+    "titleTh": "เสื้อผ้าและของใช้",
+    "titleEn": "Clothes and Things",
+    "emoji": "🧦"
+  },
+  {
+    "id": "u-a2-sport",
+    "cefr": "A2",
+    "order": 43,
+    "titleTh": "กีฬาและการแข่งขัน",
+    "titleEn": "Sport and Games",
+    "emoji": "🏅"
+  },
+  {
+    "id": "u-a2-verbs-1",
+    "cefr": "A2",
+    "order": 44,
+    "titleTh": "คำกริยา A2",
+    "titleEn": "A2 Verbs",
+    "emoji": "🤗"
+  },
+  {
+    "id": "u-a2-feelings",
+    "cefr": "A2",
+    "order": 45,
+    "titleTh": "ความรู้สึก A2",
+    "titleEn": "A2 Feelings",
+    "emoji": "😮"
+  },
+  {
+    "id": "u-a2-describe",
+    "cefr": "A2",
+    "order": 46,
+    "titleTh": "คำบอกลักษณะ A2",
+    "titleEn": "A2 Describing Words",
+    "emoji": "⬜"
   }
 ]

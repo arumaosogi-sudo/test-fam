@@ -483,5 +483,80 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-in-the-kitchen",
+    "cefr": "A2",
+    "titleTh": "ในครัว",
+    "titleEn": "In the Kitchen",
+    "sentences": [
+      "We prepare the rice.",
+      "My father takes a pan.",
+      "He bakes bread in the oven.",
+      "The milk is in the fridge.",
+      "The cups are in the cupboard.",
+      "I put a fork and a spoon on the table.",
+      "The bread is fresh and the soup is hot.",
+      "The rice is perfect."
+    ],
+    "question": {
+      "promptTh": "นมอยู่ที่ไหน",
+      "choicesTh": [
+        "ในตู้เย็น",
+        "ในเตาอบ",
+        "บนโต๊ะ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-forest",
+    "cefr": "A2",
+    "titleTh": "ในป่า",
+    "titleEn": "The Forest",
+    "sentences": [
+      "On Saturday we walk in the forest.",
+      "Ten old trees are near the river.",
+      "I see a small insect on a flower.",
+      "The root of the old tree is very big.",
+      "We find a seed and put it in a bag.",
+      "The lake is cool and clean.",
+      "We are not afraid.",
+      "The forest is beautiful and quiet."
+    ],
+    "question": {
+      "promptTh": "เจอแมลงอยู่ที่ไหน",
+      "choicesTh": [
+        "บนดอกไม้",
+        "ในทะเลสาบ",
+        "บนราก"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-big-game",
+    "cefr": "A2",
+    "titleTh": "การแข่งขันครั้งใหญ่",
+    "titleEn": "The Big Game",
+    "sentences": [
+      "On Friday we play badminton.",
+      "The stadium is very wide.",
+      "I am worried and quiet.",
+      "My friend is brave and fast.",
+      "She is the winner and she gets a medal.",
+      "I am surprised and happy.",
+      "We are relaxed and we laugh.",
+      "We eat a snack in the playground."
+    ],
+    "question": {
+      "promptTh": "ผู้ชนะได้อะไร",
+      "choicesTh": [
+        "เหรียญรางวัล",
+        "ของว่าง",
+        "ลูกแบด"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

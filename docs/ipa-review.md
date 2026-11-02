@@ -2,7 +2,7 @@
 
 สร้างด้วย `npm run check:ipa` — อย่าแก้ไฟล์นี้ด้วยมือ
 
-เทียบคำอ่านทั้ง 178 คำกับ [English Wiktionary](https://en.wiktionary.org/)
+เทียบคำอ่านทั้ง 418 คำกับ [English Wiktionary](https://en.wiktionary.org/)
 ผ่าน [kaikki.org](https://kaikki.org/)
 
 **เลือกสำเนียง General American** เพราะเสียงอ่านในแอปตั้งเป็น `en-US`
@@ -11,132 +11,92 @@
 
 | สถานะ | จำนวน |
 |---|---|
-| มีคำอ่านสำเนียงอเมริกัน | 117 |
-| มีคำอ่านแต่ไม่ระบุสำเนียงอเมริกัน | 61 |
+| มีคำอ่านสำเนียงอเมริกัน | 263 |
+| มีคำอ่านแต่ไม่ระบุสำเนียงอเมริกัน | 155 |
 | พจนานุกรมไม่มีคำอ่าน | 0 |
-| ค่าที่เปลี่ยนจากของเดิม | 119 |
+| ค่าที่เปลี่ยนจากของเดิม | 79 |
 
 
-## ค่าที่เปลี่ยน (119 คำ)
+## ค่าที่เปลี่ยน (79 คำ)
 
 | คำ | ของเดิม | ที่ใช้ตอนนี้ | สำเนียงที่พจนานุกรมระบุ |
 |---|---|---|---|
-| red | `/red/` | `/ɹɛd/` | Canada, General-American, Received-Pronunciation |
-| blue | `/bluː/` | `/blu/` | Canada, US |
-| yellow | `/ˈjeloʊ/` | `/ˈjɛloʊ/` | General-American, US |
-| green | `/ɡriːn/` | `/ɡɹin/` | US |
-| white | `/waɪt/` | `/ˈwaɪt/` | — |
-| pink | `/pɪŋk/` | `/ˈpɪŋk/` | General-American, Received-Pronunciation |
-| orange | `/ˈɔːrɪndʒ/` | `/ˈoɹənd͡ʒ/` | Canada, General-American |
-| purple | `/ˈpɜːrpl/` | `/ˈpɝ.pl̩/` | General-American |
-| brown | `/braʊn/` | `/bɹaʊ̯n/` | Canada, General-American, Received-Pronunciation |
-| grey | `/ɡreɪ/` | `/ɡɹeɪ/` | UK, US |
-| two | `/tuː/` | `/tu/` | Canada, UK |
-| three | `/θriː/` | `/θɹiː/` | General-American |
-| four | `/fɔːr/` | `/foɹ/` | — |
-| five | `/faɪv/` | `/ˈfaɪ̯v/` | — |
-| seven | `/ˈsevn/` | `/ˈsɛvən/` | Canada, General-American, Received-Pronunciation |
-| ten | `/ten/` | `/tɛn/` | General-American, Received-Pronunciation |
-| cat | `/kæt/` | `/ˈkæt/` | General-American, US |
-| dog | `/dɔːɡ/` | `/dɔɡ/` | — |
-| bird | `/bɜːrd/` | `/ˈbɝd/` | Canadian, General-American, Standard |
-| pig | `/pɪɡ/` | `/ˈpɪɡ/` | — |
-| rabbit | `/ˈræbɪt/` | `/ˈɹæbət/` | General-American |
-| elephant | `/ˈelɪfənt/` | `/ˈɛləfənt/` | Canada, General-American |
-| tiger | `/ˈtaɪɡər/` | `/ˈtaɪɡɚ/` | Canada, General-American |
-| bear | `/ber/` | `/bɛɚ/` | Canada, General-American |
-| frog | `/frɔːɡ/` | `/fɹɔɡ/` | US |
-| horse | `/hɔːrs/` | `/hoɹs/` | General-American |
-| mother | `/ˈmʌðər/` | `/ˈmʌðɚ/` | General-American |
-| father | `/ˈfɑːðər/` | `/ˈfɑ.ðɚ/` | General-American |
-| sister | `/ˈsɪstər/` | `/ˈsɪs.tɚ/` | General-American |
-| brother | `/ˈbrʌðər/` | `/ˈbɹʌðɚ/` | Canada, General-American |
-| baby | `/ˈbeɪbi/` | `/ˈbeɪ.bi/` | General-American, Received-Pronunciation |
-| grandmother | `/ˈɡrænmʌðər/` | `/ˈɡɹæn(d)ˌmʌðɚ/` | General-American |
-| grandfather | `/ˈɡrænfɑːðər/` | `/ˈɡɹæn(d)ˌfɑðɚ/` | General-American |
-| family | `/ˈfæməli/` | `/ˈfæm(ə)li/` | — |
-| friend | `/frend/` | `/fɹɛnd/` | General-American, Received-Pronunciation |
-| head | `/hed/` | `/hɛd/` | Canada, General-American, Received-Pronunciation |
-| hair | `/her/` | `/ˈhɛɚ/` | Canada, US |
-| eye | `/aɪ/` | `/ˈaɪ̯/` | — |
-| ear | `/ɪr/` | `/ɪɚ/` | Canadian, General-American, Standard |
-| nose | `/noʊz/` | `/noʊ̯z/` | Canada, General-American |
-| mouth | `/maʊθ/` | `/mʌʊθ/` | Canada |
-| arm | `/ɑːrm/` | `/ɑɹm/` | General-American |
-| leg | `/leɡ/` | `/lɛɡ/` | — |
-| tooth | `/tuːθ/` | `/tuθ/` | General-American |
-| face | `/feɪs/` | `/feɪ̯s/` | Canada, General-American, Received-Pronunciation |
-| rice | `/raɪs/` | `/ɹaɪs/` | — |
-| milk | `/mɪlk/` | `/mɛlk/` | Canada, Inland-Northern-American, uncommon |
-| water | `/ˈwɔːtər/` | `/ˈwɔ.tɚ/` | General-American |
-| egg | `/eɡ/` | `/ɛɡ/` | — |
-| bread | `/bred/` | `/bɹɛd/` | Canada, General-American, Received-Pronunciation |
-| apple | `/ˈæpl/` | `/ˈæpəl/` | Australia, Canada, General-American, Received-Pronunciation |
-| grape | `/ɡreɪp/` | `/ɡɹeɪp/` | Canada, General-American, Received-Pronunciation |
-| candy | `/ˈkændi/` | `/ˈkæn.di/` | — |
-| ice cream | `/ˈaɪs kriːm/` | `/ˈaɪs.kɹiːm/` | — |
-| juice | `/dʒuːs/` | `/d͡ʒus/` | Canada, Philippines, US |
-| chicken | `/ˈtʃɪkɪn/` | `/ˈt͡ʃɪkɪn/` | General-American, Received-Pronunciation |
-| soup | `/suːp/` | `/sup/` | US |
-| noodle | `/ˈnuːdl/` | `/ˈnu.dəl/` | Canada, General-American, Scotland |
-| pen | `/pen/` | `/pɛn/` | Canada, General-American, Ireland, Received-Pronunciation, Scotland, Wales |
-| pencil | `/ˈpensl/` | `/ˈpɛn(t)səl/` | — |
-| crayon | `/ˈkreɪɑːn/` | `/ˈkɹeɪ̯.ɑn/` | US |
-| eraser | `/ɪˈreɪsər/` | `/ɪˈɹeɪsɚ/` | General-American |
-| ruler | `/ˈruːlər/` | `/ˈɹulɚ/` | General-American |
-| paper | `/ˈpeɪpər/` | `/ˈpeɪ̯.pəɹ/` | Canada, General-American |
-| chair | `/tʃer/` | `/t͡ʃɛɚ/` | General-American |
-| teacher | `/ˈtiːtʃər/` | `/ˈti.t͡ʃɚ/` | Canadian, General-American, Standard |
-| student | `/ˈstuːdnt/` | `/ˈst͡ʃuː.dn̩t/` | — |
-| school | `/skuːl/` | `/skul/` | General-American |
-| ball | `/bɔːl/` | `/bɔl/` | General-American |
-| doll | `/dɑːl/` | `/dɑl/` | General-American |
-| car | `/kɑːr/` | `/kɑɹ/` | General-American |
-| bike | `/baɪk/` | `/bɐɪk/` | Canada |
-| robot | `/ˈroʊbɑːt/` | `/ˈɹoʊ.bɑt/` | General-American |
-| balloon | `/bəˈluːn/` | `/bəˈlun/` | General-American |
-| house | `/haʊs/` | `/haʊ̯s/` | General-American, Received-Pronunciation |
-| door | `/dɔːr/` | `/doɹ/` | Canada, General-American |
-| bed | `/bed/` | `/bɛd/` | General-American, Received-Pronunciation |
-| box | `/bɑːks/` | `/bɑks/` | General-American |
-| small | `/smɔːl/` | `/smɔl/` | General-American |
-| hot | `/hɑːt/` | `/hɑt/` | General-American |
-| sad | `/sæd/` | `/ˈsæd/` | — |
-| new | `/nuː/` | `/nu/` | General-American |
-| old | `/oʊld/` | `/ˈoʊld/` | Canada, US |
-| eat | `/iːt/` | `/it/` | General-American |
-| drink | `/drɪŋk/` | `/ˈdɹɪŋk/` | — |
-| run | `/rʌn/` | `/ɹʌn/` | General-American, Received-Pronunciation |
-| walk | `/wɔːk/` | `/wɔk/` | US |
-| jump | `/dʒʌmp/` | `/d͡ʒʌmp/` | General-American, Received-Pronunciation |
-| play | `/pleɪ/` | `/ple(j)/` | South-Asia |
-| read | `/riːd/` | `/ɹid/` | Canada, General-American |
-| write | `/raɪt/` | `/ɹəɪt/` | US |
-| sing | `/sɪŋ/` | `/ˈsɪŋ/` | — |
-| person | `/ˈpɜː.sən/` | `/ˈpɝ.sən/` | General-American |
-| girl | `/ˈɡɜːl/` | `/ˈɡɜɹl/` | General-American |
-| artist | `/ˈɑːtɪst/` | `/ˈɑɹ.tɪst/` | General-American |
-| scientist | `/ˈsaɪəntɪst/` | `/ˈsaɪəntəst/` | General-American |
-| singer | `/ˈsɪŋ.ə/` | `/ˈsɪŋ.ɚ/` | General-American |
-| church | `/t͡ʃɜːt͡ʃ/` | `/t͡ʃɝt͡ʃ/` | General-American |
-| hotel | `/həʊˈtɛl/` | `/hoːˈtɛl/` | Canada |
-| hospital | `/ˈhɒs.pɪ.tl̩/` | `/ˈhɑs.pɪ.tl̩/` | General-American |
-| factory | `/ˈfæk.tə.ɹi/` | `/ˈfæk.tɚ.i/` | General-American |
-| castle | `/ˈkɑːsəl/` | `/ˈkæsəl/` | — |
-| mountain | `/ˈmaʊn.tɪn/` | `/ˈmaʊn.t(ə)n/` | Canada, General-American |
-| desert | `/ˈdɛz.ət/` | `/ˈdɛz.ɚt/` | General-American |
-| telephone | `/ˈtɛlɪfəʊn/` | `/ˈtɛləˌfoʊn/` | General-American |
-| radio | `/ˈɹeɪ.diˌəʊ/` | `/ˈɹeɪ.diˌoʊ/` | General-American |
-| printer | `/ˈpɹɪntə(ɹ)/` | `/ˈpɹɪntɚ/` | General-American |
-| mirror | `/ˈmɪɹə/` | `/ˈmiɹɚ/` | General-American |
-| shower | `/ˈʃaʊ.ə(ɹ)/` | `/ˈʃoʊ.ɚ/` | General-American |
-| key | `/kiː/` | `/ki/` | General-American |
-| envelope | `/ˈɛnvə(ˌ)ləʊp/` | `/ˈɛnvə(ˌ)loʊp/` | General-American |
-| star | `/stɑː(ɹ)/` | `/stɑɹ/` | US |
-| fire | `/ˈfaɪ.ə/` | `/ˈfaɪ.ɚ/` | General-American |
-| rock | `/ɹɒk/` | `/ɹɑk/` | General-American |
-| rose | `/ɹəʊz/` | `/ɹoʊz/` | US |
-| dress | `/dɹes/` | `/dɹɛs/` | British, General-American, Southern, Standard |
-| watch | `/ˈwɒt͡ʃ/` | `/ˈwɑt͡ʃ/` | US |
-| guitar | `/ɡɪˈtɑː/` | `/ɡɪˈtɑɹ/` | General-American |
-| newspaper | `/ˈnjuːsˌpeɪpə/` | `/ˈn(j)usˌpeɪpɚ/` | Canada, General-American |
+| storm | `` | `/stoɹm/` | Canada, General-American |
+| fog | `` | `/fɔɡ/` | — |
+| flood | `` | `/flʌd/` | — |
+| temperature | `` | `/ˈtɛm.pəɹ.ə.t͡ʃə(ɹ)/` | — |
+| heat | `` | `/hit/` | General-American |
+| shadow | `` | `/ˈʃædoʊ̯/` | General-American, US |
+| stomach | `` | `/ˈstʌmək/` | Canada, General-American |
+| toe | `` | `/toʊ/` | Canada, General-American |
+| chin | `` | `/ˈt͡ʃɪn/` | — |
+| cheek | `` | `/t͡ʃiːk/` | — |
+| ankle | `` | `/ˈeɪ̯ŋ.kəl/` | — |
+| lip | `` | `/lɪp/` | General-American, Received-Pronunciation |
+| dentist | `` | `/ˈdɛntɪst/` | — |
+| patient | `` | `/ˈpeɪ̯ʃənt/` | — |
+| carrot | `` | `/ˈkæɹət/` | General-American |
+| onion | `` | `/ˈʌnj(ə)n/` | General-American |
+| lemon | `` | `/ˈlɛmən/` | — |
+| pear | `` | `/pɛɹ/` | General-American |
+| mushroom | `` | `/ˈmʌʃˌɹum/` | Canada, General-American |
+| honey | `` | `/ˈhʌni/` | General-American, Received-Pronunciation |
+| salt | `` | `/sɔlt/` | — |
+| sauce | `` | `/sɔs/` | US |
+| snack | `` | `/snæk/` | — |
+| fork | `` | `/fɔɹk/` | General-American |
+| spoon | `` | `/spuːn/` | — |
+| pan | `` | `/pæn/` | Canada, General-American |
+| oven | `` | `/ˈʌ.vn̩/` | General-American, Received-Pronunciation |
+| fridge | `` | `/fɹɪd͡ʒ/` | General-American, Received-Pronunciation |
+| cupboard | `` | `/ˈkʌb.ɚd/` | Canada, General-American |
+| napkin | `` | `/ˈnæpˌkɪn/` | — |
+| forest | `` | `/ˈfɔɹɪst/` | General-American |
+| lake | `` | `/leɪk/` | General-American, Received-Pronunciation |
+| valley | `` | `/ˈvæli/` | Australia, General-American, Received-Pronunciation |
+| planet | `` | `/ˈplænət/` | Canada, General-American |
+| earth | `` | `/ɝθ/` | Canada, General-American |
+| seed | `` | `/siːd/` | Received-Pronunciation, US |
+| insect | `` | `/ˈɪn.sɛkt/` | — |
+| root | `` | `/ɹut/` | General-American |
+| belt | `` | `/ˈbɛlt/` | — |
+| glove | `` | `/ɡlʌv/` | — |
+| scarf | `` | `/skɑɹf/` | Canada, General-American |
+| sock | `` | `/sɑk/` | General-American |
+| soap | `` | `/soʊp/` | General-American |
+| wallet | `` | `/ˈwɑl.ət/` | General-American |
+| uniform | `` | `/ˈjunɪˌfɔɹm/` | US |
+| badminton | `` | `/ˈbæd.mɪn.tən/` | — |
+| chess | `` | `/t͡ʃɛs/` | — |
+| golf | `` | `/ɡɑlf/` | General-American |
+| medal | `` | `/ˈmɛdəl/` | — |
+| stadium | `` | `/ˈsteɪ.di.əm/` | — |
+| playground | `` | `/ˈpleɪɡɹaʊnd/` | General-American, Received-Pronunciation |
+| winner | `` | `/ˈwɪnɚ/` | US |
+| decide | `` | `/dɪˈsaɪd/` | — |
+| invite | `` | `/ɪnˈvaɪt/` | — |
+| prepare | `` | `/pɹɪˈpɛ(ə)ɹ/` | General-American |
+| explain | `` | `/ɪkˈspleɪn/` | — |
+| hug | `` | `/hʌɡ/` | — |
+| bake | `` | `/beɪk/` | General-American, Received-Pronunciation |
+| mix | `` | `/ˈmɪks/` | — |
+| discover | `` | `/dɪˈskʌvɚ/` | Canada, General-American |
+| lend | `` | `/ˈlɛnd/` | General-American, Received-Pronunciation |
+| repair | `` | `/ɹɪˈpɛɚ/` | General-American |
+| brave | `` | `/bɹeɪv/` | General-American, Received-Pronunciation |
+| polite | `` | `/pəˈlaɪt/` | — |
+| worried | `` | `/ˈwʌɹid/` | US |
+| surprised | `` | `/sɚˈpɹaɪzd/` | General-American |
+| thirsty | `` | `/ˈθɝs.ti/` | General-American |
+| bored | `` | `/bɔɹd/` | General-American |
+| gentle | `` | `/ˈd͡ʒɛn.tl̩/` | General-American |
+| relaxed | `` | `/ɹɪˈlækst/` | — |
+| empty | `` | `/ˈɛm(p).ti/` | General-American, Received-Pronunciation |
+| fresh | `` | `/fɹɛʃ/` | — |
+| safe | `` | `/ˈseɪ̯f/` | — |
+| simple | `` | `/ˈsɪm.pəl/` | General-American, Received-Pronunciation |
+| perfect | `` | `/ˈpɝ.fɪkt/` | Canada, General-American |
+| square | `` | `/skwɛə(ɹ)/` | Canada, UK, US |
+| smooth | `` | `/smuːð/` | — |
+| useful | `` | `/ˈjusfəl/` | Canada, General-American |
+| wide | `` | `/waɪd/` | General-American, Received-Pronunciation |

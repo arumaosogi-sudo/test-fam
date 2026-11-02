@@ -68,9 +68,18 @@ function rpScore(ipa) {
   ).length;
 }
 
+/**
+ * ที่อยู่ของคำใน kaikki.org — **ตัวพิมพ์เล็กใหญ่มีความหมาย**
+ * คำวิสามานยนามอยู่ใต้ตัวพิมพ์ใหญ่ (Monday อยู่ที่ /M/Mo/Monday.jsonl)
+ * เหตุผลเต็มอยู่ใน check-thai.mjs
+ */
 function urlFor(word) {
-  const l = word.toLowerCase();
-  return `https://kaikki.org/dictionary/English/meaning/${l[0]}/${l.slice(0, 2)}/${encodeURIComponent(l)}.jsonl`;
+  return `https://kaikki.org/dictionary/English/meaning/${word[0]}/${word.slice(0, 2)}/${encodeURIComponent(word)}.jsonl`;
+}
+
+/** รูปที่ต้องลองหา เรียงจากรูปที่เขียนมาจริงก่อน */
+function spellingsFor(word) {
+  return [...new Set([word, word.toLowerCase()])];
 }
 
 /** รับเฉพาะคำอ่านเต็มคำในเครื่องหมาย / / ไม่เอาเศษคำอย่าง /ˈwɒ-/ */
@@ -80,11 +89,52 @@ function usable(ipa) {
   return !inner.startsWith("-") && !inner.endsWith("-");
 }
 
-async function soundsFor(word) {
-  const response = await fetch(urlFor(word));
-  if (!response.ok) return [];
+/** จำนวนครั้งที่ลองใหม่เมื่อโดนปฏิเสธ (kaikki.org จำกัดอัตราการเรียก) */
+const RETRIES = 3;
 
-  const text = await response.text();
+/**
+ * ดึงคำอ่านของคำหนึ่ง — แยก "ดึงไม่สำเร็จ" ออกจาก "ไม่มีคำอ่าน"
+ *
+ * เหตุผลเดียวกับใน check-thai.mjs: ถ้าปนกัน เน็ตสะดุดครั้งเดียวจะเขียนทับ
+ * คำอ่านที่ตรวจแล้วให้กลายเป็น unverified ทั้งที่ไม่มีอะไรเปลี่ยน
+ * 404 ไม่ใช่ความล้มเหลว — แปลว่าพจนานุกรมไม่มีคำนี้จริง
+ */
+async function fetchSpelling(spelling) {
+  let response;
+
+  for (let attempt = 0; attempt < RETRIES; attempt += 1) {
+    try {
+      response = await fetch(urlFor(spelling));
+    } catch {
+      response = undefined;
+    }
+
+    if (response?.ok || response?.status === 404) break;
+    await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+  }
+
+  if (!response) return { failed: true, text: "" };
+  if (response.status === 404) return { failed: false, text: "" };
+  if (!response.ok) return { failed: true, text: "" };
+
+  return { failed: false, text: await response.text() };
+}
+
+async function soundsFor(word) {
+  let text = "";
+  let failed = false;
+
+  for (const spelling of spellingsFor(word)) {
+    const result = await fetchSpelling(spelling);
+    failed = failed || result.failed;
+    if (result.text) {
+      text = result.text;
+      break;
+    }
+  }
+
+  if (!text) return { failed, sounds: [] };
+
   const out = [];
   for (const line of text.trim().split("\n").filter(Boolean)) {
     const entry = JSON.parse(line);
@@ -92,7 +142,7 @@ async function soundsFor(word) {
       if (usable(sound.ipa)) out.push({ ipa: sound.ipa, tags: sound.tags ?? [] });
     }
   }
-  return out;
+  return { failed, sounds: out };
 }
 
 /**
@@ -157,8 +207,12 @@ const results = [];
 
 for (const word of words) {
   let chosen = null;
+  let failed = false;
+
   try {
-    chosen = pick(await soundsFor(word.en));
+    const result = await soundsFor(word.en);
+    failed = result.failed;
+    chosen = pick(result.sounds);
   } catch {
     chosen = null;
   }
@@ -167,13 +221,16 @@ for (const word of words) {
     id: word.id,
     en: word.en,
     ours: word.ipa,
+    failed,
     chosen: chosen?.ipa ?? null,
     accent: chosen?.accent ?? null,
     tags: chosen?.tags ?? [],
     same: chosen?.ipa === word.ipa,
   });
 
-  process.stdout.write(chosen ? (chosen.accent === "general-american" ? "." : "~") : "!");
+  process.stdout.write(
+    failed ? "?" : chosen ? (chosen.accent === "general-american" ? "." : "~") : "!",
+  );
   await new Promise((r) => setTimeout(r, DELAY_MS));
 }
 
@@ -181,7 +238,9 @@ process.stdout.write("\n");
 
 const found = results.filter((r) => r.chosen);
 const american = found.filter((r) => r.accent === "general-american");
-const missing = results.filter((r) => !r.chosen);
+// คำที่ดึงไม่สำเร็จไม่นับเป็น "พจนานุกรมไม่มีคำอ่าน" เพราะเรายังไม่ได้ถามสำเร็จ
+const unreachable = results.filter((r) => r.failed);
+const missing = results.filter((r) => !r.chosen && !r.failed);
 const changed = found.filter((r) => !r.same);
 
 if (!DRY) {
@@ -194,6 +253,9 @@ if (!DRY) {
 
     const result = byId.get(match[1]);
     if (!result) throw new Error(`ไม่มีผลตรวจของ ${match[1]}`);
+
+    // ดึงไม่สำเร็จ → เก็บค่าเดิมไว้ ดีกว่าเขียนทับด้วยผลที่ไม่ได้ตรวจจริง
+    if (result.failed) return line;
 
     const source = result.chosen ? "wiktionary" : "unverified";
     let next = line;
@@ -248,4 +310,13 @@ console.log(`สำเนียงอเมริกัน      : ${american.len
 console.log(`มีคำอ่านแต่สำเนียงอื่น: ${found.length - american.length}`);
 console.log(`พจนานุกรมไม่มีคำอ่าน : ${missing.length}${missing.length ? " -> " + missing.map((r) => r.en).join(", ") : ""}`);
 console.log(`เปลี่ยนจากของเดิม    : ${changed.length}`);
+console.log(`ดึงไม่สำเร็จ         : ${unreachable.length}`);
+if (unreachable.length > 0) {
+  console.log(
+    "\nดึงข้อมูลไม่สำเร็จ (ค่าเดิมในไฟล์ถูกเก็บไว้): " +
+      unreachable.map((r) => r.en).join(", "),
+  );
+  console.log("รันซ้ำอีกครั้งเพื่อตรวจคำกลุ่มนี้");
+  process.exitCode = 1;
+}
 if (DRY) console.log("(--dry ไม่ได้เขียนไฟล์คลังคำ)");

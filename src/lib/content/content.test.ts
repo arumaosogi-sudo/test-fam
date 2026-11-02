@@ -29,8 +29,8 @@ import {
 describe("คลังคำ", () => {
   it("มีคำและหน่วยครบตามที่นำเข้าไว้", () => {
     // ตัวเลขนี้เป็นหมุดกันคำหายโดยไม่มีใครรู้ ไม่ใช่เป้าหมายของเนื้อหา
-    expect(WORDS.length).toBe(339);
-    expect(UNITS.length).toBe(36);
+    expect(WORDS.length).toBe(418);
+    expect(UNITS.length).toBe(46);
   });
 
   it("ทุกหน่วยมีคำอยู่จริง ไม่มีหน่วยว่าง", () => {
@@ -581,13 +581,37 @@ describe("คำอ่าน IPA", () => {
   });
 
   it("ไม่มีร่องรอยสำเนียงอังกฤษหลงเหลือ", () => {
-    // สระ əʊ ɜː ɑː ɒ ไม่มีในสำเนียงอเมริกันมาตรฐาน
-    // ส่วน tj dj nj คือการคงเสียง y หลังพยัญชนะ ซึ่งอเมริกันตัดทิ้ง
+    /**
+     * สระ əʊ ɜː ɑː ɒ ไม่มีในสำเนียงอเมริกันมาตรฐาน
+     *
+     * ส่วน tj dj nj คือการคงเสียง y หลังพยัญชนะ (tune /tjuːn/ · new /njuː/)
+     * ซึ่งอเมริกันตัดทิ้ง — แต่ต้องดูตัวที่ตามมาด้วย เพราะเสียง y แบบอังกฤษ
+     * มาก่อนสระ u เท่านั้น ถ้าเช็คแค่ตัวอักษรสองตัวจะจับคำที่ถูกอยู่แล้วผิด:
+     * onion /ˈʌnj(ə)n/ มี nj ที่เป็นเสียงควบปกติ ออกเสียงเหมือนกันทั้งสองสำเนียง
+     * (เจอตอนนำเข้าคำ A2 — เทสฟ้อง onion ทั้งที่คำอ่านเป็นอเมริกันถูกต้อง)
+     */
     const british = WORDS.filter((word) =>
-      /əʊ|ɜː|ɑː|ɒ|tj|dj|nj/.test(word.ipa),
+      /əʊ|ɜː|ɑː|ɒ|[tdn]j(?=[uʊ])/.test(word.ipa),
     );
 
     expect(british.map((word) => `${word.en} ${word.ipa}`)).toEqual([]);
+  });
+
+  /** กันการแก้เทสข้างบนให้หลวมจนไม่จับอะไรเลย */
+  it("ตัวตรวจสำเนียงอังกฤษยังจับของจริงได้", () => {
+    const rpMarkers = /əʊ|ɜː|ɑː|ɒ|[tdn]j(?=[uʊ])/;
+
+    // ตัวอย่างคำอ่านสำเนียงอังกฤษจริงจากพจนานุกรม
+    expect(rpMarkers.test("/njuː/")).toBe(true);
+    expect(rpMarkers.test("/tjuːn/")).toBe(true);
+    expect(rpMarkers.test("/ˈstjuːdnt/")).toBe(true);
+    expect(rpMarkers.test("/ɡəʊ/")).toBe(true);
+    expect(rpMarkers.test("/bɑːθ/")).toBe(true);
+
+    // ตัวอย่างคำอ่านอเมริกันที่ต้องไม่ถูกจับ
+    expect(rpMarkers.test("/ˈʌnj(ə)n/")).toBe(false);
+    expect(rpMarkers.test("/ˈstudnt/")).toBe(false);
+    expect(rpMarkers.test("/ɡoʊ/")).toBe(false);
   });
 
   it("เอกสารคำอ่านบอกที่มาและสำเนียงที่เลือก", () => {
