@@ -16,7 +16,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const WORDS_FILE = join(ROOT, "src/content/words.pre-a1.json");
+const WORDS_FILE = join(ROOT, "src/content/words.json");
 const REVIEW_FILE = join(ROOT, "docs/thai-review.md");
 
 /** หน่วงระหว่างคำ (มิลลิวินาที) */

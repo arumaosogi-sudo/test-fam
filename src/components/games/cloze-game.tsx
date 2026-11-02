@@ -27,7 +27,8 @@ const MAX_TYPE_TRIES = 2;
 
 type ClozeGameProps = {
   itemId: string;
-  word: Word;
+  /** ต้องมีประโยคตัวอย่าง ไม่งั้นไม่มีอะไรให้เติม — ตัวเรียกเป็นคนกรองให้ */
+  word: Word & { sentence: string };
   level: ClozeLevel;
   onComplete: (attempts: AttemptDraft[]) => void;
 };

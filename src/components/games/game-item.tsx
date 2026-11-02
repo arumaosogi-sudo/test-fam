@@ -66,10 +66,23 @@ export function GameItem({ item, onComplete }: GameItemProps) {
     );
   }
 
+  // คำที่ยังไม่มีประโยคตัวอย่างเล่นเกมเติมคำไม่ได้ ให้ดูภาพแทน
+  // ปกติ buildItems กรองให้แล้ว อันนี้กันกรณีข้อมูลเก่าที่ค้างอยู่ใน store
+  if (!word.sentence) {
+    return (
+      <PictureGame
+        itemId={item.id}
+        word={word}
+        variant="choose"
+        onComplete={onComplete}
+      />
+    );
+  }
+
   return (
     <ClozeGame
       itemId={item.id}
-      word={word}
+      word={{ ...word, sentence: word.sentence }}
       level={item.level}
       onComplete={onComplete}
     />

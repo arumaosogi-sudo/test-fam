@@ -78,5 +78,61 @@
     "titleTh": "คำกริยา",
     "titleEn": "Action Words",
     "emoji": "🏃"
+  },
+  {
+    "id": "u-people",
+    "cefr": "A1",
+    "order": 11,
+    "titleTh": "คน",
+    "titleEn": "People",
+    "emoji": "🧑"
+  },
+  {
+    "id": "u-jobs",
+    "cefr": "A1",
+    "order": 12,
+    "titleTh": "อาชีพ",
+    "titleEn": "Jobs",
+    "emoji": "🧑‍🍳"
+  },
+  {
+    "id": "u-places",
+    "cefr": "A1",
+    "order": 13,
+    "titleTh": "สถานที่",
+    "titleEn": "Places",
+    "emoji": "🏥"
+  },
+  {
+    "id": "u-travel",
+    "cefr": "A1",
+    "order": 14,
+    "titleTh": "การเดินทาง",
+    "titleEn": "Getting around",
+    "emoji": "🚆"
+  },
+  {
+    "id": "u-home",
+    "cefr": "A1",
+    "order": 15,
+    "titleTh": "ของใช้ในบ้าน",
+    "titleEn": "Around the house",
+    "emoji": "📺"
+  },
+  {
+    "id": "u-nature",
+    "cefr": "A1",
+    "order": 16,
+    "titleTh": "ธรรมชาติ",
+    "titleEn": "Nature",
+    "emoji": "☀️"
+  },
+  {
+    "id": "u-everyday",
+    "cefr": "A1",
+    "order": 17,
+    "titleTh": "ของใช้ประจำวัน",
+    "titleEn": "Everyday things",
+    "emoji": "👗"
   }
 ]

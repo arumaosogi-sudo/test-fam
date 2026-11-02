@@ -93,7 +93,8 @@ export const wordSchema = z.object({
     .min(1)
     .refine((value) => value.split(BLANK).length === 2, {
       message: `ประโยคตัวอย่างต้องมีช่องว่าง ${BLANK} พอดีหนึ่งช่อง`,
-    }),
+    })
+    .optional(),
   /** ภาพประกอบชั่วคราวเป็นอิโมจิ จะแทนที่ด้วยภาพจริงในภารกิจ T205 */
   emoji: z.string().min(1),
   unitId: z.string().min(1),

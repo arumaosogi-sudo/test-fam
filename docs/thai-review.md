@@ -2,12 +2,12 @@
 
 สร้างด้วย `npm run check:thai` — อย่าแก้ไฟล์นี้ด้วยมือ
 
-เทียบคำแปลทั้ง 120 คำกับ [English Wiktionary](https://en.wiktionary.org/)
+เทียบคำแปลทั้ง 178 คำกับ [English Wiktionary](https://en.wiktionary.org/)
 ผ่านข้อมูลที่สกัดเป็น JSON แล้วของ [kaikki.org](https://kaikki.org/)
 
 | สถานะ | จำนวน | ความหมาย |
 |---|---|---|
-| `wiktionary` | 110 | คำแปลของเราปรากฏใน Wiktionary ตรงตัว |
+| `wiktionary` | 168 | คำแปลของเราปรากฏใน Wiktionary ตรงตัว |
 | `adapted` | 10 | ต่างจากพจนานุกรมโดยตั้งใจ มีเหตุผลกำกับด้านล่าง |
 | `unverified` | 0 | ยังไม่มีอะไรรองรับ **ต้องให้คนตรวจ** |
 

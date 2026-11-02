@@ -30,8 +30,9 @@
 | T103 | **Elo adaptive selector** + unit test | M | AI | ✅ 19 เทส | `src/lib/adaptive/elo.ts` |
 | T104 | ระบบ XP / level / streak + streak freeze | S | AI | ✅ 22 เทส | `src/lib/progress/xp.ts` |
 | T105 | Mastery 4 ทักษะ x 0–5 ดาว ต่อคำ | S | AI | ✅ 10 เทส | `src/lib/progress/mastery.ts` |
-| T106 | คลังข้อมูล Pre-A1 **120 คำ / 10 หน่วย** | M | ร่วม | ⚠️ **คำแปลตรวจกับพจนานุกรมเปิดแล้ว** (110/120 ตรงตัว · 10 ปรับเองมีเหตุผล · ดู ADR-0007) · **คำอ่าน IPA กับประโยคตัวอย่างยังไม่ได้ตรวจ** | `src/content/words.pre-a1.json` |
-| T107 | ตัวสร้างด่านจากคลังคำ (28 ด่าน) | M | AI | ✅ | `src/lib/content/lessons.ts` |
+| T106 | คลังข้อมูล Pre-A1 **120 คำ / 10 หน่วย** | M | ร่วม | ⚠️ **คำแปลตรวจกับพจนานุกรมเปิดแล้ว** (110/120 ตรงตัว · 10 ปรับเองมีเหตุผล · ดู ADR-0007) · **คำอ่าน IPA กับประโยคตัวอย่างยังไม่ได้ตรวจ** | `src/content/words.json` |
+| T106b | นำเข้า NGSL เพิ่ม **58 คำ / 7 หน่วย ระดับ A1** | M | AI | ⚠️ คำแปลและ IPA มาจากพจนานุกรมทั้งหมด · **ยังไม่มีประโยคตัวอย่าง** เกมเติมคำจึงข้ามคำกลุ่มนี้ | `src/content/words.json` |
+| T107 | ตัวสร้างด่านจากคลังคำ (42 ด่าน) | M | AI | ✅ | `src/lib/content/lessons.ts` |
 | T108 | หน้า `/learn` แผนที่ด่าน + สถานะล็อก/ผ่าน/ดาว | M | AI | ✅ | `src/app/learn/page.tsx` |
 | T109 | Session runner: คุมลำดับข้อ สรุปผล มอบ XP | M | AI | ✅ 16 เทส | `src/lib/progress/session.ts` |
 | T110 | เก็บความคืบหน้าในเครื่อง (localStorage) | S | AI | ✅ validate ด้วย zod ตอนอ่านกลับ | `src/store/progress-store.ts` |

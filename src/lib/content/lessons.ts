@@ -8,7 +8,7 @@ import type {
   Word,
 } from "@/lib/types";
 
-import { UNITS, wordsInUnit } from "./index";
+import { UNITS, getWord, wordsInUnit } from "./index";
 
 /** คำต่อหนึ่งด่าน — 5 คำคือจำนวนที่เด็กอนุบาลรับไหวในหนึ่งรอบ */
 export const WORDS_PER_LESSON = 5;
@@ -85,6 +85,16 @@ export function previousLesson(lessonId: string): Lesson | undefined {
   const index = LESSONS.findIndex((lesson) => lesson.id === lessonId);
   if (index <= 0) return undefined;
   return LESSONS[index - 1];
+}
+
+/**
+ * คำนี้เล่นเกมเติมคำได้ไหม — ต้องมีประโยคตัวอย่างก่อน
+ *
+ * คำที่นำเข้าจาก NGSL ยังไม่มีประโยค (ดู docs/CURRICULUM.md) เกมเติมคำจึงข้ามไป
+ * แล้วให้ข้อดูภาพแทน ดีกว่าโชว์ประโยคเปล่าหรือทำให้ทั้งด่านพัง
+ */
+function canCloze(wordId: string): boolean {
+  return Boolean(getWord(wordId)?.sentence);
 }
 
 function shuffle<T>(items: T[], random: () => number): T[] {
@@ -189,7 +199,7 @@ export function buildItems(
     (wordId, index) => {
       const level = levelOf(wordId);
 
-      if (index % 2 === 0) {
+      if (index % 2 === 0 || !canCloze(wordId)) {
         return {
           kind: "picture",
           id: `${lesson.id}-picture-${index + 1}`,
@@ -248,12 +258,19 @@ export function buildReviewItems(
           variant: pictureVariantFor(level, floor),
         };
       default:
-        return {
-          kind: "cloze",
-          id: `review-cloze-${wordId}`,
-          wordIds: [wordId],
-          level: clozeLevelFor(level, floor),
-        };
+        return canCloze(wordId)
+          ? {
+              kind: "cloze",
+              id: `review-cloze-${wordId}`,
+              wordIds: [wordId],
+              level: clozeLevelFor(level, floor),
+            }
+          : {
+              kind: "picture",
+              id: `review-picture-${wordId}`,
+              wordIds: [wordId],
+              variant: pictureVariantFor(level, floor),
+            };
     }
   });
 }

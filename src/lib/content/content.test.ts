@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { BLANK } from "@/lib/types";
+import { BLANK, type Word } from "@/lib/types";
 
 import { UNITS, WORDS, getUnit, getWord, wordsInUnit } from "./index";
 import { fillSentence, sentenceWithGap, splitSentence } from "./sentence";
@@ -26,10 +26,17 @@ import {
  * เทสชุดนี้ตรวจ "คุณภาพของเนื้อหา" ไม่ใช่แค่ตรรกะ
  * เพราะคลังคำจะถูกแก้โดยคนทำเนื้อหา ไม่ใช่โปรแกรมเมอร์
  */
-describe("คลังคำ Pre-A1", () => {
-  it("มีครบ 120 คำ และ 10 หน่วย ตามแผนเนื้อหา", () => {
-    expect(WORDS.length).toBe(120);
-    expect(UNITS.length).toBe(10);
+describe("คลังคำ", () => {
+  it("มีคำและหน่วยครบตามที่นำเข้าไว้", () => {
+    // ตัวเลขนี้เป็นหมุดกันคำหายโดยไม่มีใครรู้ ไม่ใช่เป้าหมายของเนื้อหา
+    expect(WORDS.length).toBe(178);
+    expect(UNITS.length).toBe(17);
+  });
+
+  it("ทุกหน่วยมีคำอยู่จริง ไม่มีหน่วยว่าง", () => {
+    for (const unit of UNITS) {
+      expect(wordsInUnit(unit.id).length, unit.id).toBeGreaterThan(0);
+    }
   });
 
   it("id ของคำและของหน่วยไม่ซ้ำกัน", () => {
@@ -70,10 +77,15 @@ describe("คลังคำ Pre-A1", () => {
     }
   });
 
-  it("ระดับของทุกคำเป็น Pre-A1 ตรงกับชื่อไฟล์", () => {
+  it("ระดับของคำตรงกับระดับของหน่วยที่สังกัด", () => {
+    // ถ้าสองอย่างนี้ไม่ตรงกัน แผนที่ด่านจะบอกระดับหนึ่งแต่สอนอีกระดับหนึ่ง
     for (const word of WORDS) {
-      expect(word.cefr).toBe("Pre-A1");
+      expect(getUnit(word.unitId)?.cefr, word.id).toBe(word.cefr);
     }
+  });
+
+  it("มีเนื้อหามากกว่าหนึ่งระดับแล้ว", () => {
+    expect(new Set(UNITS.map((unit) => unit.cefr)).size).toBeGreaterThan(1);
   });
 
   it("getWord หาเจอและคืน undefined เมื่อไม่มี", () => {
@@ -253,8 +265,20 @@ describe("clozeLevelFor / pictureVariantFor", () => {
  * เทสชุดนี้จึงตรวจสิ่งที่ทำให้ "ข้อนั้นเล่นไม่ได้" ไม่ใช่ตรวจสำนวน
  */
 describe("ประโยคตัวอย่างของเกมเติมคำ", () => {
-  it("ทุกคำมีประโยคที่มีช่องว่างพอดีหนึ่งช่อง", () => {
-    for (const word of WORDS) {
+  /**
+   * คำที่นำเข้าจาก NGSL ยังไม่มีประโยคตัวอย่าง เกมเติมคำจึงข้ามคำพวกนั้นไป
+   * เทสชุดนี้ตรวจเฉพาะคำที่มีประโยคแล้วว่าประโยคนั้นใช้ได้จริง
+   */
+  const withSentence = WORDS.filter(
+    (word): word is Word & { sentence: string } => Boolean(word.sentence),
+  );
+
+  it("มีคำที่มีประโยคให้ตรวจจริง ไม่ใช่ผ่านเพราะไม่มีข้อมูล", () => {
+    expect(withSentence.length).toBeGreaterThan(100);
+  });
+
+  it("ทุกประโยคมีช่องว่างพอดีหนึ่งช่อง", () => {
+    for (const word of withSentence) {
       const { before, after } = splitSentence(word.sentence);
       expect(`${before}${BLANK}${after}`, word.id).toBe(word.sentence);
       expect(word.sentence.split(BLANK).length, word.id).toBe(2);
@@ -262,7 +286,7 @@ describe("ประโยคตัวอย่างของเกมเติ�
   });
 
   it("ประโยคไม่เฉลยคำตอบด้วยตัวเอง", () => {
-    for (const word of WORDS) {
+    for (const word of withSentence) {
       const around = word.sentence.replace(BLANK, " ");
       const appearsAlready = new RegExp(`\b${word.en}\b`, "i").test(around);
 
@@ -272,13 +296,13 @@ describe("ประโยคตัวอย่างของเกมเติ�
   });
 
   it("ประโยคเป็นภาษาอังกฤษล้วน ไม่มีตัวอักษรไทยปน", () => {
-    for (const word of WORDS) {
+    for (const word of withSentence) {
       expect(/[฀-๿]/.test(word.sentence), word.id).toBe(false);
     }
   });
 
   it("ประโยคสั้นพอสำหรับ Pre-A1 และจบด้วยเครื่องหมายวรรคตอน", () => {
-    for (const word of WORDS) {
+    for (const word of withSentence) {
       const filled = fillSentence(word.sentence, word.en);
 
       expect(filled.length, `${word.id}: ${filled}`).toBeLessThanOrEqual(45);
@@ -288,13 +312,13 @@ describe("ประโยคตัวอย่างของเกมเติ�
   });
 
   it("ประโยคที่เติมคำแล้วมีคำตอบอยู่จริง", () => {
-    for (const word of WORDS) {
+    for (const word of withSentence) {
       expect(fillSentence(word.sentence, word.en), word.id).toContain(word.en);
     }
   });
 
   it("ประโยคที่ใช้อ่านออกเสียงไม่มีสัญลักษณ์ช่องว่างหลุดไปให้เครื่องอ่าน", () => {
-    for (const word of WORDS) {
+    for (const word of withSentence) {
       expect(sentenceWithGap(word.sentence), word.id).not.toContain(BLANK);
     }
   });

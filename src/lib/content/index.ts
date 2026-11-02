@@ -1,5 +1,5 @@
-import rawUnits from "@/content/units.pre-a1.json";
-import rawWords from "@/content/words.pre-a1.json";
+import rawUnits from "@/content/units.json";
+import rawWords from "@/content/words.json";
 import { unitSchema, wordSchema, type Unit, type Word } from "@/lib/types";
 
 /**
