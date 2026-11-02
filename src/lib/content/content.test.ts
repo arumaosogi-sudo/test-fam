@@ -273,8 +273,13 @@ describe("ประโยคตัวอย่างของเกมเติ�
     (word): word is Word & { sentence: string } => Boolean(word.sentence),
   );
 
-  it("มีคำที่มีประโยคให้ตรวจจริง ไม่ใช่ผ่านเพราะไม่มีข้อมูล", () => {
-    expect(withSentence.length).toBeGreaterThan(100);
+  it("ตอนนี้ทุกคำมีประโยคแล้ว", () => {
+    // schema ยอมให้คำไม่มีประโยคได้ (เกมเติมคำจะข้ามไป) แต่คลังปัจจุบันมีครบ
+    // เพิ่มคำใหม่โดยไม่เขียนประโยค เทสนี้จะพังให้รู้ตัวก่อน
+    const withoutSentence = WORDS.filter((word) => !word.sentence);
+
+    expect(withoutSentence.map((word) => word.id)).toEqual([]);
+    expect(withSentence.length).toBe(WORDS.length);
   });
 
   it("ทุกประโยคมีช่องว่างพอดีหนึ่งช่อง", () => {
