@@ -230,5 +230,61 @@
     "titleTh": "สนุกและศิลปะ",
     "titleEn": "Fun & Art",
     "emoji": "🎵"
+  },
+  {
+    "id": "u-days",
+    "cefr": "A1",
+    "order": 30,
+    "titleTh": "วันในสัปดาห์",
+    "titleEn": "Days of the Week",
+    "emoji": "📆"
+  },
+  {
+    "id": "u-months-1",
+    "cefr": "A1",
+    "order": 31,
+    "titleTh": "เดือน ม.ค.–มิ.ย.",
+    "titleEn": "Months 1–6",
+    "emoji": "🗓️"
+  },
+  {
+    "id": "u-months-2",
+    "cefr": "A1",
+    "order": 32,
+    "titleTh": "เดือน ก.ค.–ธ.ค.",
+    "titleEn": "Months 7–12",
+    "emoji": "🗓️"
+  },
+  {
+    "id": "u-numbers-2",
+    "cefr": "A1",
+    "order": 33,
+    "titleTh": "ตัวเลข 11–20",
+    "titleEn": "Numbers 11–20",
+    "emoji": "🔢"
+  },
+  {
+    "id": "u-numbers-3",
+    "cefr": "A1",
+    "order": 34,
+    "titleTh": "ตัวเลขหลักสิบและร้อย",
+    "titleEn": "Tens & Hundreds",
+    "emoji": "💯"
+  },
+  {
+    "id": "u-questions",
+    "cefr": "A1",
+    "order": 35,
+    "titleTh": "คำถาม",
+    "titleEn": "Question Words",
+    "emoji": "❓"
+  },
+  {
+    "id": "u-position",
+    "cefr": "A1",
+    "order": 36,
+    "titleTh": "คำบอกตำแหน่ง",
+    "titleEn": "Where Things Are",
+    "emoji": "📍"
   }
 ]

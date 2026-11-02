@@ -7,7 +7,7 @@
 |---|---|---|
 | [OpenMoji](https://openmoji.org/) | ภาพประกอบคำศัพท์ทั้งหมดใน `public/words/` | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | [English Wiktionary](https://en.wiktionary.org/) ผ่าน [kaikki.org](https://kaikki.org/) | คำแปลไทยและคำอ่าน IPA | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
-| [NGSL 1.2](https://www.newgeneralservicelist.com/new-general-service-list) | รายการคำที่ใช้เลือกคำศัพท์ระดับ A1 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| [NGSL 1.2](https://www.newgeneralservicelist.com/new-general-service-list) | รายการคำที่ใช้เลือกคำศัพท์ระดับ A1 รวมรายการเสริม (วัน เดือน ตัวเลข) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 
 ## ข้อความให้เครดิตตามที่แต่ละแหล่งขอ
 

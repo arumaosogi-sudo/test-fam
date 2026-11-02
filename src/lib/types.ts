@@ -30,6 +30,8 @@ export const partOfSpeechSchema = z.enum([
   "pronoun",
   "verb",
   "adjective",
+  "adverb",
+  "preposition",
   "number",
   "phrase",
 ]);
