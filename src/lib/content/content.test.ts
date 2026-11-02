@@ -29,8 +29,8 @@ import {
 describe("คลังคำ", () => {
   it("มีคำและหน่วยครบตามที่นำเข้าไว้", () => {
     // ตัวเลขนี้เป็นหมุดกันคำหายโดยไม่มีใครรู้ ไม่ใช่เป้าหมายของเนื้อหา
-    expect(WORDS.length).toBe(236);
-    expect(UNITS.length).toBe(22);
+    expect(WORDS.length).toBe(290);
+    expect(UNITS.length).toBe(29);
   });
 
   it("ทุกหน่วยมีคำอยู่จริง ไม่มีหน่วยว่าง", () => {
@@ -417,6 +417,26 @@ describe("ภาพประกอบคำศัพท์", () => {
     for (const word of withImage) {
       const svg = readFileSync(join(dir, `${word.id}.svg`), "utf8");
       expect(svg.trimStart().startsWith("<svg"), word.id).toBe(true);
+    }
+  });
+
+  it("ไม่มีคำสองคำที่ใช้ภาพเดียวกัน", () => {
+    // ถ้าซ้ำ เกมจับคู่กับเกมฟังจะมีภาพเหมือนกันสองใบ เด็กแยกไม่ออกว่าอันไหนคือคำตอบ
+    const byEmoji = new Map<string, string[]>();
+    for (const word of withImage) {
+      if (!word.emoji) continue;
+      byEmoji.set(word.emoji, [...(byEmoji.get(word.emoji) ?? []), word.id]);
+    }
+
+    const shared = [...byEmoji.entries()].filter(([, ids]) => ids.length > 1);
+    expect(shared.map(([emoji, ids]) => `${emoji} -> ${ids.join(", ")}`)).toEqual(
+      [],
+    );
+  });
+
+  it("คำที่มีภาพต้องบอกด้วยว่าภาพมาจากอิโมจิตัวไหน", () => {
+    for (const word of withImage) {
+      expect(word.emoji, word.id).toBeTruthy();
     }
   });
 

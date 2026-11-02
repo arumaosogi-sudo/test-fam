@@ -174,5 +174,61 @@
     "titleTh": "คำพื้นฐาน",
     "titleEn": "Basic Words",
     "emoji": "💬"
+  },
+  {
+    "id": "u-verbs-3",
+    "cefr": "A1",
+    "order": 23,
+    "titleTh": "คำกริยาในห้องเรียน",
+    "titleEn": "School Verbs",
+    "emoji": "✏️"
+  },
+  {
+    "id": "u-verbs-4",
+    "cefr": "A1",
+    "order": 24,
+    "titleTh": "คำกริยาการเคลื่อนไหว",
+    "titleEn": "Action Verbs",
+    "emoji": "🏊"
+  },
+  {
+    "id": "u-describe-3",
+    "cefr": "A1",
+    "order": 25,
+    "titleTh": "คำบอกลักษณะ 3",
+    "titleEn": "Describing Words 3",
+    "emoji": "💧"
+  },
+  {
+    "id": "u-feelings",
+    "cefr": "A1",
+    "order": 26,
+    "titleTh": "ความรู้สึกและลักษณะ",
+    "titleEn": "Feelings & Qualities",
+    "emoji": "😊"
+  },
+  {
+    "id": "u-outdoors",
+    "cefr": "A1",
+    "order": 27,
+    "titleTh": "กลางแจ้ง",
+    "titleEn": "Outdoors",
+    "emoji": "🏞️"
+  },
+  {
+    "id": "u-in-the-house",
+    "cefr": "A1",
+    "order": 28,
+    "titleTh": "ของในบ้าน",
+    "titleEn": "In the House",
+    "emoji": "🍽️"
+  },
+  {
+    "id": "u-fun",
+    "cefr": "A1",
+    "order": 29,
+    "titleTh": "สนุกและศิลปะ",
+    "titleEn": "Fun & Art",
+    "emoji": "🎵"
   }
 ]
