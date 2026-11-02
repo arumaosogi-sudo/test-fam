@@ -134,10 +134,19 @@ export default function LearnPage() {
           href="/speak"
           className={cn(
             buttonVariants({ size: "lg", variant: "neutral" }),
-            "w-full sm:col-span-2",
+            "w-full",
           )}
         >
           🗣️ ซ้อมพูดคำที่เรียนแล้ว
+        </Link>
+        <Link
+          href="/mixed"
+          className={cn(
+            buttonVariants({ size: "lg", variant: "neutral" }),
+            "w-full sm:col-span-2",
+          )}
+        >
+          🎲 รวมทุกหัวข้อ — สลับคำจากทุกบทที่เรียนมา
         </Link>
       </div>
 
