@@ -140,6 +140,15 @@ export default function LearnPage() {
           🗣️ ซ้อมพูดคำที่เรียนแล้ว
         </Link>
         <Link
+          href="/read"
+          className={cn(
+            buttonVariants({ size: "lg", variant: "neutral" }),
+            "w-full",
+          )}
+        >
+          📖 อ่านออกเสียง
+        </Link>
+        <Link
           href="/mixed"
           className={cn(
             buttonVariants({ size: "lg", variant: "neutral" }),

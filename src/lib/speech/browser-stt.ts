@@ -48,6 +48,7 @@ type RecognitionInstance = {
     | null;
   onerror: ((event: { error: string }) => void) | null;
   onend: (() => void) | null;
+  onspeechstart: (() => void) | null;
 };
 
 type AvailabilityOptions = { langs: string[]; processLocally: boolean };
@@ -150,7 +151,14 @@ class BrowserRecognizer implements SpeechRecognizer {
     }
   }
 
-  listen({ lang = DEFAULT_LANG, onInterim, onDone }: ListenOptions): ListenHandle {
+  listen({
+    lang = DEFAULT_LANG,
+    continuous = false,
+    timeoutMs = HARD_TIMEOUT_MS,
+    onInterim,
+    onSpeechStart,
+    onDone,
+  }: ListenOptions): ListenHandle {
     const Recognition = getConstructor();
 
     if (!Recognition) {
@@ -160,8 +168,8 @@ class BrowserRecognizer implements SpeechRecognizer {
 
     const recognition = new Recognition();
     recognition.lang = lang;
-    // ข้อหนึ่งคือหนึ่งคำหรือหนึ่งประโยค ไม่ต้องฟังต่อเนื่อง
-    recognition.continuous = false;
+    // ข้อพูดทีละคำไม่ต้องฟังต่อเนื่อง ส่วนการอ่านทั้งเรื่องต้อง
+    recognition.continuous = continuous;
     recognition.interimResults = true;
     recognition.maxAlternatives = MAX_ALTERNATIVES;
 
@@ -177,6 +185,8 @@ class BrowserRecognizer implements SpeechRecognizer {
     let settled = false;
     let bestAlternatives: string[] = [];
     let bestConfidence: number | undefined;
+    /** ข้อความช่วงที่ถอดจบแล้ว ใช้เฉพาะโหมดต่อเนื่อง */
+    const finalSegments: string[] = [];
 
     const finish = (outcome: Parameters<typeof onDone>[0]) => {
       if (settled) return;
@@ -188,14 +198,18 @@ class BrowserRecognizer implements SpeechRecognizer {
     const timer = setTimeout(() => {
       recognition.abort();
       finish({ kind: "failed", reason: "no-speech" });
-    }, HARD_TIMEOUT_MS);
+    }, timeoutMs);
+
+    recognition.onspeechstart = () => onSpeechStart?.();
 
     recognition.onresult = (event) => {
+      let interim = "";
+
       for (let i = event.resultIndex; i < event.results.length; i += 1) {
         const result = event.results[i];
 
         if (!result.isFinal) {
-          onInterim?.(result[0]?.transcript ?? "");
+          interim = result[0]?.transcript ?? "";
           continue;
         }
 
@@ -208,8 +222,20 @@ class BrowserRecognizer implements SpeechRecognizer {
         if (alternatives.length > 0) {
           bestAlternatives = alternatives;
           bestConfidence = result[0]?.confidence;
+          if (continuous) finalSegments.push(alternatives[0]);
         }
       }
+
+      /**
+       * โหมดต่อเนื่องส่งข้อความ **ที่สะสมมาทั้งหมด** ไม่ใช่เฉพาะช่วงล่าสุด
+       * เพราะตัวไฮไลต์ของเกมอ่านต้องรู้ว่าอ่านมาถึงไหนของทั้งเรื่อง
+       * ไม่ใช่รู้แค่ประโยคที่กำลังพูดอยู่
+       */
+      onInterim?.(
+        continuous
+          ? [...finalSegments, interim].join(" ").trim()
+          : interim,
+      );
 
       // ไม่ปิดงานที่นี่ รอ onend เพื่อให้ได้ผลสุดท้ายครบทุกก้อน
     };
@@ -233,9 +259,19 @@ class BrowserRecognizer implements SpeechRecognizer {
         return;
       }
 
+      /**
+       * โหมดต่อเนื่องคืนทุกช่วงต่อกันเป็นก้อนเดียว ไม่ใช่ตัวเลือกหลายตัว
+       * เพราะเรื่องหนึ่งคือลำดับคำชุดเดียว การเอาตัวเลือกของประโยคสุดท้าย
+       * มาเป็นคำตอบของทั้งเรื่องจะทิ้งทุกอย่างที่เด็กอ่านมาก่อนหน้า
+       */
       finish({
         kind: "heard",
-        heard: { alternatives: bestAlternatives, confidence: bestConfidence },
+        heard: {
+          alternatives: continuous
+            ? [finalSegments.join(" ").trim()]
+            : bestAlternatives,
+          confidence: bestConfidence,
+        },
       });
     };
 

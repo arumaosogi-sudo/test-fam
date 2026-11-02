@@ -270,6 +270,32 @@ export const profileSchema = z.object({
 });
 export type Profile = z.infer<typeof profileSchema>;
 
+/**
+ * เรื่องอ่านสั้นสำหรับโหมดอ่านออกเสียง (G6)
+ *
+ * แยกประโยคเป็นรายการ ไม่ใช่ก้อนข้อความเดียว เพราะเกมไฮไลต์ทีละประโยค
+ * และต้องให้เด็กกดฟังเสียงต้นแบบทีละประโยคได้ ถ้าเก็บเป็นก้อนเดียวจะต้อง
+ * ตัดประโยคด้วยจุดตอนแสดงผล ซึ่งพังทันทีที่มีคำย่อหรือตัวเลขทศนิยม
+ */
+export const readingSchema = z.object({
+  id: z.string().min(1),
+  cefr: cefrLevelSchema,
+  titleTh: z.string().min(1),
+  titleEn: z.string().min(1),
+  sentences: z.array(z.string().min(1)).min(1),
+  /**
+   * คำถามท้ายเรื่องเป็นภาษาไทย เพราะวัด "เข้าใจเรื่องที่อ่านไหม"
+   * ถ้าถามเป็นภาษาอังกฤษ เด็กที่เข้าใจเรื่องแต่ยังอ่านคำถามไม่ออกจะตอบผิด
+   * ซึ่งกลายเป็นวัดการอ่านคำถามแทนที่จะวัดความเข้าใจเรื่อง
+   */
+  question: z.object({
+    promptTh: z.string().min(1),
+    choicesTh: z.array(z.string().min(1)).length(3),
+    answerIndex: z.number().int().min(0).max(2),
+  }),
+});
+export type Reading = z.infer<typeof readingSchema>;
+
 export const lessonResultSchema = z.object({
   lessonId: z.string(),
   stars: z.number().int().min(0).max(3),

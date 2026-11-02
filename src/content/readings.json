@@ -1,0 +1,105 @@
+[
+  {
+    "id": "r-my-cat",
+    "cefr": "Pre-A1",
+    "titleTh": "แมวของฉัน",
+    "titleEn": "My Cat",
+    "sentences": [
+      "I have a cat.",
+      "My cat is black and white.",
+      "She is small and very soft.",
+      "She likes milk and fish.",
+      "In the day she sleeps on my bed.",
+      "She runs and jumps.",
+      "I am happy with my cat."
+    ],
+    "question": {
+      "promptTh": "แมวในเรื่องนี้สีอะไร",
+      "choicesTh": ["ดำกับขาว", "แดงกับขาว", "ดำกับเหลือง"],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-at-school",
+    "cefr": "Pre-A1",
+    "titleTh": "ที่โรงเรียน",
+    "titleEn": "At School",
+    "sentences": [
+      "I go to school on the bus.",
+      "My bag is big.",
+      "In my bag I have a book, a pen and two pencils.",
+      "My teacher is good.",
+      "We read and write.",
+      "We sing a song.",
+      "I like school."
+    ],
+    "question": {
+      "promptTh": "ในกระเป๋ามีดินสอกี่แท่ง",
+      "choicesTh": ["สองแท่ง", "หนึ่งแท่ง", "สามแท่ง"],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-family",
+    "cefr": "Pre-A1",
+    "titleTh": "ครอบครัวของฉัน",
+    "titleEn": "My Family",
+    "sentences": [
+      "This is my family.",
+      "My mother is a cook.",
+      "My father is a farmer.",
+      "I have one sister and one brother.",
+      "We eat rice and egg.",
+      "We drink water.",
+      "My grandmother gives me cake.",
+      "I like my family."
+    ],
+    "question": {
+      "promptTh": "แม่ทำอาชีพอะไร",
+      "choicesTh": ["แม่ครัว", "ชาวนา", "ศิลปิน"],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-red-bus",
+    "cefr": "A1",
+    "titleTh": "รถบัสคันสีแดง",
+    "titleEn": "The Red Bus",
+    "sentences": [
+      "The red bus comes at ten.",
+      "Twenty students are on the bus.",
+      "I am between my mother and a man.",
+      "My bag is under the seat.",
+      "The bus is slow but it is warm.",
+      "We go to the park.",
+      "The park is near the river.",
+      "We see a tree and ten flowers."
+    ],
+    "question": {
+      "promptTh": "กระเป๋าอยู่ที่ไหน",
+      "choicesTh": ["ใต้ที่นั่ง", "บนที่นั่ง", "ข้างหลังที่นั่ง"],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-monday",
+    "cefr": "A1",
+    "titleTh": "วันจันทร์",
+    "titleEn": "Monday",
+    "sentences": [
+      "On Monday I go to school.",
+      "I wash my face and my hands.",
+      "I wear a clean dress.",
+      "I eat bread and drink milk.",
+      "My mother drives the car.",
+      "The school is far from my house.",
+      "We study and we count numbers.",
+      "I like Monday."
+    ],
+    "question": {
+      "promptTh": "ตอนเช้าวันจันทร์ ดื่มอะไร",
+      "choicesTh": ["นม", "น้ำ", "น้ำผลไม้"],
+      "answerIndex": 0
+    }
+  }
+]

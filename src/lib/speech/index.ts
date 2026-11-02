@@ -22,4 +22,5 @@ export function getRecognizer(): SpeechRecognizer {
 
 export * from "./hints";
 export * from "./judge";
+export * from "./read-aloud";
 export * from "./types";
