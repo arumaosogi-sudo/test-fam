@@ -185,7 +185,9 @@ describe("buildItems", () => {
 
     // ฟังหนึ่งข้อต่อคำ และผลิตคำเองหนึ่งข้อต่อคำ ไม่มีคำไหนตกหล่น
     expect(asked(["listen"])).toEqual(new Set(lesson.wordIds));
-    expect(asked(["picture", "cloze"])).toEqual(new Set(lesson.wordIds));
+    expect(asked(["picture", "cloze", "say"])).toEqual(
+      new Set(lesson.wordIds),
+    );
   });
 
   it("id ของทุกข้อไม่ซ้ำกัน เพราะใช้เป็น key และเป็น seed ของการสุ่ม", () => {
@@ -196,12 +198,12 @@ describe("buildItems", () => {
   });
 
   it("ข้อผลิตคำสลับโหมดกัน ไม่ให้เจอเกมเดียวห้าจอติด", () => {
-    const produce = buildItems(lesson, () => 0).filter(
-      (item) => item.kind === "picture" || item.kind === "cloze",
+    const produce = buildItems(lesson, () => 0).filter((item) =>
+      ["picture", "cloze", "say"].includes(item.kind),
     );
 
     expect(produce.length).toBeGreaterThan(1);
-    expect(new Set(produce.map((item) => item.kind)).size).toBe(2);
+    expect(new Set(produce.map((item) => item.kind)).size).toBe(3);
   });
 
   it("จำนวนข้อที่ต้องตอบทั้งด่านคือสามข้อต่อหนึ่งคำ", () => {
@@ -348,7 +350,19 @@ describe("buildReviewItems", () => {
   it("หมุนโหมดไม่ให้เจอเกมเดิมติดกันทั้งชุด", () => {
     const kinds = buildReviewItems(wordIds).map((item) => item.kind);
 
-    expect(new Set(kinds).size).toBe(3);
+    expect(new Set(kinds).size).toBe(4);
+  });
+
+  /**
+   * ด่านทบทวนต้องมีข้อพูดด้วย ไม่ใช่เฉพาะด่านเรียนใหม่
+   *
+   * คำที่พูดได้วันนี้ก็ลืมวิธีออกเสียงได้เหมือนคำที่สะกดได้ ถ้าการทบทวนไม่แตะ
+   * ทักษะพูดเลย ดาวทักษะพูดจะค้างอยู่ที่ค่าของวันที่เรียนคำนั้นไปตลอด
+   */
+  it("มีข้อพูดอยู่ในด่านทบทวนด้วย", () => {
+    const kinds = buildReviewItems(wordIds).map((item) => item.kind);
+
+    expect(kinds).toContain("say");
   });
 
   it("id ของทุกข้อไม่ซ้ำกัน เพราะใช้เป็น key และเป็น seed ของการสุ่ม", () => {

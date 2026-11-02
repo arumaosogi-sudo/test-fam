@@ -33,13 +33,15 @@ describe("skillForItem", () => {
     }
   });
 
-  it("ด่านหนึ่งฝึกทั้งการจำคำ การฟัง และการเขียน ไม่ใช่ทักษะเดียว", () => {
+  it("ด่านหนึ่งฝึกครบทั้งสี่ทักษะ ไม่ใช่ทักษะเดียว", () => {
     const skills = new Set(
       buildItems(LESSONS[0], () => 0, () => ({ recognize: 5, write: 5 })).map(
         skillForItem,
       ),
     );
 
-    expect(skills).toEqual(new Set(["recognize", "listen", "write"]));
+    expect(skills).toEqual(
+      new Set(["recognize", "listen", "write", "speak"]),
+    );
   });
 });

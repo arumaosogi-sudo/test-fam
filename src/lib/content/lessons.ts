@@ -199,12 +199,18 @@ export function buildItems(
     }),
   );
 
-  // สลับโหมดผลิตคำทีละคำ ไม่ให้เด็กเจอเกมเดียวกันห้าจอติด
+  /**
+   * สลับสามโหมดผลิตคำทีละคำ ไม่ให้เด็กเจอเกมเดียวกันห้าจอติด
+   *
+   * โหมดพูดเป็นตัวสำรองของทุกกรณีที่โหมดอื่นใช้กับคำนั้นไม่ได้ เพราะเป็น
+   * โหมดเดียวที่ไม่ต้องมีอะไรในคลังคำเลยนอกจากตัวคำ — คำที่ไม่มีภาพและ
+   * ไม่มีประโยคยังพูดได้ ต่างจากเดิมที่ต้องตกไปใช้โหมดฟังซึ่งไม่ได้ผลิตคำ
+   */
   const produceItems: Item[] = shuffle(lesson.wordIds, random).map(
     (wordId, index) => {
       const level = levelOf(wordId);
 
-      if ((index % 2 === 0 && canPicture(wordId)) || !canCloze(wordId)) {
+      if (index % 3 === 0 && canPicture(wordId)) {
         return {
           kind: "picture",
           id: `${lesson.id}-picture-${index + 1}`,
@@ -213,11 +219,19 @@ export function buildItems(
         };
       }
 
+      if (index % 3 === 1 && canCloze(wordId)) {
+        return {
+          kind: "cloze",
+          id: `${lesson.id}-cloze-${index + 1}`,
+          wordIds: [wordId],
+          level: clozeLevelFor(level, floor),
+        };
+      }
+
       return {
-        kind: "cloze",
-        id: `${lesson.id}-cloze-${index + 1}`,
+        kind: "say",
+        id: `${lesson.id}-say-${index + 1}`,
         wordIds: [wordId],
-        level: clozeLevelFor(level, floor),
       };
     },
   );
@@ -247,8 +261,8 @@ export function buildReviewItems(
   return wordIds.map((wordId, index) => {
     const level = levelOf(wordId);
 
-    // หมุนสามโหมดเพื่อไม่ให้เด็กเจอเกมเดิมติดกันทั้งชุด
-    switch (index % 3) {
+    // หมุนสี่โหมดเพื่อไม่ให้เด็กเจอเกมเดิมติดกันทั้งชุด
+    switch (index % 4) {
       case 0:
         return {
           kind: "listen",
@@ -266,7 +280,7 @@ export function buildReviewItems(
         }
       // ไม่มีภาพก็ตกลงไปใช้ข้อเติมคำแทน
       // falls through
-      default:
+      case 3:
         if (canCloze(wordId)) {
           return {
             kind: "cloze",
@@ -283,10 +297,15 @@ export function buildReviewItems(
             variant: pictureVariantFor(level, floor),
           };
         }
-        // ไม่มีทั้งภาพและประโยค เหลือแค่ให้ฟังเสียง ดีกว่าไม่ได้ทบทวนคำนั้นเลย
+      /**
+       * ไม่มีทั้งภาพและประโยค — ตกมาที่โหมดพูด ซึ่งใช้ได้กับทุกคำ
+       * ดีกว่าให้ฟังเสียงเฉย ๆ เพราะการทบทวนต้องการรู้ว่าเด็กผลิตคำเองได้ไหม
+       */
+      // falls through
+      default:
         return {
-          kind: "listen",
-          id: `review-listen-${wordId}`,
+          kind: "say",
+          id: `review-say-${wordId}`,
           wordIds: [wordId],
         };
     }

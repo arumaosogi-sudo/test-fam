@@ -24,6 +24,8 @@ export function skillForItem(item: Item): Skill {
       return "recognize";
     case "listen":
       return "listen";
+    case "say":
+      return "speak";
     case "picture":
       return skillForPictureVariant(item.variant);
     case "cloze":

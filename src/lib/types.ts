@@ -190,7 +190,20 @@ export type ListenItem = {
   wordIds: string[];
 };
 
-export type Item = MatchItem | ClozeItem | PictureItem | ListenItem;
+/**
+ * พูดคำให้ระบบฟัง (G5)
+ *
+ * ไม่มีโหมดย่อยและไม่มีระดับความช่วยเหลือ ต่างจากโหมดอื่น เพราะการพูด
+ * ลดความยากลงไม่ได้ — คำหนึ่งจะพูดถูกหรือไม่ถูก ไม่มีขั้น "พูดแบบมีตัวเลือก"
+ * ความช่วยเหลือของโหมดนี้อยู่ที่จำนวนครั้งที่ให้ลองและคำแนะนำการออกเสียงแทน
+ */
+export type SayItem = {
+  kind: "say";
+  id: string;
+  wordIds: string[];
+};
+
+export type Item = MatchItem | ClozeItem | PictureItem | ListenItem | SayItem;
 
 export const attemptSchema = z.object({
   wordId: z.string(),

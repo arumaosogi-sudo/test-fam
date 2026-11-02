@@ -130,6 +130,15 @@ export default function LearnPage() {
         >
           💬 คุยกับ Milo
         </Link>
+        <Link
+          href="/speak"
+          className={cn(
+            buttonVariants({ size: "lg", variant: "neutral" }),
+            "w-full sm:col-span-2",
+          )}
+        >
+          🗣️ ซ้อมพูดคำที่เรียนแล้ว
+        </Link>
       </div>
 
       <div className="space-y-6">

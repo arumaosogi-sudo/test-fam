@@ -3,12 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { getWord } from "@/lib/content";
+import { useSpeechSupported } from "@/lib/speech/use-speech-supported";
 import type { AttemptDraft, Item, Word } from "@/lib/types";
 
 import { ClozeGame } from "./cloze-game";
 import { ListenGame } from "./listen-game";
 import { MatchGame } from "./match-game";
 import { PictureGame } from "./picture-game";
+import { SayGame } from "./say-game";
 
 type GameItemProps = {
   item: Item;
@@ -23,6 +25,8 @@ type GameItemProps = {
  * โดยไม่ต้องแก้ทั้งสองหน้า
  */
 export function GameItem({ item, onComplete }: GameItemProps) {
+  const speechSupported = useSpeechSupported();
+
   if (item.kind === "match") {
     const words = item.wordIds
       .map(getWord)
@@ -55,6 +59,17 @@ export function GameItem({ item, onComplete }: GameItemProps) {
     );
   }
 
+  /**
+   * โหมดพูดเล่นได้เฉพาะเบราว์เซอร์ที่ถอดเสียงได้ (Firefox ยังไม่รองรับ)
+   *
+   * เช็คตรงนี้ไม่ใช่ตอนสร้างรายการข้อ เพราะตอนสร้างรายการเรายังไม่รู้ว่า
+   * เบราว์เซอร์ไหนจะเปิด และข้อที่สร้างไว้ถูกเก็บลงความคืบหน้าของเด็กด้วย
+   * เครื่องที่พูดไม่ได้จะตกไปเล่นโหมดอื่นของคำเดิม ดีกว่าเจอจอที่กดอะไรไม่ได้
+   */
+  if (item.kind === "say" && speechSupported) {
+    return <SayGame word={word} onComplete={onComplete} />;
+  }
+
   // เกมดูภาพต้องมีภาพ ปกติ buildItems กรองให้แล้ว อันนี้กันข้อมูลเก่าใน store
   if (item.kind === "picture" && word.image) {
     return (
@@ -67,7 +82,7 @@ export function GameItem({ item, onComplete }: GameItemProps) {
     );
   }
 
-  // มาถึงตรงนี้คือข้อเติมคำ หรือข้อดูภาพของคำที่ไม่มีภาพ
+  // มาถึงตรงนี้คือข้อเติมคำ ข้อดูภาพของคำที่ไม่มีภาพ หรือข้อพูดบนเครื่องที่พูดไม่ได้
   // คำที่ไม่มีทั้งภาพและประโยคเหลือแค่ให้ฟังเสียง ดีกว่าจอว่าง
   if (!word.sentence) {
     return <ListenGame itemId={item.id} word={word} onComplete={onComplete} />;
