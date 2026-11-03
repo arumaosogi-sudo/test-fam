@@ -46,6 +46,30 @@ describe("คลังคำ", () => {
    * ก่อนจะเจอตอนเพิ่มคำ A2 ชุดที่สอง — ตอนนี้แก้ครบทุกระดับแล้ว
    * เทสนี้จึงเป็นด่านเข้มเท่ากับของเรื่องอ่าน ไม่ใช่เพดานที่ค่อย ๆ ลดอีกต่อไป
    */
+  /**
+   * ประโยคเดียวกันห้ามใช้กับสองคำ
+   *
+   * ถ้าใช้ซ้ำ ข้อเติมคำจะมีคำตอบถูกได้มากกว่าหนึ่งคำเมื่อตัวลวงเผอิญหยิบคำที่
+   * ใช้ประโยคเดียวกันมา — "The {} is very big." ตอบ elephant, world
+   * หรือ stadium ก็ถูกทั้งนั้น (เจอ 8 แบบ 17 คำ ตอนคืนประโยคเดิม)
+   */
+  it("ไม่มีประโยคตัวอย่างที่ใช้ซ้ำกับคำอื่น", () => {
+    const bySentence = new Map<string, string[]>();
+
+    for (const word of WORDS) {
+      if (!word.sentence) continue;
+      const ids = bySentence.get(word.sentence) ?? [];
+      ids.push(word.id);
+      bySentence.set(word.sentence, ids);
+    }
+
+    const shared = [...bySentence.entries()]
+      .filter(([, ids]) => ids.length > 1)
+      .map(([sentence, ids]) => `${sentence} ← ${ids.join(", ")}`);
+
+    expect(shared).toEqual([]);
+  });
+
   it("ประโยคตัวอย่างทุกคำใช้แต่คำที่อยู่ในคลังแล้ว", () => {
     const bad = WORDS.filter((word) => word.sentence).filter((word) =>
       splitWords(word.sentence as string).some((token) => !wordIsInLevel(token)),
