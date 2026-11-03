@@ -84,6 +84,13 @@ export const FUNCTION_WORDS = new Set([
   "very",
   "too",
   "there",
+  /**
+   * `than` มีอยู่เพื่อใช้กับรูปเปรียบเทียบเท่านั้น และ `about` เป็นบุพบท
+   * ชุดเดียวกับ with / from / for / by ที่อยู่ในลิสต์นี้แล้ว
+   * ทำการ์ดคำศัพท์ให้สองคำนี้ไม่ได้ แต่เขียนประโยคระดับ B1 โดยไม่มีก็ไม่ได้
+   */
+  "than",
+  "about",
   // คำบุพบทที่คลังคำยังไม่มี (in on under behind between มีอยู่แล้ว)
   "to",
   "of",
@@ -124,8 +131,15 @@ function baseForms(word: string): string[] {
   if (word.endsWith("es")) forms.push(word.slice(0, -2));
   if (word.endsWith("s")) forms.push(word.slice(0, -1));
 
-  // รูป -ing และ -ed รวมกรณีซ้ำพยัญชนะ (running) และตัด e (making)
-  for (const suffix of ["ing", "ed"]) {
+  /**
+   * รูป -ing -ed และรูปเปรียบเทียบ -er -est
+   * รวมกรณีซ้ำพยัญชนะ (running · bigger) และกรณีตัด e (making · nicer)
+   *
+   * เพิ่ม -er กับ -est เพราะเนื้อหาระดับ B1 ใช้รูปเปรียบเทียบเป็นปกติ
+   * ("The bull is bigger than the cow.") ถ้าตัวตัดรูปผันไม่รู้จัก คำที่เด็ก
+   * เรียนมาแล้วจะถูกนับว่าเป็นคำนอกคลัง
+   */
+  for (const suffix of ["ing", "ed", "est", "er"]) {
     if (!word.endsWith(suffix)) continue;
     const stem = word.slice(0, -suffix.length);
     forms.push(stem, `${stem}e`);

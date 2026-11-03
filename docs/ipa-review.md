@@ -2,7 +2,7 @@
 
 สร้างด้วย `npm run check:ipa` — อย่าแก้ไฟล์นี้ด้วยมือ
 
-เทียบคำอ่านทั้ง 542 คำกับ [English Wiktionary](https://en.wiktionary.org/)
+เทียบคำอ่านทั้ง 604 คำกับ [English Wiktionary](https://en.wiktionary.org/)
 ผ่าน [kaikki.org](https://kaikki.org/)
 
 **เลือกสำเนียง General American** เพราะเสียงอ่านในแอปตั้งเป็น `en-US`
@@ -11,60 +11,75 @@
 
 | สถานะ | จำนวน |
 |---|---|
-| มีคำอ่านสำเนียงอเมริกัน | 339 |
-| มีคำอ่านแต่ไม่ระบุสำเนียงอเมริกัน | 203 |
+| มีคำอ่านสำเนียงอเมริกัน | 371 |
+| มีคำอ่านแต่ไม่ระบุสำเนียงอเมริกัน | 233 |
 | พจนานุกรมไม่มีคำอ่าน | 0 |
-| ค่าที่เปลี่ยนจากของเดิม | 47 |
+| ค่าที่เปลี่ยนจากของเดิม | 62 |
 
 
-## ค่าที่เปลี่ยน (47 คำ)
+## ค่าที่เปลี่ยน (62 คำ)
 
 | คำ | ของเดิม | ที่ใช้ตอนนี้ | สำเนียงที่พจนานุกรมระบุ |
 |---|---|---|---|
-| morning | `` | `/ˈmoɹnɪŋ/` | General-American |
-| night | `` | `/naɪ̯t/` | General-American, Received-Pronunciation |
-| today | `` | `/təˈdeɪ/` | General-American |
-| now | `` | `/naʊ/` | General-American, Ireland, Received-Pronunciation |
-| before | `` | `/bɪˈfoɹ/` | General-American |
-| after | `` | `/ˈæftəɹ/` | Canada, General-American |
-| again | `` | `/əˈɡɛn/` | General-American |
-| first | `` | `/fɚst/` | General-American |
-| make | `` | `/meɪk/` | — |
-| sit | `` | `/sɪt/` | Australia, General-American, Received-Pronunciation |
-| live | `` | `/ˈlɪv/` | — |
-| look | `` | `/lʊk/` | — |
-| keep | `` | `/kiːp/` | — |
-| wait | `` | `/weɪt/` | General-American |
-| grow | `` | `/ˈɡɹoʊ/` | Canada, Canadian, General-American, Standard, US |
-| fly | `` | `/flaɪ/` | General-American, Received-Pronunciation |
-| love | `` | `/lʌv/` | Canada, General-American, Received-Pronunciation |
-| answer | `` | `/ˈæn.sɚ/` | Canada, General-American |
-| food | `` | `/fuːd/` | — |
-| breakfast | `` | `/ˈbɹeɪkˌfæst/` | General-American |
-| lunch | `` | `/lʌnt͡ʃ/` | General-American, Received-Pronunciation |
-| sweet | `` | `/swit/` | General-American |
-| bowl | `` | `/boʊl/` | General-American |
-| here | `` | `/hɪɹ/` | Canada, General-American |
-| outside | `` | `/aʊtˈsaɪd/` | — |
-| down | `` | `/daʊ̯n/` | Canada, General-American, Received-Pronunciation |
-| out | `` | `/ˈaʊ̯t/` | General-American |
-| up | `` | `/ʌp/` | Canada, General-American |
-| photo | `` | `/ˈfoʊ̯.toʊ̯/` | Canadian, General-American, Standard |
-| letter | `` | `/ˈlɛtɚ/` | General-American |
-| line | `` | `/laɪn/` | Canada, General-American, Received-Pronunciation |
-| pocket | `` | `/ˈpɑ.kət/` | — |
-| leaf | `` | `/lif/` | General-American |
-| cloud | `` | `/ˈklaʊ̯d/` | General-American, Received-Pronunciation |
-| king | `` | `/ˈkɪŋ/` | — |
-| gold | `` | `/ɡoʊld/` | Canada, General-American |
-| bright | `` | `/ˈbɹaɪ̯t/` | General-American, Received-Pronunciation |
-| many | `` | `/ˈmɛni/` | US |
-| some | `` | `/sʌm/` | General-American, US |
-| every | `` | `/ˈɛv.(ə.)ɹi/` | Canada, General-American, Received-Pronunciation |
-| still | `` | `/ˈstɪl/` | — |
-| please | `` | `/pliz/` | General-American |
-| hello | `` | `/hɛˈloʊ/` | General-American |
-| smile | `` | `/ˈsmaɪl/` | — |
-| job | `` | `/d͡ʒɑb/` | General-American |
-| holiday | `` | `/ˈhɑləˌdeɪ/` | General-American |
-| birthday | `` | `/ˈbɝθˌdeɪ/` | Canada, US |
+| ant | `` | `/ænt/` | General-American, Received-Pronunciation |
+| camel | `` | `/ˈkæm(ə)l/` | General-American |
+| ape | `` | `/eɪp/` | — |
+| bull | `` | `/bʊl/` | — |
+| calf | `` | `/kæf/` | Canada, General-American |
+| cage | `` | `/keɪd͡ʒ/` | — |
+| cave | `` | `/keɪv/` | General-American, Received-Pronunciation |
+| cliff | `` | `/klɪf/` | — |
+| canal | `` | `/kəˈnæl/` | Australia, Canada, General-American, Received-Pronunciation |
+| crop | `` | `/kɹɑp/` | General-American |
+| dirt | `` | `/dɝt/` | General-American |
+| bubble | `` | `/ˈbʌbəl/` | General-American, Received-Pronunciation |
+| candle | `` | `/ˈkæn.dəl/` | — |
+| climate | `` | `/ˈklaɪ.mɪt/` | — |
+| bacon | `` | `/ˈbeɪ.kən/` | — |
+| broccoli | `` | `/ˈbɹɑ.kə.li/` | General-American |
+| cabbage | `` | `/ˈkæbɪd͡ʒ/` | Canada, General-American, Received-Pronunciation |
+| cucumber | `` | `/ˈkjuˌkʌmbɚ/` | General-American |
+| bakery | `` | `/ˈbeɪ.kə.ɹi/` | — |
+| bin | `` | `/ˈbɪn/` | — |
+| ache | `` | `/eɪk/` | — |
+| bandage | `` | `/ˈbæn.dɪd͡ʒ/` | — |
+| beard | `` | `/bɪɹd/` | General-American |
+| breath | `` | `/bɹɛθ/` | General-American, Received-Pronunciation |
+| ambulance | `` | `/ˈæmbjᵿl(ə)n(t)s/` | — |
+| clinic | `` | `/ˈklɪn.ɪk/` | General-American, Received-Pronunciation |
+| cure | `` | `/kjʊɹ/` | Canada, General-American |
+| alphabet | `` | `/ˈæl.fəˌbɛt/` | General-American, Received-Pronunciation |
+| arithmetic | `` | `/æɹɪθˈmɛtɪk/` | General-American, Received-Pronunciation |
+| biology | `` | `/baɪˈɑləd͡ʒi/` | General-American |
+| chemistry | `` | `/ˈkɛm.ɪ.stɹi/` | — |
+| diagram | `` | `/ˈdaɪ.ə.ɡɹæm/` | UK, US |
+| comma | `` | `/ˈkɒmə/` | Canada, Received-Pronunciation |
+| consonant | `` | `/ˈkɑn.sə.nənt/` | US |
+| correction | `` | `/kəˈɹɛkʃən/` | — |
+| anger | `` | `/ˈæŋɡɚ/` | General-American |
+| boredom | `` | `/ˈbɔɹ.dəm/` | US |
+| comfort | `` | `/ˈkʌm.fɚt/` | Canada, General-American |
+| courage | `` | `/ˈkʌɹ.ɪd͡ʒ/` | US |
+| curiosity | `` | `/ˌkjʊɹ.iˈɑ.sə.ti/` | Atlantic-Canada, General-American |
+| delight | `` | `/dəˈlaɪt/` | — |
+| confidence | `` | `/ˈkɑn.fɪ.dəns/` | Atlantic-Canada, General-American |
+| arrange | `` | `/əˈɹeɪnd͡ʒ/` | — |
+| behave | `` | `/bɪˈheɪv/` | General-American |
+| bounce | `` | `/baʊns/` | — |
+| calculate | `` | `/ˈkælkjʊleɪt/` | — |
+| connect | `` | `/kəˈnɛkt/` | — |
+| cough | `` | `/kɔf/` | General-American |
+| dig | `` | `/dɪɡ/` | — |
+| dive | `` | `/daɪv/` | — |
+| fold | `` | `/foʊld/` | Canada, General-American |
+| protect | `` | `/pɹəˈtɛkt/` | — |
+| calm | `` | `/kɑm/` | General-American |
+| cheerful | `` | `/ˈt͡ʃɪɹfl̩/` | General-American |
+| curly | `` | `/ˈkɝli/` | General-American |
+| damp | `` | `/ˈdeə̯mp/` | Canada, US |
+| flat | `` | `/ˈflæt/` | Australia, General-American, Received-Pronunciation |
+| giant | `` | `/ˈd͡ʒʌɪ.ənt/` | Canada |
+| huge | `` | `/hjud͡ʒ/` | US |
+| narrow | `` | `/ˈnæɹoʊ/` | General-American |
+| bitter | `` | `/ˈbɪt.ɚ/` | Canada, General-American |
+| pale | `` | `/peɪl/` | General-American, Received-Pronunciation |
