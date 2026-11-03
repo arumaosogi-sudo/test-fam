@@ -2,7 +2,7 @@
 
 สร้างด้วย `npm run check:ipa` — อย่าแก้ไฟล์นี้ด้วยมือ
 
-เทียบคำอ่านทั้ง 604 คำกับ [English Wiktionary](https://en.wiktionary.org/)
+เทียบคำอ่านทั้ง 668 คำกับ [English Wiktionary](https://en.wiktionary.org/)
 ผ่าน [kaikki.org](https://kaikki.org/)
 
 **เลือกสำเนียง General American** เพราะเสียงอ่านในแอปตั้งเป็น `en-US`
@@ -11,75 +11,80 @@
 
 | สถานะ | จำนวน |
 |---|---|
-| มีคำอ่านสำเนียงอเมริกัน | 371 |
-| มีคำอ่านแต่ไม่ระบุสำเนียงอเมริกัน | 233 |
-| พจนานุกรมไม่มีคำอ่าน | 0 |
-| ค่าที่เปลี่ยนจากของเดิม | 62 |
+| มีคำอ่านสำเนียงอเมริกัน | 407 |
+| มีคำอ่านแต่ไม่ระบุสำเนียงอเมริกัน | 260 |
+| พจนานุกรมไม่มีคำอ่าน | 1 |
+| ค่าที่เปลี่ยนจากของเดิม | 64 |
 
+## คำที่พจนานุกรมไม่มีคำอ่าน
 
-## ค่าที่เปลี่ยน (62 คำ)
+- crossroads (คงค่าเดิม ``)
+
+## ค่าที่เปลี่ยน (64 คำ)
 
 | คำ | ของเดิม | ที่ใช้ตอนนี้ | สำเนียงที่พจนานุกรมระบุ |
 |---|---|---|---|
-| ant | `` | `/ænt/` | General-American, Received-Pronunciation |
-| camel | `` | `/ˈkæm(ə)l/` | General-American |
-| ape | `` | `/eɪp/` | — |
-| bull | `` | `/bʊl/` | — |
-| calf | `` | `/kæf/` | Canada, General-American |
-| cage | `` | `/keɪd͡ʒ/` | — |
-| cave | `` | `/keɪv/` | General-American, Received-Pronunciation |
-| cliff | `` | `/klɪf/` | — |
-| canal | `` | `/kəˈnæl/` | Australia, Canada, General-American, Received-Pronunciation |
-| crop | `` | `/kɹɑp/` | General-American |
-| dirt | `` | `/dɝt/` | General-American |
-| bubble | `` | `/ˈbʌbəl/` | General-American, Received-Pronunciation |
-| candle | `` | `/ˈkæn.dəl/` | — |
-| climate | `` | `/ˈklaɪ.mɪt/` | — |
-| bacon | `` | `/ˈbeɪ.kən/` | — |
-| broccoli | `` | `/ˈbɹɑ.kə.li/` | General-American |
-| cabbage | `` | `/ˈkæbɪd͡ʒ/` | Canada, General-American, Received-Pronunciation |
-| cucumber | `` | `/ˈkjuˌkʌmbɚ/` | General-American |
-| bakery | `` | `/ˈbeɪ.kə.ɹi/` | — |
-| bin | `` | `/ˈbɪn/` | — |
-| ache | `` | `/eɪk/` | — |
-| bandage | `` | `/ˈbæn.dɪd͡ʒ/` | — |
-| beard | `` | `/bɪɹd/` | General-American |
-| breath | `` | `/bɹɛθ/` | General-American, Received-Pronunciation |
-| ambulance | `` | `/ˈæmbjᵿl(ə)n(t)s/` | — |
-| clinic | `` | `/ˈklɪn.ɪk/` | General-American, Received-Pronunciation |
-| cure | `` | `/kjʊɹ/` | Canada, General-American |
-| alphabet | `` | `/ˈæl.fəˌbɛt/` | General-American, Received-Pronunciation |
-| arithmetic | `` | `/æɹɪθˈmɛtɪk/` | General-American, Received-Pronunciation |
-| biology | `` | `/baɪˈɑləd͡ʒi/` | General-American |
-| chemistry | `` | `/ˈkɛm.ɪ.stɹi/` | — |
-| diagram | `` | `/ˈdaɪ.ə.ɡɹæm/` | UK, US |
-| comma | `` | `/ˈkɒmə/` | Canada, Received-Pronunciation |
-| consonant | `` | `/ˈkɑn.sə.nənt/` | US |
-| correction | `` | `/kəˈɹɛkʃən/` | — |
-| anger | `` | `/ˈæŋɡɚ/` | General-American |
-| boredom | `` | `/ˈbɔɹ.dəm/` | US |
-| comfort | `` | `/ˈkʌm.fɚt/` | Canada, General-American |
-| courage | `` | `/ˈkʌɹ.ɪd͡ʒ/` | US |
-| curiosity | `` | `/ˌkjʊɹ.iˈɑ.sə.ti/` | Atlantic-Canada, General-American |
-| delight | `` | `/dəˈlaɪt/` | — |
-| confidence | `` | `/ˈkɑn.fɪ.dəns/` | Atlantic-Canada, General-American |
-| arrange | `` | `/əˈɹeɪnd͡ʒ/` | — |
-| behave | `` | `/bɪˈheɪv/` | General-American |
-| bounce | `` | `/baʊns/` | — |
-| calculate | `` | `/ˈkælkjʊleɪt/` | — |
-| connect | `` | `/kəˈnɛkt/` | — |
-| cough | `` | `/kɔf/` | General-American |
-| dig | `` | `/dɪɡ/` | — |
-| dive | `` | `/daɪv/` | — |
-| fold | `` | `/foʊld/` | Canada, General-American |
-| protect | `` | `/pɹəˈtɛkt/` | — |
-| calm | `` | `/kɑm/` | General-American |
-| cheerful | `` | `/ˈt͡ʃɪɹfl̩/` | General-American |
-| curly | `` | `/ˈkɝli/` | General-American |
-| damp | `` | `/ˈdeə̯mp/` | Canada, US |
-| flat | `` | `/ˈflæt/` | Australia, General-American, Received-Pronunciation |
-| giant | `` | `/ˈd͡ʒʌɪ.ənt/` | Canada |
-| huge | `` | `/hjud͡ʒ/` | US |
-| narrow | `` | `/ˈnæɹoʊ/` | General-American |
-| bitter | `` | `/ˈbɪt.ɚ/` | Canada, General-American |
-| pale | `` | `/peɪl/` | General-American, Received-Pronunciation |
+| arrow | `` | `/ˈæ.ɹoʊ/` | General-American |
+| boot | `` | `/but/` | General-American |
+| bracelet | `` | `/ˈbɹeɪslət/` | UK, US |
+| brick | `` | `/ˈbɹɪk/` | — |
+| curve | `` | `/kɚv/` | General-American |
+| carpet | `` | `/ˈkɑɹ.pət/` | General-American |
+| curtain | `` | `/ˈkɜɹt(ə)n/` | General-American |
+| cushion | `` | `/ˈkʊʃən/` | Australia, Canada, General-American, New-Zealand, Received-Pronunciation |
+| builder | `` | `/ˈbɪl.dɚ/` | US |
+| chemist | `` | `/ˈkɛmɪst/` | — |
+| baker | `` | `/ˈbeɪ.kɚ/` | General-American |
+| champion | `` | `/ˈt͡ʃæm.pi.ən/` | General-American, Received-Pronunciation |
+| comedian | `` | `/kəˈmiː.di.ən/` | — |
+| detective | `` | `/dɪˈtɛktɪv/` | — |
+| climber | `` | `/ˈklaɪmɚ/` | General-American |
+| designer | `` | `/dɪˈzaɪnɚ/` | — |
+| atmosphere | `` | `/ˈætməsˌfɪɹ/` | US |
+| comet | `` | `/ˈkɑmət/` | — |
+| crow | `` | `/kɹoʊ/` | US |
+| daisy | `` | `/ˈdeɪ.zi/` | UK |
+| coal | `` | `/koʊl/` | Canada, General-American |
+| cotton | `` | `/ˈkɑt.n̩/` | General-American |
+| darkness | `` | `/ˈdɑɹk.nɪs/` | General-American |
+| basement | `` | `/ˈbeɪsmənt/` | — |
+| cabin | `` | `/ˈkæbɪn/` | — |
+| campsite | `` | `/ˈkæmpˌsaɪt/` | General-American |
+| canteen | `` | `/kænˈtin/` | General-American |
+| circus | `` | `/ˈsɝkəs/` | Canada, General-American |
+| crossing | `` | `/ˈkɹɔsɪŋ/` | General-American |
+| destination | `` | `/dɛstɪˈneɪʃən/` | General-American, Received-Pronunciation |
+| achievement | `` | `/əˈt͡ʃiːv.mənt/` | — |
+| biography | `` | `/baɪˈɑɡɹəfi/` | General-American |
+| comparison | `` | `/kəmˈpæɹ.ɪ.sən/` | General-American |
+| composition | `` | `/ˌkɑm.pəˈzɪʃ.ən/` | Atlantic-Canada, General-American |
+| conclusion | `` | `/kənˈkluːʒən/` | — |
+| definition | `` | `/ˌdɛf.ɪˈnɪʃ.ən/` | — |
+| category | `` | `/ˈkæt.ɪˌɡoɹ.i/` | Canada, General-American |
+| apology | `` | `/əˈpɑ.lə.d͡ʒi/` | US |
+| appetite | `` | `/ˈæp.əˌtaɪt/` | General-American |
+| belief | `` | `/bɪˈliːf/` | — |
+| confusion | `` | `/kənˈfjuʒən/` | Canada, General-American |
+| curious | `` | `/ˈkjʊɹ.i.əs/` | General-American |
+| bold | `` | `/boʊld/` | Canada, General-American |
+| eager | `` | `/ˈiɡɚ/` | General-American |
+| applaud | `` | `/əˈplɔd/` | US |
+| announce | `` | `/əˈnaʊn(t)s/` | US |
+| attach | `` | `/əˈtæt͡ʃ/` | — |
+| attract | `` | `/əˈtɹækt/` | — |
+| blend | `` | `/blɛnd/` | — |
+| combine | `` | `/kəmˈbaɪn/` | General-American |
+| complete | `` | `/kəmˈpliːt/` | General-American |
+| deliver | `` | `/dɪˈlɪv.ɚ/` | Canada, General-American |
+| drag | `` | `/dɹæɡ/` | General-American, Received-Pronunciation |
+| burn | `` | `/bɝn/` | General-American |
+| careless | `` | `/kɛɹ.ləs/` | General-American |
+| amazing | `` | `/əˈmeɪ.zɪŋ/` | — |
+| bald | `` | `/bɔld/` | US |
+| bare | `` | `/bɛɹ/` | General-American |
+| blind | `` | `/ˈblaɪ̯nd/` | — |
+| brief | `` | `/ˈbɹif/` | US |
+| broad | `` | `/bɹɔd/` | General-American |
+| circular | `` | `/ˈsɜɹ.kjə.ləɹ/` | General-American |
+| damaged | `` | `/ˈdæmɪd͡ʒd/` | — |
+| delicate | `` | `/ˈdɛl.ɪ.kɪt/` | Canada, General-American |
