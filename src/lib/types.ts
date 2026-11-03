@@ -32,6 +32,8 @@ export const partOfSpeechSchema = z.enum([
   "adjective",
   "adverb",
   "preposition",
+  /** คำบ่งชี้ปริมาณอย่าง some / many / every */
+  "determiner",
   "number",
   "phrase",
 ]);

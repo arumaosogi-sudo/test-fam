@@ -438,5 +438,61 @@
     "titleTh": "คำบอกลักษณะ A2 ชุด 2",
     "titleEn": "A2 Describing Words 2",
     "emoji": "🏺"
+  },
+  {
+    "id": "u-a1-time-2",
+    "cefr": "A1",
+    "order": 56,
+    "titleTh": "เวลาและลำดับ",
+    "titleEn": "Time and Order",
+    "emoji": "🌙"
+  },
+  {
+    "id": "u-a1-verbs-5",
+    "cefr": "A1",
+    "order": 57,
+    "titleTh": "คำกริยาที่ใช้ทุกวัน",
+    "titleEn": "Everyday Verbs",
+    "emoji": "👀"
+  },
+  {
+    "id": "u-a1-meals",
+    "cefr": "A1",
+    "order": 58,
+    "titleTh": "มื้ออาหาร",
+    "titleEn": "Meals",
+    "emoji": "🥞"
+  },
+  {
+    "id": "u-a1-directions",
+    "cefr": "A1",
+    "order": 59,
+    "titleTh": "คำบอกทิศและที่",
+    "titleEn": "Where and Which Way",
+    "emoji": "📍"
+  },
+  {
+    "id": "u-a1-things-2",
+    "cefr": "A1",
+    "order": 60,
+    "titleTh": "ของและสิ่งที่เห็น",
+    "titleEn": "More Things",
+    "emoji": "👑"
+  },
+  {
+    "id": "u-a1-describe-5",
+    "cefr": "A1",
+    "order": 61,
+    "titleTh": "คำบอกลักษณะและจำนวน",
+    "titleEn": "Describing and Counting",
+    "emoji": "🔆"
+  },
+  {
+    "id": "u-a1-social",
+    "cefr": "A1",
+    "order": 62,
+    "titleTh": "คำที่ใช้กับคนอื่น",
+    "titleEn": "Talking to People",
+    "emoji": "👋"
   }
 ]

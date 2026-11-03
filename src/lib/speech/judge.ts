@@ -35,6 +35,7 @@ const HOMOPHONES: Record<string, string[]> = {
   see: ["sea", "c"],
   sea: ["see", "c"],
   hear: ["here"],
+  here: ["hear"],
   buy: ["by", "bye"],
   sun: ["son"],
   where: ["wear", "ware"],
