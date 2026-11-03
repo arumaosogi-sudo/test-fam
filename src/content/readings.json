@@ -558,5 +558,80 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-at-the-museum",
+    "cefr": "A2",
+    "titleTh": "ที่พิพิธภัณฑ์",
+    "titleEn": "At the Museum",
+    "sentences": [
+      "On Sunday we go to the museum.",
+      "We buy a ticket and we walk in.",
+      "The museum is enormous and quiet.",
+      "I see an ancient cup and an ancient ring.",
+      "I see a dinosaur too.",
+      "It is very big and it has no feather.",
+      "We find a shell from the sea.",
+      "I like the museum."
+    ],
+    "question": {
+      "promptTh": "ในพิพิธภัณฑ์เห็นอะไร",
+      "choicesTh": [
+        "ไดโนเสาร์",
+        "รถไฟ",
+        "ดอกทานตะวัน"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-exam",
+    "cefr": "A2",
+    "titleTh": "วันสอบ",
+    "titleEn": "The Exam",
+    "sentences": [
+      "We have an exam on Friday.",
+      "I open my textbook and I study.",
+      "The teacher writes on the blackboard.",
+      "I understand the questions.",
+      "I have one mistake in my exam.",
+      "The teacher will check my paper.",
+      "The exam is not hard.",
+      "I am relaxed and happy."
+    ],
+    "question": {
+      "promptTh": "สอบวันไหน",
+      "choicesTh": [
+        "วันศุกร์",
+        "วันจันทร์",
+        "วันอาทิตย์"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-village",
+    "cefr": "A2",
+    "titleTh": "หมู่บ้านของฉัน",
+    "titleEn": "My Village",
+    "sentences": [
+      "My grandmother is in a small village.",
+      "The path to her house is long.",
+      "A white fence is near the garden.",
+      "The roof of her house is red.",
+      "The bench under the tree is old.",
+      "Ten sunflowers are yellow and beautiful.",
+      "A cat sleeps in the bush.",
+      "The village is quiet and safe."
+    ],
+    "question": {
+      "promptTh": "หลังคาบ้านสีอะไร",
+      "choicesTh": [
+        "แดง",
+        "ขาว",
+        "เหลือง"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

@@ -366,5 +366,77 @@
     "titleTh": "คำบอกลักษณะ A2",
     "titleEn": "A2 Describing Words",
     "emoji": "⬜"
+  },
+  {
+    "id": "u-a2-time-3",
+    "cefr": "A2",
+    "order": 47,
+    "titleTh": "เวลาและช่วงวัน",
+    "titleEn": "Time of Day",
+    "emoji": "🕛"
+  },
+  {
+    "id": "u-a2-places-2",
+    "cefr": "A2",
+    "order": 48,
+    "titleTh": "สถานที่เพิ่มเติม",
+    "titleEn": "More Places",
+    "emoji": "🏛️"
+  },
+  {
+    "id": "u-a2-school-3",
+    "cefr": "A2",
+    "order": 49,
+    "titleTh": "ที่โรงเรียนเพิ่มเติม",
+    "titleEn": "More School",
+    "emoji": "📘"
+  },
+  {
+    "id": "u-a2-daily-2",
+    "cefr": "A2",
+    "order": 50,
+    "titleTh": "ของใช้ประจำวันเพิ่มเติม",
+    "titleEn": "More Daily Things",
+    "emoji": "🪥"
+  },
+  {
+    "id": "u-a2-nature-3",
+    "cefr": "A2",
+    "order": 51,
+    "titleTh": "สัตว์และต้นไม้",
+    "titleEn": "Animals and Plants",
+    "emoji": "🦕"
+  },
+  {
+    "id": "u-a2-food-3",
+    "cefr": "A2",
+    "order": 52,
+    "titleTh": "อาหารเพิ่มเติม 2",
+    "titleEn": "More Food 2",
+    "emoji": "🍈"
+  },
+  {
+    "id": "u-a2-verbs-2",
+    "cefr": "A2",
+    "order": 53,
+    "titleTh": "คำกริยา A2 ชุด 2",
+    "titleEn": "A2 Verbs 2",
+    "emoji": "✅"
+  },
+  {
+    "id": "u-a2-verbs-3",
+    "cefr": "A2",
+    "order": 54,
+    "titleTh": "คำกริยา A2 ชุด 3",
+    "titleEn": "A2 Verbs 3",
+    "emoji": "💭"
+  },
+  {
+    "id": "u-a2-describe-4",
+    "cefr": "A2",
+    "order": 55,
+    "titleTh": "คำบอกลักษณะ A2 ชุด 2",
+    "titleEn": "A2 Describing Words 2",
+    "emoji": "🏺"
   }
 ]

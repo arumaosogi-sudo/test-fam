@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import { BLANK, type Word } from "@/lib/types";
 
 import { UNITS, WORDS, getUnit, getWord, wordsInUnit } from "./index";
+import { splitWords, wordIsInLevel } from "./readings";
 import { fillSentence, sentenceWithGap, splitSentence } from "./sentence";
 import {
   buildItems,
@@ -29,8 +30,41 @@ import {
 describe("คลังคำ", () => {
   it("มีคำและหน่วยครบตามที่นำเข้าไว้", () => {
     // ตัวเลขนี้เป็นหมุดกันคำหายโดยไม่มีใครรู้ ไม่ใช่เป้าหมายของเนื้อหา
-    expect(WORDS.length).toBe(418);
-    expect(UNITS.length).toBe(46);
+    expect(WORDS.length).toBe(495);
+    expect(UNITS.length).toBe(55);
+  });
+
+  /**
+   * ประโยคตัวอย่างต้องอ่านได้ด้วยคำที่เด็กเรียนมาแล้ว
+   *
+   * เกมเติมคำโชว์ประโยคบนจอให้เด็กอ่านเพื่อเดาคำที่หายไป ถ้าในประโยคมีคำที่
+   * เด็กยังไม่เคยเรียนอยู่ด้วย ข้อนั้นเลิกวัดคำเป้าหมาย แล้วกลายเป็นวัดคำที่
+   * เด็กไม่รู้จักแทน — ปัญหานี้หนักที่สุดกับเด็กอนุบาลที่อ่านอังกฤษแทบไม่ออก
+   *
+   * เรื่องอ่าน (readings) มีด่านนี้แบบเข้มอยู่แล้ว (`unknownWords` ต้องว่าง)
+   * แต่ประโยคตัวอย่างไม่เคยมี จึงสะสมคำนอกคลังไว้ 208 ประโยคจาก 495
+   * ก่อนจะเจอตอนเพิ่มคำ A2 ชุดที่สอง
+   */
+  const sentencesWithUnknownWords = (filter: (word: Word) => boolean) =>
+    WORDS.filter((word) => word.sentence && filter(word)).filter((word) =>
+      splitWords(word.sentence as string).some((token) => !wordIsInLevel(token)),
+    );
+
+  it("ประโยคตัวอย่างของคำระดับ A2 ใช้แต่คำที่อยู่ในคลังแล้ว", () => {
+    const bad = sentencesWithUnknownWords((word) => word.cefr === "A2");
+
+    expect(bad.map((word) => `${word.id}: ${word.sentence}`)).toEqual([]);
+  });
+
+  /**
+   * ระดับที่เขียนไว้ก่อนหน้านี้ยังค้างอยู่ ตัวเลขนี้เป็น **เพดานที่ต้องลดลง
+   * เท่านั้น ห้ามเพิ่ม** — ไม่ใช่เป้าหมายที่ยอมรับได้
+   * ถ้าแก้ประโยคเพิ่มแล้วเลขนี้ลดลง ให้ลดเพดานตามด้วย
+   */
+  it("ประโยคที่ยังมีคำนอกคลังไม่เพิ่มขึ้นจากเดิม", () => {
+    const bad = sentencesWithUnknownWords(() => true);
+
+    expect(bad.length).toBeLessThanOrEqual(157);
   });
 
   it("ทุกหน่วยมีคำอยู่จริง ไม่มีหน่วยว่าง", () => {

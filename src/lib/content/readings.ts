@@ -94,9 +94,30 @@ export const FUNCTION_WORDS = new Set([
   "by",
 ]);
 
+/**
+ * พหูพจน์ที่ไม่เติม s ของคำที่อยู่ในคลัง
+ *
+ * ตัวตัดรูปผันข้างล่างจัดการแต่รูปที่เติมท้าย (-s -es -ies -ing -ed)
+ * `teeth` กับ `children` จึงถูกนับว่าเป็นคำนอกคลัง ทั้งที่ `tooth` กับ
+ * `child` อยู่ในคลังอยู่แล้ว — เด็กที่เรียน tooth มาแล้วอ่าน teeth ออก
+ */
+const IRREGULAR_PLURALS: Record<string, string> = {
+  teeth: "tooth",
+  children: "child",
+  feet: "foot",
+  men: "man",
+  women: "woman",
+  mice: "mouse",
+  people: "person",
+  lives: "life",
+};
+
 /** รูปที่ผันแล้วของคำในคลัง ซึ่งถือว่าเป็นคำเดิม */
 function baseForms(word: string): string[] {
   const forms = [word];
+
+  const irregular = IRREGULAR_PLURALS[word];
+  if (irregular) forms.push(irregular);
 
   // พหูพจน์และกริยาเติม s: cats, boxes, flies
   if (word.endsWith("ies")) forms.push(`${word.slice(0, -3)}y`);
