@@ -633,5 +633,107 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-the-cave",
+    "cefr": "B1",
+    "titleTh": "ถ้ำริมผา",
+    "titleEn": "The Cave",
+    "sentences": [
+      "On Saturday we walk to the cliff near the sea.",
+      "A cave is in the rock under the cliff.",
+      "We take a candle with us.",
+      "The cave is narrow and damp.",
+      "I see water on the floor and a bubble comes up.",
+      "My friend is calm and cheerful but I am afraid.",
+      "We hold hands and we walk very slow.",
+      "We come out and the sun is very bright."
+    ],
+    "question": {
+      "promptTh": "ถ้ำอยู่ที่ไหน",
+      "choicesTh": [
+        "ในหินใต้หน้าผา",
+        "ในป่า",
+        "ใต้ทะเลสาบ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-at-the-clinic",
+    "cefr": "B1",
+    "titleTh": "ที่คลินิก",
+    "titleEn": "At the Clinic",
+    "sentences": [
+      "On Monday I have an ache in my tooth.",
+      "I cough and my breath is hot.",
+      "My mother takes me to the clinic near our house.",
+      "We wait for a long time and I am bored.",
+      "The dentist looks at my tooth and he is very gentle.",
+      "He has a cure for my ache.",
+      "He puts a bandage on my hand too.",
+      "I am a quiet patient and I do not cry.",
+      "We go to my house on the bus."
+    ],
+    "question": {
+      "promptTh": "หมอฟันเป็นคนอย่างไร",
+      "choicesTh": [
+        "อ่อนโยน",
+        "เสียงดัง",
+        "โกรธ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-biology-class",
+    "cefr": "B1",
+    "titleTh": "คาบชีววิทยา",
+    "titleEn": "Biology Class",
+    "sentences": [
+      "On Friday we study biology at school.",
+      "The teacher draws a diagram on the blackboard.",
+      "The diagram shows a leaf, a seed and a root.",
+      "We learn about a tree and how it grows.",
+      "After biology we have arithmetic.",
+      "I calculate the numbers in my head very fast.",
+      "I have one mistake and the teacher writes a correction.",
+      "My friend has two mistakes and I am not sad.",
+      "On Monday we study chemistry with the scientist."
+    ],
+    "question": {
+      "promptTh": "ครูวาดอะไรบนกระดานดำ",
+      "choicesTh": [
+        "แผนภาพ",
+        "ตัวอักษร",
+        "แผนที่"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-camel",
+    "cefr": "B1",
+    "titleTh": "อูฐกับวัว",
+    "titleEn": "The Camel and the Bull",
+    "sentences": [
+      "On Sunday my family goes to see the big camel.",
+      "The camel is bigger than the bull.",
+      "A small calf drinks milk from the cow.",
+      "An ape has very long arms and it is not in a cage.",
+      "A small ant walks on my hand.",
+      "The camel is calm but the bull is angry.",
+      "I am full of curiosity and I ask many questions.",
+      "We go to the bakery and we buy bread."
+    ],
+    "question": {
+      "promptTh": "อะไรตัวใหญ่กว่ากัน",
+      "choicesTh": [
+        "อูฐใหญ่กว่าวัว",
+        "วัวใหญ่กว่าอูฐ",
+        "ใหญ่เท่ากัน"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

@@ -38,22 +38,46 @@ describe("เรื่องอ่าน", () => {
     }
   });
 
+  /**
+   * เพดานความยาวแยกตามระดับ
+   *
+   * ถ้าใช้เพดานเดียวทุกระดับ เรื่อง B1 จะยาวเท่าเรื่องอนุบาล แล้วป้ายระดับ
+   * ก็ไม่ได้บอกอะไรเลยนอกจากคำศัพท์ — เด็ก ป.5–6 อ่านยาวกว่านั้นได้
+   * และโหมดอ่านออกเสียงวัดความเร็วจากทั้งเรื่อง ยิ่งสั้นยิ่งวัดได้หยาบ
+   *
+   * ตัวเลขเลือกจากความยาวที่เด็กแต่ละช่วงชั้นอ่านจบในสมาธิหนึ่งรอบ
+   * **ยังไม่มีครูตรวจ** เหมือนเกณฑ์ความเร็วการอ่านใน paceLabel
+   */
+  const LIMITS: Record<string, { words: number; perSentence: number }> = {
+    "Pre-A1": { words: 60, perSentence: 12 },
+    A1: { words: 60, perSentence: 12 },
+    A2: { words: 70, perSentence: 13 },
+    B1: { words: 85, perSentence: 15 },
+  };
+
   it("ประโยคต่อเรื่องและคำต่อประโยคอยู่ในระดับที่เด็กอ่านจบได้", () => {
     for (const reading of READINGS) {
       expect(reading.sentences.length, reading.id).toBeLessThanOrEqual(10);
 
+      const limit = LIMITS[reading.cefr];
+      expect(limit, `${reading.id}: ไม่มีเพดานของระดับ ${reading.cefr}`).toBeDefined();
+
       for (const sentence of reading.sentences) {
-        // ประโยคยาวเกิน 12 คำ เด็กอ่านออกเสียงแล้วหลุดกลางทาง
-        expect(splitWords(sentence).length, sentence).toBeLessThanOrEqual(12);
+        // ประโยคยาวเกินเพดาน เด็กอ่านออกเสียงแล้วหลุดกลางทาง
+        expect(splitWords(sentence).length, sentence).toBeLessThanOrEqual(
+          limit.perSentence,
+        );
       }
     }
   });
 
-  it("มีทั้งระดับ Pre-A1 และ A1 และระดับที่ใช้มีอยู่จริง", () => {
+  it("มีเรื่องอ่านครบทุกระดับที่คลังคำมีคำอยู่", () => {
     const levels = new Set(READINGS.map((r) => r.cefr));
 
-    expect(levels.has("Pre-A1")).toBe(true);
-    expect(levels.has("A1")).toBe(true);
+    // สี่ระดับที่คลังคำมีคำอยู่จริง ต้องมีเรื่องอ่านของตัวเอง
+    for (const level of ["Pre-A1", "A1", "A2", "B1"] as const) {
+      expect(levels.has(level), level).toBe(true);
+    }
     for (const level of levels) expect(CEFR_ORDER).toContain(level);
   });
 
@@ -67,10 +91,13 @@ describe("เรื่องอ่าน", () => {
     }
   });
 
-  /** เรื่องที่ยาวกว่านี้เด็กอ่านออกเสียงไม่จบในหนึ่งลมหายใจของสมาธิ */
-  it("เรื่องหนึ่งไม่เกิน 60 คำ", () => {
+  /** เรื่องที่ยาวกว่าเพดานของระดับ เด็กอ่านออกเสียงไม่จบในหนึ่งรอบสมาธิ */
+  it("เรื่องหนึ่งไม่เกินเพดานคำของระดับตัวเอง", () => {
     for (const reading of READINGS) {
-      expect(passageWords(reading).length, reading.id).toBeLessThanOrEqual(60);
+      expect(
+        passageWords(reading).length,
+        `${reading.id} (${reading.cefr})`,
+      ).toBeLessThanOrEqual(LIMITS[reading.cefr].words);
     }
   });
 });
