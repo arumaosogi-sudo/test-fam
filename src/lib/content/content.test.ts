@@ -43,28 +43,24 @@ describe("คลังคำ", () => {
    *
    * เรื่องอ่าน (readings) มีด่านนี้แบบเข้มอยู่แล้ว (`unknownWords` ต้องว่าง)
    * แต่ประโยคตัวอย่างไม่เคยมี จึงสะสมคำนอกคลังไว้ 208 ประโยคจาก 495
-   * ก่อนจะเจอตอนเพิ่มคำ A2 ชุดที่สอง
+   * ก่อนจะเจอตอนเพิ่มคำ A2 ชุดที่สอง — ตอนนี้แก้ครบทุกระดับแล้ว
+   * เทสนี้จึงเป็นด่านเข้มเท่ากับของเรื่องอ่าน ไม่ใช่เพดานที่ค่อย ๆ ลดอีกต่อไป
    */
-  const sentencesWithUnknownWords = (filter: (word: Word) => boolean) =>
-    WORDS.filter((word) => word.sentence && filter(word)).filter((word) =>
+  it("ประโยคตัวอย่างทุกคำใช้แต่คำที่อยู่ในคลังแล้ว", () => {
+    const bad = WORDS.filter((word) => word.sentence).filter((word) =>
       splitWords(word.sentence as string).some((token) => !wordIsInLevel(token)),
     );
 
-  it("ประโยคตัวอย่างของคำระดับ A2 ใช้แต่คำที่อยู่ในคลังแล้ว", () => {
-    const bad = sentencesWithUnknownWords((word) => word.cefr === "A2");
-
-    expect(bad.map((word) => `${word.id}: ${word.sentence}`)).toEqual([]);
-  });
-
-  /**
-   * ระดับที่เขียนไว้ก่อนหน้านี้ยังค้างอยู่ ตัวเลขนี้เป็น **เพดานที่ต้องลดลง
-   * เท่านั้น ห้ามเพิ่ม** — ไม่ใช่เป้าหมายที่ยอมรับได้
-   * ถ้าแก้ประโยคเพิ่มแล้วเลขนี้ลดลง ให้ลดเพดานตามด้วย
-   */
-  it("ประโยคที่ยังมีคำนอกคลังไม่เพิ่มขึ้นจากเดิม", () => {
-    const bad = sentencesWithUnknownWords(() => true);
-
-    expect(bad.length).toBeLessThanOrEqual(157);
+    expect(
+      bad.map(
+        (word) =>
+          `${word.id} (${word.cefr}): ${word.sentence} << ${splitWords(
+            word.sentence as string,
+          )
+            .filter((token) => !wordIsInLevel(token))
+            .join(" ")}`,
+      ),
+    ).toEqual([]);
   });
 
   it("ทุกหน่วยมีคำอยู่จริง ไม่มีหน่วยว่าง", () => {
