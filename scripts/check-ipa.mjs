@@ -82,6 +82,20 @@ function spellingsFor(word) {
   return [...new Set([word, word.toLowerCase()])];
 }
 
+/**
+ * บางรายการเขียนคำอ่านกว้างแล้วต่อด้วยคำอ่านละเอียดในวงเล็บเหลี่ยม
+ * เช่น pillow ให้ "/ˈpɪ.loʊ/ [ˈpʰɪ.loʊ]" — เอาแต่ส่วนที่อยู่ในเครื่องหมาย //
+ *
+ * ถ้าไม่ตัดส่วนท้ายออก usable() จะทิ้งรายการนั้นทั้งอัน แล้วตัวเลือกที่เหลือ
+ * ของคำนั้นก็เป็นสำเนียงอังกฤษ จึงได้คำอ่านผิดสำเนียงมาโดยไม่มีอะไรเตือน
+ */
+function broadOnly(ipa) {
+  if (typeof ipa !== "string") return ipa;
+  const trimmed = ipa.trim();
+  const match = /^(\/[^/]+\/)\s*\[[^\]]+\]$/.exec(trimmed);
+  return match ? match[1] : trimmed;
+}
+
 /** รับเฉพาะคำอ่านเต็มคำในเครื่องหมาย / / ไม่เอาเศษคำอย่าง /ˈwɒ-/ */
 function usable(ipa) {
   if (!ipa?.startsWith("/") || !ipa.endsWith("/") || ipa.length < 4) return false;
@@ -139,7 +153,8 @@ async function soundsFor(word) {
   for (const line of text.trim().split("\n").filter(Boolean)) {
     const entry = JSON.parse(line);
     for (const sound of entry.sounds ?? []) {
-      if (usable(sound.ipa)) out.push({ ipa: sound.ipa, tags: sound.tags ?? [] });
+      const ipa = broadOnly(sound.ipa);
+      if (usable(ipa)) out.push({ ipa, tags: sound.tags ?? [] });
     }
   }
   return { failed, sounds: out };
