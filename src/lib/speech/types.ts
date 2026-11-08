@@ -23,6 +23,13 @@ export type SpeakOptions = {
   pitch?: number;
   /** อยากได้เสียงผู้หญิงถ้าเครื่องนี้มี — ใช้กับเสียงของ Milo */
   preferFemale?: boolean;
+  /**
+   * ชื่อเสียงของผู้ให้บริการที่เลือกเสียงได้เอง (ตอนนี้คือ Kokoro)
+   *
+   * ตัวเสียงของเบราว์เซอร์ไม่มีชื่อที่ตรงกันข้ามเครื่อง จึงใช้ preferFemale
+   * เดาเอา ส่วน Kokoro มีชื่อเสียงตายตัว เลือกได้ตรง ๆ
+   */
+  voiceId?: string;
 };
 
 export interface TtsProvider {

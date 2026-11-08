@@ -17,10 +17,10 @@ import {
 } from "@/lib/chat/topics";
 import type { ChatMessage, ChatMistake, ChatTurn } from "@/lib/chat/types";
 import { MILO_VOICE } from "@/lib/chat/voice";
+import { useMiloVoice } from "./use-milo-voice";
 import type { CefrLevel } from "@/lib/types";
 import {
   getRecognizer,
-  getTts,
   micFailureMessage,
   type ListenHandle,
 } from "@/lib/speech";
@@ -154,6 +154,8 @@ export function ChatRoom() {
   const [heard, setHeard] = useState("");
   const [micError, setMicError] = useState<string | null>(null);
 
+  const voice = useMiloVoice();
+
   const nextId = useRef(0);
   const bottom = useRef<HTMLDivElement>(null);
   const listenHandle = useRef<ListenHandle | null>(null);
@@ -180,7 +182,7 @@ export function ChatRoom() {
     setSuggestions([]);
     setNotice(null);
     setConcerned(false);
-    getTts().cancel();
+    voice.cancel();
   }
 
   async function send(text: string) {
@@ -249,7 +251,7 @@ export function ChatRoom() {
       if (payload.notice) setNotice(payload.notice);
 
       // อ่านคำตอบให้ฟังทันที ตามที่โจทย์ขอว่า "พิมพ์กลับมาและมีเสียงตอบกลับ"
-      void getTts().speak(turn.reply, MILO_VOICE);
+      void voice.speak(turn.reply);
     } catch {
       setNotice("ต่อเน็ตไม่ได้ ลองใหม่อีกครั้งนะ");
     } finally {
@@ -410,6 +412,36 @@ export function ChatRoom() {
             ))}
           </div>
         ) : null}
+      </div>
+
+      {/*
+        เสียงรุ่นใหม่ต้องให้ผู้ใช้กดเอง เพราะครั้งแรกโหลดราว 88 MB
+        เปิดอัตโนมัติไม่ได้ เด็กที่ใช้เน็ตมือถือจะเสียค่าเน็ตโดยไม่รู้ตัว
+      */}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          type="button"
+          size="sm"
+          variant={voice.useKokoro ? "accent" : "neutral"}
+          onClick={() =>
+            voice.useKokoro ? voice.disableKokoro() : void voice.enableKokoro()
+          }
+          aria-pressed={voice.useKokoro}
+        >
+          {voice.useKokoro ? "เสียงใหม่ของ Milo" : "ลองเสียงใหม่ของ Milo"}
+        </Button>
+
+        <span className="text-ink-muted text-kid-sm font-bold">
+          {!voice.useKokoro
+            ? "ตอนนี้ใช้เสียงของเบราว์เซอร์"
+            : voice.status.kind === "loading"
+              ? "กำลังโหลดเสียง ~88 MB ครั้งแรกครั้งเดียว…"
+              : voice.status.kind === "ready"
+                ? "พร้อมแล้ว"
+                : voice.status.kind === "failed"
+                  ? "โหลดเสียงไม่สำเร็จ ใช้เสียงเบราว์เซอร์ไปก่อน"
+                  : "กำลังเตรียม…"}
+        </span>
       </div>
 
       <div

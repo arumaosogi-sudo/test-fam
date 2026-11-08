@@ -126,8 +126,11 @@ export function buildSystemPrompt({
     `- react with surprise or delight and add one fact, with no question at all`,
     `At most one reply in three may end with no question. Every other reply needs one, but it must be a NEW one.`,
     recentQuestions.length > 0
-      ? `You have already asked these in this conversation. Do not ask any of them again, and do not ask anything that is the same question with one word swapped: ${recentQuestions.map((q) => `"${q}"`).join(", ")}`
+      ? `You have already asked these in this conversation, word for word: ${recentQuestions.map((q) => `"${q}"`).join(", ")}`
       : `This is the start of the conversation.`,
+    recentQuestions.length > 0
+      ? `**Banned question openings.** Your next question must NOT start with any of these, not even with a different word after them: ${questionOpenings(recentQuestions).map((o) => `"${o}..."`).join(", ")}. Pick an opening you have not used yet.`
+      : `Open with anything you like.`,
     ``,
     `# 4. How to correct mistakes`,
     `Never scold and never say the child is wrong. Use recast: naturally repeat the correct form inside your own reply, as if you were just talking.`,
@@ -178,4 +181,27 @@ export function recentQuestionsFrom(
     .filter((sentence) => sentence.endsWith("?"));
 
   return questions.slice(-limit);
+}
+
+/**
+ * คำขึ้นต้นของคำถามที่ใช้ไปแล้ว เช่น "do you like"
+ *
+ * การห้าม "ถามคำถามเดิมที่สลับคำเดียว" เป็นคำสั่งที่โมเดลตีความเอง และ
+ * ทำตามไม่ครบ — ไล่ทดสอบทั้งเก้าหมวดแล้วยังเจอ "Do you like a cat?"
+ * ตามด้วย "Do you like the sun?" ในบทสนทนาเดียวกันสี่หมวด
+ *
+ * ห้ามเป็น "คำขึ้นต้น" แทน เพราะเป็นกฎที่เทียบได้ตรงตัว ไม่ต้องตีความ
+ */
+export function questionOpenings(questions: string[]): string[] {
+  const openings = questions.map((question) =>
+    question
+      .toLowerCase()
+      .replace(/[^a-z\s']/g, "")
+      .trim()
+      .split(/\s+/)
+      .slice(0, 3)
+      .join(" "),
+  );
+
+  return [...new Set(openings.filter((opening) => opening.length > 0))];
 }

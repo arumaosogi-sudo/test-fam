@@ -5,6 +5,7 @@ import { CEFR_ORDER } from "@/lib/types";
 import {
   LANGUAGE_CEILING,
   buildSystemPrompt,
+  questionOpenings,
   recentQuestionsFrom,
 } from "./prompt";
 import { FREE_TOPIC_ID, getTopic, topicWords } from "./topics";
@@ -154,9 +155,21 @@ describe("กันคำถามวน", () => {
       recentQuestions: ["Do you like a bear?", "Do you like a cat?"],
     });
 
-    expect(text).toContain("Do not ask any of them again");
+    expect(text).toContain("You have already asked these");
     expect(text).toContain('"Do you like a bear?"');
     expect(text).toContain('"Do you like a cat?"');
+  });
+
+  it("ห้ามคำขึ้นต้นที่ใช้ไปแล้ว ไม่ใช่แค่ห้ามประโยคเดิม", () => {
+    // ห้ามแค่ประโยคเดิมไม่พอ ทดสอบจริงแล้วยังได้ "Do you like a cat?"
+    // ตามด้วย "Do you like the sun?" ในบทสนทนาเดียวกัน
+    const text = prompt({
+      recentQuestions: ["Do you like a cat?", "What is your name?"],
+    });
+
+    expect(text).toContain("Banned question openings");
+    expect(text).toContain('"do you like..."');
+    expect(text).toContain('"what is your..."');
   });
 
   it("บทสนทนาที่เพิ่งเริ่มไม่มีรายการคำถามเก่า", () => {
@@ -194,5 +207,28 @@ describe("recentQuestionsFrom", () => {
 
   it("รับประวัติว่างได้", () => {
     expect(recentQuestionsFrom([])).toEqual([]);
+  });
+});
+
+describe("questionOpenings", () => {
+  it("เอาสามคำแรกของคำถาม ตัดเครื่องหมายออก", () => {
+    expect(questionOpenings(["Do you like a cat?"])).toEqual(["do you like"]);
+  });
+
+  it("คำถามที่ขึ้นต้นเหมือนกันนับเป็นคำขึ้นต้นเดียว", () => {
+    expect(
+      questionOpenings(["Do you like a cat?", "Do you like the sun?"]),
+    ).toEqual(["do you like"]);
+  });
+
+  it("คำถามสั้นกว่าสามคำก็ยังใช้ได้", () => {
+    expect(questionOpenings(["Why?", "Really Milo?"])).toEqual([
+      "why",
+      "really milo",
+    ]);
+  });
+
+  it("ไม่มีคำถามก็ได้รายการว่าง", () => {
+    expect(questionOpenings([])).toEqual([]);
   });
 });
