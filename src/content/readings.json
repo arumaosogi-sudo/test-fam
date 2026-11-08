@@ -1180,5 +1180,101 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-at-my-fathers-work",
+    "cefr": "C1",
+    "titleTh": "ที่ทำงานของพ่อ",
+    "titleEn": "At My Father's Work",
+    "sentences": [
+      "My father works in a big old house.",
+      "He wears blue overalls every day.",
+      "He makes a small mechanism for a new toy.",
+      "I put a staple in his paper for him.",
+      "A tree near the house gives sweet resin.",
+      "After work my father plays billiards with his friend.",
+      "He sits in the hot sauna after that.",
+      "He is very happy after a long day."
+    ],
+    "question": {
+      "promptTh": "พ่อใส่อะไรไปทำงานทุกวัน",
+      "choicesTh": [
+        "ชุดเอี๊ยมสีฟ้า",
+        "เสื้อกันหนาว",
+        "รองเท้าใหม่"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-my-tired-day",
+    "cefr": "C1",
+    "titleTh": "วันที่ฉันเหนื่อย",
+    "titleEn": "My Tired Day",
+    "sentences": [
+      "I run to school and I feel fatigue in my legs.",
+      "At lunch I cut the bread with my incisor.",
+      "Every tastebud on my tongue likes the sweet food.",
+      "A stray dog sits near the school door.",
+      "I am wary of the big dog but it is quiet.",
+      "Now I am accustomed to it and we are friends.",
+      "After school I walk to my house and sleep."
+    ],
+    "question": {
+      "promptTh": "หมาที่นั่งอยู่ใกล้ประตูโรงเรียนเป็นหมาแบบไหน",
+      "choicesTh": [
+        "หมาจรจัด",
+        "หมาของครู",
+        "หมาของฉัน"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-at-school-today",
+    "cefr": "C1",
+    "titleTh": "ที่โรงเรียนวันนี้",
+    "titleEn": "At School Today",
+    "sentences": [
+      "We learn a new fraction at school today.",
+      "My teacher says a good book helps my intellect.",
+      "I am an amateur at this new game but I like it.",
+      "A man in my book gives his boy an inheritance.",
+      "The man in the book is not credible to me.",
+      "I want to learn every day."
+    ],
+    "question": {
+      "promptTh": "ครูบอกว่าอะไรช่วยเรื่องปัญญา",
+      "choicesTh": [
+        "หนังสือดี ๆ",
+        "เกมใหม่",
+        "มรดก"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-out-for-food",
+    "cefr": "C1",
+    "titleTh": "ออกไปซื้อของกิน",
+    "titleEn": "Out for Food",
+    "sentences": [
+      "My mother and I go out for food.",
+      "She likes to haggle for good fish.",
+      "I clutch my bag and walk after her.",
+      "The milk in the box can expire fast.",
+      "I detest the old fish near the door.",
+      "A big dog sits near us but we do not provoke it.",
+      "On the bus I daydream in my seat."
+    ],
+    "question": {
+      "promptTh": "แม่ชอบทำอะไรตอนซื้อปลา",
+      "choicesTh": [
+        "ต่อรองราคา",
+        "ชิมก่อน",
+        "ซื้อเยอะ ๆ"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

@@ -934,5 +934,37 @@
     "titleTh": "คำกริยา C1",
     "titleEn": "C1 Verbs",
     "emoji": "🔄"
+  },
+  {
+    "id": "u-c1-things-2",
+    "cefr": "C1",
+    "order": 118,
+    "titleTh": "สิ่งของ C1 ชุด 2",
+    "titleEn": "C1 Things 2",
+    "emoji": "🧰"
+  },
+  {
+    "id": "u-c1-body-2",
+    "cefr": "C1",
+    "order": 119,
+    "titleTh": "ร่างกายและนิสัย C1",
+    "titleEn": "C1 Body and Habits",
+    "emoji": "🫁"
+  },
+  {
+    "id": "u-c1-ideas-1",
+    "cefr": "C1",
+    "order": 120,
+    "titleTh": "ความคิดและผู้คน C1",
+    "titleEn": "C1 Ideas and People",
+    "emoji": "🧩"
+  },
+  {
+    "id": "u-c1-verbs-2",
+    "cefr": "C1",
+    "order": 121,
+    "titleTh": "คำกริยา C1 ชุด 2",
+    "titleEn": "C1 Verbs 2",
+    "emoji": "⚒️"
   }
 ]

@@ -1074,5 +1074,32 @@
   {"id":"w-gush","en":"gush","th":"พุ่ง","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈɡʌʃ/","sentence":"Water can {} from the rock.","emoji":"⛲","image":false,"unitId":"u-c1-verbs-1"},
   {"id":"w-plummet","en":"plummet","th":"ดิ่ง","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈplʌmət/","sentence":"The small leaf can {} to the floor.","emoji":"📉","image":false,"unitId":"u-c1-verbs-1"},
   {"id":"w-circulate","en":"circulate","th":"หมุนเวียน","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈsɝ.kjʊˌleɪt/","sentence":"Hot water can {} in this room.","emoji":"♻️","image":false,"unitId":"u-c1-verbs-1"},
-  {"id":"w-salvage","en":"salvage","th":"กอบกู้","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈsælvɪd͡ʒ/","sentence":"They {} the old ship from the sea.","emoji":"🛟","image":false,"unitId":"u-c1-verbs-1"}
+  {"id":"w-salvage","en":"salvage","th":"กอบกู้","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈsælvɪd͡ʒ/","sentence":"They {} the old ship from the sea.","emoji":"🛟","image":false,"unitId":"u-c1-verbs-1"},
+
+  {"id":"w-resin","en":"resin","th":"ยางไม้","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈɹɛzɪn/","sentence":"The {} comes out of the old tree.","image":false,"unitId":"u-c1-things-2"},
+  {"id":"w-overalls","en":"overalls","th":"เอี๊ยม","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈoʊvəɹɔːlz/","sentence":"My father wears blue {} at work.","emoji":"🦺","image":false,"unitId":"u-c1-things-2"},
+  {"id":"w-staple","en":"staple","th":"ลวดเย็บกระดาษ","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈsteɪ.pəl/","sentence":"I put a {} in my paper.","image":false,"unitId":"u-c1-things-2"},
+  {"id":"w-billiards","en":"billiards","th":"บิลเลียด","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈbɪl.jɚdz/","sentence":"My father plays {} after work.","emoji":"🎱","image":false,"unitId":"u-c1-things-2"},
+  {"id":"w-sauna","en":"sauna","th":"ซาวน่า","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈsɔː.nə/","sentence":"The {} in the hotel is very hot.","emoji":"🧖","image":false,"unitId":"u-c1-things-2"},
+  {"id":"w-mechanism","en":"mechanism","th":"กลไก","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈmɛk.ə.nɪz.əm/","sentence":"The {} of the toy is very small.","emoji":"⚙️","image":false,"unitId":"u-c1-things-2"},
+
+  {"id":"w-fatigue","en":"fatigue","th":"ความล้า","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/fəˈtiːɡ/","sentence":"I feel {} after the long run.","image":false,"unitId":"u-c1-body-2"},
+  {"id":"w-incisor","en":"incisor","th":"ฟันตัด","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ɪnˈsaɪ.zə(ɹ)/","sentence":"I cut the bread with my {}.","image":false,"unitId":"u-c1-body-2"},
+  {"id":"w-tastebud","en":"tastebud","th":"ตุ่มรับรส","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈteɪstbʌd/","sentence":"Every {} on my tongue is small.","image":false,"unitId":"u-c1-body-2"},
+  {"id":"w-accustomed","en":"accustomed","th":"คุ้นเคย","thSource": "wiktionary","pos":"adjective","cefr":"C1","ipaSource": "wiktionary","ipa": "/əˈkʌs.təmd/","sentence":"I am {} to the cold now.","image":false,"unitId":"u-c1-body-2"},
+  {"id":"w-wary","en":"wary","th":"ระวัง","thSource": "wiktionary","pos":"adjective","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈwɛɚ.i/","sentence":"The cat is {} of the big dog.","image":false,"unitId":"u-c1-body-2"},
+  {"id":"w-stray","en":"stray","th":"จรจัด","thSource": "wiktionary","pos":"adjective","cefr":"C1","ipaSource": "wiktionary","ipa": "/stɹeɪ/","sentence":"A {} dog sleeps near my house.","image":false,"unitId":"u-c1-body-2"},
+
+  {"id":"w-fraction","en":"fraction","th":"เศษส่วน","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈfɹæk.ʃən/","sentence":"We learn a new {} at school today.","image":false,"unitId":"u-c1-ideas-1"},
+  {"id":"w-amateur","en":"amateur","th":"มือสมัครเล่น","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈæ.mə.t͡ʃɚ/","sentence":"He is an {} at this new game.","image":false,"unitId":"u-c1-ideas-1"},
+  {"id":"w-intellect","en":"intellect","th":"ปัญญา","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈɪntəˌlɛkt/","sentence":"A good book helps my {}.","image":false,"unitId":"u-c1-ideas-1"},
+  {"id":"w-credible","en":"credible","th":"น่าเชื่อถือ","thSource": "wiktionary","pos":"adjective","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈkɹɛdəbl̩/","sentence":"The man is not {} to me.","image":false,"unitId":"u-c1-ideas-1"},
+  {"id":"w-inheritance","en":"inheritance","th":"มรดก","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ɪnˈhɛɹɪtəns/","sentence":"My father gives me his {}.","image":false,"unitId":"u-c1-ideas-1"},
+
+  {"id":"w-expire","en":"expire","th":"หมดอายุ","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ɪkˈspaɪə(ɹ)/","sentence":"The milk in the box can {} fast.","image":false,"unitId":"u-c1-verbs-2"},
+  {"id":"w-detest","en":"detest","th":"รังเกียจ","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/dɪˈtɛst/","sentence":"I {} this cold and wet day.","image":false,"unitId":"u-c1-verbs-2"},
+  {"id":"w-daydream","en":"daydream","th":"ฝันกลางวัน","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈdeɪdɹiːm/","sentence":"I {} in my quiet room.","image":false,"unitId":"u-c1-verbs-2"},
+  {"id":"w-provoke","en":"provoke","th":"ยั่วยุ","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/pɹəˈvoʊk/","sentence":"Do not {} the big dog.","image":false,"unitId":"u-c1-verbs-2"},
+  {"id":"w-clutch","en":"clutch","th":"คว้า","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈklʌt͡ʃ/","sentence":"I {} my bag and run to the bus.","image":false,"unitId":"u-c1-verbs-2"},
+  {"id":"w-haggle","en":"haggle","th":"ต่อรอง","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈhæɡəl/","sentence":"My mother likes to {} for food.","image":false,"unitId":"u-c1-verbs-2"}
 ]
