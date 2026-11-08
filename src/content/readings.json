@@ -865,5 +865,57 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-the-school-parade",
+    "cefr": "B2",
+    "titleTh": "ขบวนแห่ของโรงเรียน",
+    "titleEn": "The School Parade",
+    "sentences": [
+      "Today our school has a parade near the old cathedral.",
+      "My sister learns ballet and she dances for us.",
+      "A lecturer from the university plays a slow melody.",
+      "The conductor shows the group when to sing.",
+      "Every employee of the school wears a blue uniform.",
+      "A volunteer gives water to the students.",
+      "I photograph my friend and she gives me a big smile.",
+      "The carnival after the parade has music and a circus.",
+      "My teacher likes to praise us and we are very happy."
+    ],
+    "question": {
+      "promptTh": "พี่สาวของฉันทำอะไรในขบวนแห่",
+      "choicesTh": [
+        "เต้นบัลเลต์",
+        "เล่นดนตรี",
+        "แจกน้ำ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-at-the-clinic-again",
+    "cefr": "B2",
+    "titleTh": "ไปหาหมออีกครั้ง",
+    "titleEn": "My Dry Throat",
+    "sentences": [
+      "This morning my throat is dry and I cough.",
+      "My mother feels my pulse on my wrist.",
+      "We go to the clinic and I wait on a long bench.",
+      "The patient before me has a bandage on his waist.",
+      "A helper of the clinic gives me water.",
+      "The pharmacist gives me a cure and a small packet.",
+      "He tells me to wash my hands for good hygiene.",
+      "I sigh and the cure is very bitter.",
+      "After two days my throat is good again."
+    ],
+    "question": {
+      "promptTh": "แม่จับชีพจรของฉันที่ไหน",
+      "choicesTh": [
+        "ข้อมือ",
+        "ลำคอ",
+        "เอว"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

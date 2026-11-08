@@ -822,5 +822,69 @@
     "titleTh": "คำบอกลักษณะ B2 ชุด 2",
     "titleEn": "B2 Describing Words 2",
     "emoji": "🔅"
+  },
+  {
+    "id": "u-b2-body-1",
+    "cefr": "B2",
+    "order": 104,
+    "titleTh": "ร่างกาย B2",
+    "titleEn": "B2 Body",
+    "emoji": "💅"
+  },
+  {
+    "id": "u-b2-jobs-2",
+    "cefr": "B2",
+    "order": 105,
+    "titleTh": "อาชีพ B2",
+    "titleEn": "B2 Jobs",
+    "emoji": "🏴‍☠️"
+  },
+  {
+    "id": "u-b2-people-1",
+    "cefr": "B2",
+    "order": 106,
+    "titleTh": "ผู้คน B2",
+    "titleEn": "B2 People",
+    "emoji": "🏇"
+  },
+  {
+    "id": "u-b2-arts-1",
+    "cefr": "B2",
+    "order": 107,
+    "titleTh": "ศิลปะ B2",
+    "titleEn": "B2 Arts",
+    "emoji": "🩰"
+  },
+  {
+    "id": "u-b2-school-2",
+    "cefr": "B2",
+    "order": 108,
+    "titleTh": "ในห้องเรียน B2 ชุด 2",
+    "titleEn": "B2 At School 2",
+    "emoji": "🧠"
+  },
+  {
+    "id": "u-b2-verbs-3",
+    "cefr": "B2",
+    "order": 109,
+    "titleTh": "คำกริยา B2 ชุด 3",
+    "titleEn": "B2 Verbs 3",
+    "emoji": "🧎"
+  },
+  {
+    "id": "u-b2-verbs-4",
+    "cefr": "B2",
+    "order": 110,
+    "titleTh": "คำกริยา B2 ชุด 4",
+    "titleEn": "B2 Verbs 4",
+    "emoji": "🧹"
+  },
+  {
+    "id": "u-b2-verbs-5",
+    "cefr": "B2",
+    "order": 111,
+    "titleTh": "คำกริยา B2 ชุด 5",
+    "titleEn": "B2 Verbs 5",
+    "emoji": "💥"
   }
 ]
