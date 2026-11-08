@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { WORDS } from "./index";
 import { CEFR_ORDER } from "@/lib/types";
 
 import {
@@ -53,6 +54,7 @@ describe("เรื่องอ่าน", () => {
     A1: { words: 60, perSentence: 12 },
     A2: { words: 70, perSentence: 13 },
     B1: { words: 85, perSentence: 15 },
+    B2: { words: 100, perSentence: 17 },
   };
 
   it("ประโยคต่อเรื่องและคำต่อประโยคอยู่ในระดับที่เด็กอ่านจบได้", () => {
@@ -71,13 +73,17 @@ describe("เรื่องอ่าน", () => {
     }
   });
 
+  /**
+   * ด่านนี้เคยไล่รายการระดับที่เขียนไว้ตรง ๆ สี่ระดับ ซึ่งแปลว่าพอเพิ่ม
+   * คำระดับใหม่เข้าคลัง ด่านนี้ก็เงียบ ทั้งที่ชื่อด่านบอกว่าต้องครบ
+   * "ทุกระดับที่คลังคำมีคำอยู่" — ตอนเพิ่มคำ B2 เข้ามาจึงไม่มีอะไรเตือนว่า
+   * ยังไม่มีเรื่องอ่านของระดับนั้น ตอนนี้อ่านรายการระดับจากคลังคำจริง
+   */
   it("มีเรื่องอ่านครบทุกระดับที่คลังคำมีคำอยู่", () => {
     const levels = new Set(READINGS.map((r) => r.cefr));
+    const inBank = new Set(WORDS.map((word) => word.cefr));
 
-    // สี่ระดับที่คลังคำมีคำอยู่จริง ต้องมีเรื่องอ่านของตัวเอง
-    for (const level of ["Pre-A1", "A1", "A2", "B1"] as const) {
-      expect(levels.has(level), level).toBe(true);
-    }
+    for (const level of inBank) expect(levels.has(level), level).toBe(true);
     for (const level of levels) expect(CEFR_ORDER).toContain(level);
   });
 

@@ -735,5 +735,83 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-the-mountain-peak",
+    "cefr": "B2",
+    "titleTh": "ยอดเขาในหมอกบาง",
+    "titleEn": "The Mountain Peak",
+    "sentences": [
+      "In the morning a cold mist covers the valley near our cottage.",
+      "My father and I walk up the long route to the peak.",
+      "An eagle flies very high and soars in the sky.",
+      "We see a deer eat a leaf near the path and we whisper.",
+      "A yellow dandelion grows between two rocks.",
+      "My shoes are muddy and wet but I am strong.",
+      "At the peak the wind is cold and ice is on the rock.",
+      "Far under us a small village sleeps in the mist.",
+      "We eat bread and a sweet peach and we feel happy."
+    ],
+    "question": {
+      "promptTh": "ที่ยอดเขามีอะไรอยู่บนหิน",
+      "choicesTh": [
+        "น้ำแข็ง",
+        "ดอกไม้",
+        "หมอก"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-coral-sea",
+    "cefr": "B2",
+    "titleTh": "ทะเลปะการัง",
+    "titleEn": "The Coral Sea",
+    "sentences": [
+      "The white yacht waits at the dock and we stand on the deck.",
+      "We pull the anchor up and the ship moves to the blue sea.",
+      "The water is very salty and it is clear near the shore.",
+      "Many fish live near the coral and some are orange.",
+      "A turtle swims very slow under me and I am calm.",
+      "I see a swan on the water but no penguin here.",
+      "A rainstorm comes and the wind is strong.",
+      "We go in the cabin and we eat a pancake with honey.",
+      "After the storm the sun is very bright again."
+    ],
+    "question": {
+      "promptTh": "เราเห็นปลาอยู่ใกล้อะไร",
+      "choicesTh": [
+        "ปะการัง",
+        "ดาดฟ้า",
+        "ท่าเรือ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-old-cathedral",
+    "cefr": "B2",
+    "titleTh": "อาสนวิหารเก่า",
+    "titleEn": "The Old Cathedral",
+    "sentences": [
+      "On Sunday we ride the bus to the old cathedral.",
+      "The train goes in a long tunnel before the bus station.",
+      "The cathedral is very big and high and the door is wood.",
+      "The ceiling is very far from my head.",
+      "A soft rug is on the floor and the room is quiet.",
+      "An old man plays music and many people listen.",
+      "I whisper a question to my mother and she answers me.",
+      "After that we walk to the arena and we watch a game.",
+      "We clap for the winner and we are very happy."
+    ],
+    "question": {
+      "promptTh": "ในอาสนวิหารมีอะไรอยู่บนพื้น",
+      "choicesTh": [
+        "พรมผืนเล็ก",
+        "เพดานสูง",
+        "ประตูไม้"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

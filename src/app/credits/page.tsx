@@ -53,8 +53,8 @@ const SOURCES = [
     url: "https://www.cefr-j.org/download_eng.html",
     // เงื่อนไขคนละแบบกับอีกสามแหล่ง — ไม่ใช่ CC และการใช้เชิงพาณิชย์มีเงื่อนไข
     license: "ใช้ได้ฟรีเพื่อการศึกษา ต้องอ้างอิงแหล่งที่มา",
-    use: `ระดับ CEFR ของคำศัพท์ — ใช้ตัดสินว่าคำไหนเป็น A2 (${
-      WORDS.filter((word) => word.cefr === "A2").length
+    use: `ระดับ CEFR ของคำศัพท์ — ใช้ตัดสินว่าคำไหนเป็น A2 B1 หรือ B2 (${
+      WORDS.filter((word) => ["A2", "B1", "B2"].includes(word.cefr)).length
     } คำ)`,
     attribution:
       "The CEFR-J Wordlist Version 1.5. Compiled by Yukio Tono, Tokyo University of Foreign Studies. Retrieved via Open Language Profiles (openlanguageprofiles/olp-en-cefrj) on 03/11/26. ลิขสิทธิ์เป็นของ Tono Laboratory, TUFS",

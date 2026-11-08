@@ -694,5 +694,69 @@
     "titleTh": "คำบอกลักษณะ B1 ชุด 3",
     "titleEn": "B1 Describing Words 3",
     "emoji": "😋"
+  },
+  {
+    "id": "u-b2-animals-1",
+    "cefr": "B2",
+    "order": 88,
+    "titleTh": "สัตว์ B2",
+    "titleEn": "B2 Animals",
+    "emoji": "🐾"
+  },
+  {
+    "id": "u-b2-food-1",
+    "cefr": "B2",
+    "order": 89,
+    "titleTh": "ของกิน B2",
+    "titleEn": "B2 Food",
+    "emoji": "🧺"
+  },
+  {
+    "id": "u-b2-things-1",
+    "cefr": "B2",
+    "order": 90,
+    "titleTh": "ของใช้ B2",
+    "titleEn": "B2 Things",
+    "emoji": "🪑"
+  },
+  {
+    "id": "u-b2-places-1",
+    "cefr": "B2",
+    "order": 91,
+    "titleTh": "สถานที่ B2",
+    "titleEn": "B2 Places",
+    "emoji": "🗺️"
+  },
+  {
+    "id": "u-b2-nature-1",
+    "cefr": "B2",
+    "order": 92,
+    "titleTh": "ธรรมชาติ B2",
+    "titleEn": "B2 Nature",
+    "emoji": "🌁"
+  },
+  {
+    "id": "u-b2-travel-1",
+    "cefr": "B2",
+    "order": 93,
+    "titleTh": "การเดินทาง B2",
+    "titleEn": "B2 Travel",
+    "emoji": "🛻"
+  },
+  {
+    "id": "u-b2-verbs-1",
+    "cefr": "B2",
+    "order": 94,
+    "titleTh": "คำกริยา B2",
+    "titleEn": "B2 Verbs",
+    "emoji": "🤲"
+  },
+  {
+    "id": "u-b2-describe-1",
+    "cefr": "B2",
+    "order": 95,
+    "titleTh": "คำบอกลักษณะ B2",
+    "titleEn": "B2 Describing Words",
+    "emoji": "🔍"
   }
 ]

@@ -4,6 +4,8 @@ import { Milo } from "@/components/mascot/milo";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { LevelBadge } from "@/components/ui/level-badge";
+import { READINGS } from "@/lib/content/readings";
+import { UNITS, WORDS } from "@/lib/content";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const PLANNED_MODES = [
@@ -36,6 +38,7 @@ export default function HomePage() {
             <LevelBadge level="A1" withGrade />
             <LevelBadge level="A2" withGrade />
             <LevelBadge level="B1" withGrade />
+            <LevelBadge level="B2" withGrade />
           </div>
         </div>
 
@@ -86,8 +89,9 @@ export default function HomePage() {
           <CardTitle>สถานะโปรเจกต์</CardTitle>
           <CardNote className="text-ink">
             เล่นได้แล้ว 6 โหมด (จับคู่คำ ฟังแล้วเลือก ดูภาพเติมคำ เติมคำในประโยค
-            พูดให้ฟัง และอ่านออกเสียง) บนคลังคำ 339 คำ 36 หน่วย กับเรื่องอ่าน
-            20 เรื่อง พร้อมด่านทบทวนอัตโนมัติ ด่านรวมทุกหัวข้อ ดาว XP
+            พูดให้ฟัง และอ่านออกเสียง) บนคลังคำ {WORDS.length} คำ {UNITS.length}{" "}
+            หน่วย กับเรื่องอ่าน {READINGS.length} เรื่อง
+            พร้อมด่านทบทวนอัตโนมัติ ด่านรวมทุกหัวข้อ ดาว XP
             ไฟต่อเนื่อง และแชทกับ AI · การตรวจเสียงพูดใช้ตัวถอดเสียงของ
             เบราว์เซอร์ จึงบอกได้ว่า “ฟังออกเป็นคำนี้ไหม” แต่ยังให้คะแนนราย
             หน่วยเสียงไม่ได้ · ความคืบหน้าเก็บไว้ในเครื่องนี้ ยังไม่มีบัญชีผู้ใช้
