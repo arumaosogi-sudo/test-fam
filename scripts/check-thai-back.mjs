@@ -3,31 +3,44 @@
  *
  * `check:thai` ตรวจทางเดียว: ยิงคำอังกฤษไปที่พจนานุกรม แล้วดูว่าคำแปลไทย
  * ของเราอยู่ในรายการคำแปลของมันไหม ด่านนั้นจับไม่ได้เวลาคำแปล "อยู่ในรายการ
- * จริง แต่เป็นความหมายคนละอัน" เพราะรายการคำแปลรวมทุกความหมายของคำนั้นไว้
- * ด้วยกัน เช่น radiator ให้ "รังผึ้ง" มาด้วย ซึ่งอยู่ในรายการจริง
+ * จริง แต่เป็นความหมายคนละอัน" เพราะรายการคำแปลของคำอังกฤษหนึ่งคำรวมทุก
+ * ความหมายไว้ด้วยกัน เช่น radiator ให้ "รังผึ้ง" มาด้วย ซึ่งอยู่ในรายการจริง
  *
- * สคริปต์นี้ยิงกลับทางจากคำไทย สามแหล่ง
- *   1. en.wiktionary หน้าของคำไทยเอง — คนละหน้ากับตารางคำแปลที่ check:thai
- *      ใช้ และคนเขียนคนละกลุ่ม จึงเป็นการตรวจคนละทาง **แต่ยังเป็นโครงการ
- *      เดียวกัน ไม่ใช่แหล่งอิสระ** อย่านับว่าเป็นการยืนยันจากสองแหล่ง
- *   2. th.wiktionary — คนละโครงการจริง นิยามเป็นภาษาไทย เครื่องเทียบให้ไม่ได้
- *      เก็บแค่ว่ามีหน้าหรือไม่ ไว้ให้คนตามไปอ่านเอง
+ * สคริปต์นี้ยิงกลับทางจากคำไทย สี่แหล่ง
+ *
+ *   1. **Thai WordNet (NICT)** ผ่าน Open Multilingual Wordnet — ต่อคำอังกฤษ
+ *      กับคำไทยผ่านรหัส synset ของ Princeton WordNet **เป็นแหล่งอิสระจริง**
+ *      คนละโครงการ คนละวิธีทำ กับพจนานุกรมที่ใช้สร้างเนื้อหา
+ *   2. en.wiktionary หน้าของคำไทยเอง — คนละหน้าและคนละกลุ่มผู้เขียนกับตาราง
+ *      คำแปลที่ `check:thai` ใช้ แต่ **ยังเป็นโครงการเดียวกัน ไม่ใช่แหล่งอิสระ**
  *   3. th.wikipedia แล้วตามลิงก์ข้ามภาษาไปอังกฤษ — ใช้ได้กับคำนามรูปธรรม
+ *   4. th.wiktionary — คนละโครงการ นิยามเป็นภาษาไทย เครื่องเทียบให้ไม่ได้
+ *      รายงานแค่ว่ามีหน้าหรือไม่ ไว้ให้คนตามไปอ่าน
  *
- * **นี่ไม่ใช่ด่านที่ผ่านหรือไม่ผ่าน** คำแปลไทยจำนวนมากเป็นคำประสมที่ไม่มี
- * หน้าในพจนานุกรมเล่มไหน (เช่น "พี่สาวหรือน้องสาว") การไม่มีข้อมูลไม่ได้แปลว่า
+ * **ไม่ใช่ด่านที่ผ่านหรือไม่ผ่าน** คำแปลไทยจำนวนมากเป็นคำประสมที่ไม่มีหน้าใน
+ * พจนานุกรมเล่มไหน (เช่น "พี่สาวหรือน้องสาว") การไม่มีข้อมูลไม่ได้แปลว่า
  * คำแปลผิด สคริปต์จึงออกรายงานให้คนอ่าน ไม่ได้ตั้ง exit code ให้ CI ฟ้อง
  *
- * ยิงทีละ 40 ชื่อเรื่องต่อหนึ่งคำขอ เพราะยิงทีละคำจะโดน
+ * ยิง MediaWiki ทีละ 40 ชื่อเรื่องต่อหนึ่งคำขอ เพราะยิงทีละคำจะโดน
  * "You are making too many requests" แล้วได้ผลเป็นศูนย์ปลอม ๆ
+ *
+ * ไฟล์ WordNet สองไฟล์ (รวม 11 MB) เก็บไว้ใน .cache/ ซึ่งไม่เข้า repo
+ * เพราะเป็นข้อมูลของคนอื่นและโหลดใหม่ได้เสมอ
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WORDS_FILE = join(ROOT, "src/content/words.json");
 const REPORT_FILE = join(ROOT, "docs/thai-reverse-check.md");
+const CACHE_DIR = join(ROOT, ".cache/omw");
+
+const OMW = "https://raw.githubusercontent.com/omwn/omw-data/main/wns";
+const OMW_FILES = {
+  "wn-data-eng.tab": `${OMW}/eng/wn-data-eng.tab`,
+  "wn-data-tha.tab": `${OMW}/tha/wn-data-tha.tab`,
+};
 
 const UA = {
   "User-Agent": "LinguaKids-content-check/1.0 (educational content QA; node)",
@@ -37,6 +50,61 @@ const PAUSE_MS = 2500;
 const RETRIES = 6;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// ---------------------------------------------------------------- WordNet --
+
+async function omwFile(name) {
+  const path = join(CACHE_DIR, name);
+  if (existsSync(path)) return readFileSync(path, "utf8");
+
+  mkdirSync(CACHE_DIR, { recursive: true });
+  const response = await fetch(OMW_FILES[name], { headers: UA });
+  if (!response.ok) throw new Error(`โหลด ${name} ไม่สำเร็จ: ${response.status}`);
+
+  const text = await response.text();
+  writeFileSync(path, text);
+  return text;
+}
+
+/** รหัส synset -> รายการคำของภาษานั้น */
+function synsetLemmas(text) {
+  const bySynset = new Map();
+
+  for (const line of text.split("\n")) {
+    if (!line || line.startsWith("#")) continue;
+    const [synset, field, lemma] = line.split("\t");
+    if (!synset || !lemma || !field?.endsWith("lemma")) continue;
+
+    const list = bySynset.get(synset);
+    if (list) list.push(lemma.trim());
+    else bySynset.set(synset, [lemma.trim()]);
+  }
+
+  return bySynset;
+}
+
+/** คำอังกฤษ -> ชุดคำไทยที่อยู่ใน synset เดียวกัน */
+async function wordnetIndex() {
+  const english = synsetLemmas(await omwFile("wn-data-eng.tab"));
+  const thai = synsetLemmas(await omwFile("wn-data-tha.tab"));
+  const index = new Map();
+
+  for (const [synset, lemmas] of english) {
+    const thaiLemmas = thai.get(synset);
+    if (!thaiLemmas) continue;
+
+    for (const lemma of lemmas) {
+      const key = lemma.toLowerCase().replace(/_/g, " ");
+      let set = index.get(key);
+      if (!set) index.set(key, (set = new Set()));
+      for (const word of thaiLemmas) set.add(word);
+    }
+  }
+
+  return index;
+}
+
+// --------------------------------------------------------------- MediaWiki --
 
 async function api(host, params) {
   const url =
@@ -134,10 +202,17 @@ function thaiGlosses(text) {
     .filter(Boolean);
 }
 
+// -------------------------------------------------------------------- run --
+
 const words = JSON.parse(readFileSync(WORDS_FILE, "utf8"));
 const titles = [...new Set(words.map((word) => word.th))];
 
 console.log(`ตรวจ ${words.length} คำ (${titles.length} คำแปลไทยไม่ซ้ำ)`);
+
+process.stdout.write("Thai WordNet ");
+const wordnet = await wordnetIndex();
+console.log(`${wordnet.size} คำอังกฤษที่มีคู่ไทย`);
+
 process.stdout.write("en.wiktionary ");
 const enWikt = await batch("en.wiktionary.org", titles, CONTENT);
 process.stdout.write("\nth.wiktionary ");
@@ -150,6 +225,7 @@ const rows = words.map((word) => {
   const gloss = thaiGlosses(enWikt.get(word.th));
   const link = wiki.get(word.th);
   const needle = word.en.toLowerCase();
+  const fromWordnet = wordnet.get(needle) ?? new Set();
 
   /*
    * เทียบแบบตัดเป็นคำ ๆ แทนการใช้ขอบคำ \b ในนิพจน์ปกติ
@@ -160,7 +236,7 @@ const rows = words.map((word) => {
    */
   const text = ` ${gloss.join(" ; ").toLowerCase()} `;
   const tokens = new Set(text.split(/[^a-z-]+/));
-  const found = needle.includes(" ")
+  const inGloss = needle.includes(" ")
     ? text.includes(` ${needle} `) ||
       text.includes(` ${needle}.`) ||
       text.includes(` ${needle};`)
@@ -171,31 +247,36 @@ const rows = words.map((word) => {
     th: word.th,
     cefr: word.cefr,
     thSource: word.thSource,
-    hitGloss: found,
+    hitWordnet: fromWordnet.has(word.th),
+    hitGloss: inGloss,
     hitWiki: link ? link.toLowerCase().includes(needle) : false,
     hasThWikt: Boolean(thWikt.get(word.th)),
     gloss,
+    wordnet: [...fromWordnet],
     wiki: link,
   };
 });
 
-const confirmed = rows.filter((r) => r.hitGloss || r.hitWiki);
-/** มีคำแปลกลับ แต่ไม่มีคำของเราอยู่ในนั้น — กลุ่มที่ต้องให้คนอ่าน */
-const mismatch = rows.filter(
-  (r) => !r.hitGloss && !r.hitWiki && r.gloss.length > 0,
+const isConfirmed = (r) => r.hitWordnet || r.hitGloss || r.hitWiki;
+const confirmed = rows.filter(isConfirmed);
+/** มีข้อมูลจากแหล่งใดแหล่งหนึ่ง แต่ไม่มีคำของเราอยู่ในนั้น — ต้องให้คนอ่าน */
+const review = rows.filter(
+  (r) => !isConfirmed(r) && (r.gloss.length > 0 || r.wordnet.length > 0),
 );
-/** ไม่มีหน้าคำไทยนี้เลย — ไม่มีข้อมูล ไม่ใช่ผิด */
+/** ไม่มีแหล่งไหนมีข้อมูลของคำนี้เลย */
 const noData = rows.filter(
-  (r) => !r.hitGloss && !r.hitWiki && r.gloss.length === 0,
+  (r) => !isConfirmed(r) && r.gloss.length === 0 && r.wordnet.length === 0,
 );
 
 const LEVELS = ["Pre-A1", "A1", "A2", "B1", "B2", "C1"];
 const perLevel = LEVELS.map((level) => {
   const all = rows.filter((r) => r.cefr === level);
-  const ok = all.filter((r) => r.hitGloss || r.hitWiki);
+  const ok = all.filter(isConfirmed);
   const pct = all.length ? Math.round((ok.length / all.length) * 100) : 0;
   return `| ${level} | ${all.length} | ${ok.length} | ${pct}% |`;
 }).join("\n");
+
+const short = (list, max) => list.join(" · ").slice(0, max);
 
 const report = `# ตรวจคำแปลไทยย้อนทาง
 
@@ -206,13 +287,17 @@ const report = `# ตรวจคำแปลไทยย้อนทาง
 เพราะรายการคำแปลของคำอังกฤษหนึ่งคำรวมทุกความหมายไว้ด้วยกัน คำแปลที่
 "อยู่ในรายการจริงแต่เป็นความหมายคนละอัน" จึงผ่านด่านเดิมไปได้
 
-สามแหล่งที่ใช้
+สี่แหล่งที่ใช้
 
-1. **en.wiktionary หน้าของคำไทยเอง** — คนละหน้าและคนละกลุ่มผู้เขียนกับตาราง
+1. **Thai WordNet** โดย NICT ผ่าน
+   [Open Multilingual Wordnet](https://github.com/omwn/omw-data)
+   ต่อคำอังกฤษกับคำไทยผ่านรหัส synset ของ Princeton WordNet —
+   **เป็นแหล่งอิสระจริง** คนละโครงการกับพจนานุกรมที่ใช้สร้างเนื้อหา
+2. **en.wiktionary หน้าของคำไทยเอง** — คนละหน้าและคนละกลุ่มผู้เขียนกับตาราง
    คำแปลที่ \`check:thai\` ใช้ แต่ **ยังเป็นโครงการเดียวกัน ไม่ใช่แหล่งอิสระ**
-2. **th.wiktionary** — คนละโครงการ นิยามเป็นภาษาไทย เครื่องเทียบให้ไม่ได้
-   รายงานแค่ว่ามีหน้าหรือไม่ ไว้ให้คนตามไปอ่าน
 3. **th.wikipedia** แล้วตามลิงก์ข้ามภาษาไปอังกฤษ — ใช้ได้กับคำนามรูปธรรม
+4. **th.wiktionary** — คนละโครงการ นิยามเป็นภาษาไทย เครื่องเทียบให้ไม่ได้
+   รายงานแค่ว่ามีหน้าหรือไม่ ไว้ให้คนตามไปอ่าน
 
 **ไม่ใช่ด่านที่ผ่านหรือไม่ผ่าน** คำแปลหลายคำเป็นคำประสมที่ไม่มีหน้าใน
 พจนานุกรมเล่มไหน การไม่มีข้อมูลไม่ได้แปลว่าคำแปลผิด
@@ -222,9 +307,18 @@ const report = `# ตรวจคำแปลไทยย้อนทาง
 | สถานะ | จำนวน |
 |---|---|
 | ยืนยันได้จากการแปลกลับ | ${confirmed.length} |
-| มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา — **ต้องให้คนอ่าน** | ${mismatch.length} |
-| ไม่มีหน้าคำไทยนี้ใน en.wiktionary — ไม่มีข้อมูล | ${noData.length} |
+| มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา — **ต้องให้คนอ่าน** | ${review.length} |
+| ไม่มีแหล่งไหนมีข้อมูลของคำนี้ | ${noData.length} |
 | รวม | ${rows.length} |
+
+แยกตามแหล่ง (คำหนึ่งนับได้หลายแหล่ง)
+
+| แหล่ง | ยืนยันได้ |
+|---|---|
+| Thai WordNet (อิสระ) | ${rows.filter((r) => r.hitWordnet).length} |
+| หน้าคำไทยใน en.wiktionary | ${rows.filter((r) => r.hitGloss).length} |
+| ลิงก์ข้ามภาษาของวิกิพีเดียไทย | ${rows.filter((r) => r.hitWiki).length} |
+| มีหน้าใน th.wiktionary ให้คนตามไปอ่าน | ${rows.filter((r) => r.hasThWikt).length} |
 
 แยกตามระดับ
 
@@ -232,37 +326,49 @@ const report = `# ตรวจคำแปลไทยย้อนทาง
 |---|---|---|---|
 ${perLevel}
 
-## มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา (${mismatch.length} คำ)
+## มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา (${review.length} คำ)
 
-คำกลุ่มนี้ **ส่วนใหญ่ไม่ได้ผิด** — เป็นคำพ้องความหมายที่พจนานุกรมเลือกใช้
-คำอังกฤษอีกคำอธิบาย (เช่น baby อธิบายด้วย infant) แต่กลุ่มนี้คือกลุ่มที่
-คนต้องอ่านเอง เพราะคำที่ผิดจริงจะซ่อนอยู่ในนี้
+คำกลุ่มนี้ **ส่วนใหญ่ไม่ได้ผิด** — เป็นคำพ้องความหมายที่แหล่งอื่นเลือกใช้คำอื่น
+(cow ได้ วัวตัวเมีย · teacher ได้ ครู) หรือเป็นคำแปลของความหมายอื่นของคำเดียวกัน
+(watch ได้ เฝ้าดู ซึ่งเป็นกริยา ไม่ใช่นาฬิกา) แต่กลุ่มนี้คือกลุ่มที่คนต้องอ่านเอง
+เพราะคำที่ผิดจริงจะซ่อนอยู่ในนี้
 
-| คำ | ระดับ | ที่มา | คำแปลของเรา | แปลกลับได้ |
-|---|---|---|---|---|
-${mismatch
+| คำ | ระดับ | ที่มา | คำแปลของเรา | WordNet ให้ | วิกิพจนานุกรมให้ |
+|---|---|---|---|---|---|
+${review
   .map(
     (r) =>
-      `| ${r.en} | ${r.cefr} | ${r.thSource} | \`${r.th}\` | ${r.gloss
-        .join(" · ")
-        .slice(0, 110)} |`,
+      `| ${r.en} | ${r.cefr} | ${r.thSource} | \`${r.th}\` | ${
+        short(r.wordnet, 70) || "—"
+      } | ${short(r.gloss, 70) || "—"} |`,
   )
   .join("\n")}
 
-## ไม่มีหน้าคำไทยนี้ใน en.wiktionary (${noData.length} คำ)
+## ไม่มีแหล่งไหนมีข้อมูลของคำนี้ (${noData.length} คำ)
 
 ตรวจด้วยวิธีนี้ไม่ได้ ไม่ได้แปลว่าผิด — ส่วนใหญ่เป็นคำประสม
 เครื่องหมาย \`*\` คือมีหน้าใน th.wiktionary ให้คนตามไปอ่านได้
 (${noData.filter((r) => r.hasThWikt).length} คำ)
 
 ${noData.map((r) => `${r.en}=${r.th}${r.hasThWikt ? "*" : ""}`).join(" · ")}
+
+## เครดิตของแหล่งข้อมูล
+
+Thai WordNet Copyright 2011 by the National Institute of Information and
+Communications Technology (NICT). WordNet 3.0 Copyright 2006 by Princeton
+University. ทั้งสองอนุญาตให้ใช้ ทำซ้ำ แก้ไข และเผยแพร่เพื่อวัตถุประสงค์ใดก็ได้
+โดยไม่มีค่าธรรมเนียม หากแสดงประกาศลิขสิทธิ์นี้ไว้ในสำเนาทุกชุด
+
+ไฟล์ข้อมูลสองไฟล์ที่สคริปต์โหลดมาเก็บไว้ใน \`.cache/\` ไม่ได้อยู่ใน repo
+และเนื้อหาของแอปไม่ได้คัดลอกข้อมูลจากแหล่งเหล่านี้ ใช้เพื่อตรวจสอบเท่านั้น
 `;
 
 writeFileSync(REPORT_FILE, report);
 
-console.log(`\nยืนยันได้          : ${confirmed.length} / ${rows.length}`);
-console.log(`  จากหน้าคำไทย     : ${rows.filter((r) => r.hitGloss).length}`);
-console.log(`  จากลิงก์วิกิพีเดีย : ${rows.filter((r) => r.hitWiki).length}`);
-console.log(`ต้องให้คนอ่าน      : ${mismatch.length}`);
-console.log(`ไม่มีข้อมูล        : ${noData.length}`);
-console.log(`เขียนรายงานที่     : docs/thai-reverse-check.md`);
+console.log(`\nยืนยันได้            : ${confirmed.length} / ${rows.length}`);
+console.log(`  Thai WordNet       : ${rows.filter((r) => r.hitWordnet).length}`);
+console.log(`  หน้าคำไทย           : ${rows.filter((r) => r.hitGloss).length}`);
+console.log(`  ลิงก์วิกิพีเดีย      : ${rows.filter((r) => r.hitWiki).length}`);
+console.log(`ต้องให้คนอ่าน        : ${review.length}`);
+console.log(`ไม่มีข้อมูลเลย        : ${noData.length}`);
+console.log(`เขียนรายงานที่       : docs/thai-reverse-check.md`);

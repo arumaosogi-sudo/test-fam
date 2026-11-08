@@ -7,13 +7,17 @@
 เพราะรายการคำแปลของคำอังกฤษหนึ่งคำรวมทุกความหมายไว้ด้วยกัน คำแปลที่
 "อยู่ในรายการจริงแต่เป็นความหมายคนละอัน" จึงผ่านด่านเดิมไปได้
 
-สามแหล่งที่ใช้
+สี่แหล่งที่ใช้
 
-1. **en.wiktionary หน้าของคำไทยเอง** — คนละหน้าและคนละกลุ่มผู้เขียนกับตาราง
+1. **Thai WordNet** โดย NICT ผ่าน
+   [Open Multilingual Wordnet](https://github.com/omwn/omw-data)
+   ต่อคำอังกฤษกับคำไทยผ่านรหัส synset ของ Princeton WordNet —
+   **เป็นแหล่งอิสระจริง** คนละโครงการกับพจนานุกรมที่ใช้สร้างเนื้อหา
+2. **en.wiktionary หน้าของคำไทยเอง** — คนละหน้าและคนละกลุ่มผู้เขียนกับตาราง
    คำแปลที่ `check:thai` ใช้ แต่ **ยังเป็นโครงการเดียวกัน ไม่ใช่แหล่งอิสระ**
-2. **th.wiktionary** — คนละโครงการ นิยามเป็นภาษาไทย เครื่องเทียบให้ไม่ได้
-   รายงานแค่ว่ามีหน้าหรือไม่ ไว้ให้คนตามไปอ่าน
 3. **th.wikipedia** แล้วตามลิงก์ข้ามภาษาไปอังกฤษ — ใช้ได้กับคำนามรูปธรรม
+4. **th.wiktionary** — คนละโครงการ นิยามเป็นภาษาไทย เครื่องเทียบให้ไม่ได้
+   รายงานแค่ว่ามีหน้าหรือไม่ ไว้ให้คนตามไปอ่าน
 
 **ไม่ใช่ด่านที่ผ่านหรือไม่ผ่าน** คำแปลหลายคำเป็นคำประสมที่ไม่มีหน้าใน
 พจนานุกรมเล่มไหน การไม่มีข้อมูลไม่ได้แปลว่าคำแปลผิด
@@ -22,108 +26,141 @@
 
 | สถานะ | จำนวน |
 |---|---|
-| ยืนยันได้จากการแปลกลับ | 819 |
-| มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา — **ต้องให้คนอ่าน** | 73 |
-| ไม่มีหน้าคำไทยนี้ใน en.wiktionary — ไม่มีข้อมูล | 90 |
+| ยืนยันได้จากการแปลกลับ | 893 |
+| มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา — **ต้องให้คนอ่าน** | 86 |
+| ไม่มีแหล่งไหนมีข้อมูลของคำนี้ | 3 |
 | รวม | 982 |
+
+แยกตามแหล่ง (คำหนึ่งนับได้หลายแหล่ง)
+
+| แหล่ง | ยืนยันได้ |
+|---|---|
+| Thai WordNet (อิสระ) | 748 |
+| หน้าคำไทยใน en.wiktionary | 820 |
+| ลิงก์ข้ามภาษาของวิกิพีเดียไทย | 23 |
+| มีหน้าใน th.wiktionary ให้คนตามไปอ่าน | 788 |
 
 แยกตามระดับ
 
 | ระดับ | คำ | ยืนยันได้ | สัดส่วน |
 |---|---|---|---|
-| Pre-A1 | 120 | 105 | 88% |
-| A1 | 266 | 250 | 94% |
-| A2 | 156 | 136 | 87% |
-| B1 | 186 | 142 | 76% |
-| B2 | 192 | 145 | 76% |
-| C1 | 62 | 41 | 66% |
+| Pre-A1 | 120 | 111 | 93% |
+| A1 | 266 | 262 | 98% |
+| A2 | 156 | 147 | 94% |
+| B1 | 186 | 160 | 86% |
+| B2 | 192 | 163 | 85% |
+| C1 | 62 | 50 | 81% |
 
-## มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา (73 คำ)
+## มีคำแปลกลับ แต่ไม่ตรงกับคำของเรา (86 คำ)
 
-คำกลุ่มนี้ **ส่วนใหญ่ไม่ได้ผิด** — เป็นคำพ้องความหมายที่พจนานุกรมเลือกใช้
-คำอังกฤษอีกคำอธิบาย (เช่น baby อธิบายด้วย infant) แต่กลุ่มนี้คือกลุ่มที่
-คนต้องอ่านเอง เพราะคำที่ผิดจริงจะซ่อนอยู่ในนี้
+คำกลุ่มนี้ **ส่วนใหญ่ไม่ได้ผิด** — เป็นคำพ้องความหมายที่แหล่งอื่นเลือกใช้คำอื่น
+(cow ได้ วัวตัวเมีย · teacher ได้ ครู) หรือเป็นคำแปลของความหมายอื่นของคำเดียวกัน
+(watch ได้ เฝ้าดู ซึ่งเป็นกริยา ไม่ใช่นาฬิกา) แต่กลุ่มนี้คือกลุ่มที่คนต้องอ่านเอง
+เพราะคำที่ผิดจริงจะซ่อนอยู่ในนี้
 
-| คำ | ระดับ | ที่มา | คำแปลของเรา | แปลกลับได้ |
-|---|---|---|---|---|
-| two | Pre-A1 | wiktionary | `สอง` | 2 (Thai numeral: ) |
-| dog | Pre-A1 | wiktionary | `สุนัข` | ( ) dogmeat |
-| baby | Pre-A1 | adapted | `เด็กทารก` | infant |
-| me | Pre-A1 | wiktionary | `ฉัน` | as; like; as if · as; like · to eat; to drink; to take; to consume · shining; radiating; light; luminous |
-| hair | Pre-A1 | wiktionary | `ผม` | headhair. · a first person pronoun employed by a male when addressing any commoner. |
-| eraser | Pre-A1 | wiktionary | `ยางลบ` | rubber: device for erasing marks made with pen, pencil, etc. |
-| car | Pre-A1 | wiktionary | `รถยนต์` | motorcar; automobile. |
-| bike | Pre-A1 | wiktionary | `จักรยาน` | bicycle |
-| watch | A1 | wiktionary | `นาฬิกาข้อมือ` | wristwatch. |
-| say | A1 | wiktionary | `พูด` | to speak |
-| learn | A1 | wiktionary | `เรียนรู้` | study |
-| country | A1 | wiktionary | `ประเทศ` | nation; also used as a prefix to the name of a nation · area; district; locality; place; region; spot · city;  |
-| forty | A1 | wiktionary | `สี่สิบ` | 40 (Thai numeral: ) |
-| fifty | A1 | wiktionary | `ห้าสิบ` | 50 (Thai numeral: ) |
-| sixty | A1 | wiktionary | `หกสิบ` | 60 (Thai numeral: ) |
-| seventy | A1 | wiktionary | `เจ็ดสิบ` | 70 (Thai numeral: ) |
-| eighty | A1 | wiktionary | `แปดสิบ` | 80 (Thai numeral: ) |
-| ninety | A1 | wiktionary | `เก้าสิบ` | 90 (Thai numeral: ) |
-| stomach | A2 | wiktionary | `ท้อง` | abdomen; belly · womb · pregnancy · body, content, extent, essence, or main part (of something large, vast, gr |
-| worried | A2 | adapted | `กังวล` | to worry; to be anxious |
-| relaxed | A2 | adapted | `ผ่อนคลาย` | to relieve; to ease; to relax. |
-| path | A2 | wiktionary | `ทาง` | way, route, or course for travel · opportunity; chance · section; part; side · method; means; procedure; proce |
-| textbook | A2 | wiktionary | `ตำรา` | edict; decree; command; ordinance. · standard work for a particular branch of study or knowledge, as , , etc.  |
-| shell | A2 | wiktionary | `เปลือกหอย` | seashell. |
-| shore | A2 | wiktionary | `ชายฝั่ง` | coast, seashore |
-| slice | A2 | wiktionary | `ชิ้น` | piece |
-| photo | A1 | adapted | `รูปถ่าย` | photograph; picture; image |
-| king | A1 | wiktionary | `กษัตริย์` | # kṣatriya: those who fight, the ruling and military elite, being one of the four social classes in the societ |
-| hello | A1 | wiktionary | `สวัสดี` | goodness; excellence; virtue<ref name = ":1"/> · wellness, well-being; safety, security; comfort, ease<ref nam |
-| job | A1 | wiktionary | `งาน` | work: · # act; action; activity; deed · # duty; task; undertaking · # employment; trade; occupation; professio |
-| dirt | B1 | wiktionary | `ดิน` | earth; ground; soil; land |
-| ache | B1 | wiktionary | `ความเจ็บ` | pain |
-| comfort | B1 | adapted | `ความสบาย` | wellness. |
-| delight | B1 | adapted | `ความยินดี` | gladness; pleasure |
-| cabin | B1 | adapted | `กระท่อม` | cottage; hut · kratom |
-| crossing | B1 | adapted | `ทางข้าม` | (pedestrian) crosswalk |
-| achievement | B1 | wiktionary | `ความสำเร็จ` | : success; accomplishment |
-| bold | B1 | adapted | `กล้า` | rice seedling · to be brave · hard · strong (sense or feeling) |
-| eager | B1 | adapted | `กระตือรือร้น` | zealous; ardently active, devoted, or diligent. · having the power of quick motion; active; nimble. |
-| applaud | B1 | wiktionary | `ตบมือ` | to clap |
-| brief | B1 | adapted | `สั้น` | short |
-| parrot | B1 | wiktionary | `นกแก้ว` | any clear, transparent substance, as crystal, diamond, glass, etc, whether natural or artificial · anything ma |
-| kettle | B1 | adapted | `กาน้ำ` | teakettle |
-| eagle | B2 | wiktionary | `อินทรี` | any of the birds of the family , commonly known as eagles · any of the fish of the genus , in the family , com |
-| arena | B2 | wiktionary | `สนาม` | lawn, yard · field, ground (for sports, airplanes, etc.) |
-| dock | B2 | wiktionary | `ท่า` | river;<ref> </ref> river water<ref> </ref> · port; pier; quay · posture; gesture · to wait (for); to await |
-| ferryboat | B2 | adapted | `เรือข้ามฟาก` | ferry |
-| invisible | B2 | wiktionary | `ล่องหน` | to vanish through or as if through magic. · to disappear; to be absent; to be missing; to be no longer seen. |
-| dove | B2 | wiktionary | `นกเขา` | ( ) any of the various birds of the genus <ref>{{cite-web · ( ) some fish of the genus or of the family <ref>{ |
-| worm | B2 | wiktionary | `หนอน` | larva of insect. · penis. |
-| wasp | B2 | wiktionary | `ตัวต่อ` | building blocks; blocks made of wood or plastic used as children's toys can be stacked or joined to form a lar |
-| ornament | B2 | adapted | `เครื่องประดับ` | accessory. |
-| fabric | B2 | wiktionary | `ผ้า` | cloth |
-| mighty | B2 | wiktionary | `ทรงพลัง` | powerful, potent |
-| stiff | B2 | wiktionary | `แข็ง` | hard; rigid |
-| creepy | B2 | wiktionary | `น่ากลัว` | scary; frightful. |
-| obedient | B2 | wiktionary | `เชื่อฟัง` | to obey. |
-| lecturer | B2 | wiktionary | `อาจารย์` | teacher: one who teaches, especially as a profession · # instructor: teacher in a higher education institution |
-| colleague | B2 | wiktionary | `เพื่อนร่วมงาน` | coworker, co-worker |
-| excursion | B2 | wiktionary | `การท่องเที่ยว` | : traveling |
-| diploma | B2 | wiktionary | `ประกาศนียบัตร` | certificate: document confirming a qualification, status, etc. · certificate: document confirming that a perso |
-| metaphor | B2 | wiktionary | `อุปมา` | something to which an action, condition, etc, is compared, such as "dream" in "beautiful like a dream". · anal |
-| mumble | B2 | wiktionary | `พึมพำ` | to mutter |
-| reward | B2 | wiktionary | `ตอบแทน` | to repay, to pay back. · to reciprocate, to retaliate. |
-| terrain | C1 | wiktionary | `ภูมิประเทศ` | scenery, landscape |
-| fanciful | C1 | wiktionary | `เพ้อฝัน` | to daydream; to fancy; to be delusional. |
-| voracious | C1 | wiktionary | `ตะกละ` | gluttony · gluttonous; greedy; ravenous |
-| overalls | C1 | wiktionary | `เอี๊ยม` | (classifier or ) dudou · (classifier ) brace: adjustable strap |
-| accustomed | C1 | wiktionary | `คุ้นเคย` | to become familiar, habitual |
-| wary | C1 | wiktionary | `ระวัง` | to beware; to be careful; to take care |
-| stray | C1 | wiktionary | `จรจัด` | homeless; vagrant. |
-| intellect | C1 | wiktionary | `ปัญญา` | wisdom; knowledge; intelligence · ability |
-| clutch | C1 | wiktionary | `คว้า` | to seize; to grab |
+| คำ | ระดับ | ที่มา | คำแปลของเรา | WordNet ให้ | วิกิพจนานุกรมให้ |
+|---|---|---|---|---|---|
+| sister | Pre-A1 | adapted | `พี่สาวหรือน้องสาว` | น้อง · น้องสาว · ซิสเตอร์ · พี่สาว | — |
+| brother | Pre-A1 | adapted | `พี่ชายหรือน้องชาย` | พี่ชาย · คู่หู · เพื่อนคู่หู · บั๊ดดี้ | — |
+| grandmother | Pre-A1 | adapted | `ยายหรือย่า` | ยาย · ย่า · แม่เฒ่า · แม่อุ๊ย | — |
+| grandfather | Pre-A1 | adapted | `ตาหรือปู่` | ตา · พ่อเฒ่า · พ่ออุ๊ย · ปู่ | — |
+| me | Pre-A1 | wiktionary | `ฉัน` | มลรัฐเมน · รัฐเมน | as; like; as if · as; like · to eat; to drink; to take; to consume · s |
+| hair | Pre-A1 | wiktionary | `ผม` | ขน · เส้นผม · พระโลมา · เส้นยาแดงผ่าแปด | headhair. · a first person pronoun employed by a male when addressing  |
+| eraser | Pre-A1 | wiktionary | `ยางลบ` | ที่ลบ | rubber: device for erasing marks made with pen, pencil, etc. |
+| teacher | Pre-A1 | adapted | `คุณครู` | ครู · อาจารย์ · ผู้สอน · ครูบาอาจารย์ · ผู้ให้ความรู้ · อ. | — |
+| happy | Pre-A1 | wiktionary | `มีความสุข` | ที่มีความสุข · ซึ่งยินดี | — |
+| coat | A1 | wiktionary | `เสื้อโค้ท` | คลุมเสื้อโค้ท · ห่อหุ้ม · เคลือบ · ขน · ระบบผมและขน · เสื้อโค้ต · โค้ต | — |
+| watch | A1 | wiktionary | `นาฬิกาข้อมือ` | ค้นคว้า · เฝ้าดู · ดู · ชม · จับตาดู · นาฬิกาพก · นาฬิกาพกพา · ทหารยาม | wristwatch. |
+| worried | A2 | adapted | `กังวล` | — | to worry; to be anxious |
+| thirsty | A2 | adapted | `กระหายน้ำ` | ที่ซับน้ำได้ดี · ที่ซึมซับได้ดี · กระหาย · หิวน้ำ · ที่ต้องการความชื้น | — |
+| relaxed | A2 | adapted | `ผ่อนคลาย` | — | to relieve; to ease; to relax. |
+| useful | A2 | adapted | `มีประโยชน์` | ซึ่งมีประโยชน์ | — |
+| weekday | A2 | adapted | `วันธรรมดา` | วีคเดย์ | — |
+| beginning | A2 | adapted | `จุดเริ่มต้น` | แรก · การเปิดฉาก · การเริ่มต้น · ส่วนต้น · ต้นกำเนิด · แหล่งกำเนิด · ค | — |
+| quiz | A2 | adapted | `แบบทดสอบ` | สอบ · ควิซ | — |
+| pea | A2 | wiktionary | `ลันเตา` | ถั่ว · ต้นถั่ว | — |
+| continue | A2 | wiktionary | `ทำต่อไป` | ยังคงดำเนินต่อไป · ดำเนินการสนทนา · ไปข้างหน้า · จ้าง · ให้ทำงาน · คงไ | — |
+| pocket | A1 | adapted | `กระเป๋าเสื้อ` | เอาใส่กระเป๋าเสื้อ · ล้วงกระเป๋า · กรีดกระเป๋า · กระเป๋า · กระเป๋าหน้า | — |
+| hello | A1 | wiktionary | `สวัสดี` | hi | goodness; excellence; virtue<ref name = ":1"/> · wellness, well-being; |
+| ache | B1 | wiktionary | `ความเจ็บ` | โหยหา · ปวด · เจ็บ · รู้สึกปวด · รู้สึกเจ็บ | pain |
+| cure | B1 | adapted | `การรักษา` | รักษา · ยารักษา | — |
+| boredom | B1 | wiktionary | `ความเบื่อ` | ความเบื่อหน่าย | — |
+| curiosity | B1 | wiktionary | `ความอยากรู้` | ของแปลก · ความอยากรู้อยากเห็น | — |
+| arrange | B1 | adapted | `จัดเรียง` | ทำผม · แต่งผม · เซตผม · ลำดับ · เรียบเรียง · เรียงร้อย · ลำดับความคิด  | — |
+| huge | B1 | adapted | `ใหญ่โต` | มหึมา | — |
+| boot | B1 | adapted | `รองเท้าบูต` | บู๊ตเครื่อง · การเตะ · เท้าที่ถูกเครื่องทรมานบีบ · รองเท้าบูท · บูท ·  | — |
+| builder | B1 | wiktionary | `ผู้ก่อสร้าง` | ผู้สร้าง · ผู้รับเหมาก่อสร้าง · บริษัทรับเหมาก่อสร้าง · บริษัทรับเหมา  | — |
+| cabin | B1 | adapted | `กระท่อม` | ขังในที่แคบ · เคบิน · ห้องพักผู้โดยสาร | cottage; hut · kratom |
+| composition | B1 | adapted | `เรียงความ` | การประพันธ์ · การแต่งหนังสือ · การเขียนหนังสือ · การประพันธ์เพลง · การ | — |
+| conclusion | B1 | wiktionary | `ข้อสรุป` | การตัดสินใจ · การทำให้สิ้นสุด · ความเห็นต่อท้าย · คำตัดสิน · ช่วงปิดกา | — |
+| appetite | B1 | adapted | `ความอยากอาหาร` | ความกระหาย | — |
+| curious | B1 | adapted | `อยากรู้` | แปลก | — |
+| bold | B1 | adapted | `กล้า` | ที่กล้าหาญ · ตัวหนา · อักษรหนา | rice seedling · to be brave · hard · strong (sense or feeling) |
+| eager | B1 | adapted | `กระตือรือร้น` | ใจจดใจจ่อ · คลื่น | zealous; ardently active, devoted, or diligent. · having the power of  |
+| complete | B1 | adapted | `ทำให้เสร็จ` | ทำเสร็จ · กรอก · เข้าสอบแข่งขัน · ปฏิบัติหน้าที่ | — |
+| deliver | B1 | adapted | `ส่งมอบ` | เกิด · ให้กำเนิด · คลอดลูก · คลอด · มีพระประสูติการ · เกิดลูก · กล่าวส | — |
+| careless | B1 | wiktionary | `สะเพร่า` | ซึ่งไม่ระมัดระวัง | — |
+| brief | B1 | adapted | `สั้น` | สรุป · เรื่องย่อ | short |
+| broad | B1 | adapted | `กว้างขวาง` | ซึ่งเปิดกว้างทางความคิด · กว้างๆ · กว้างสุดลูกหูลูกตา · กว้าง · ผู้หญิ | — |
+| kettle | B1 | adapted | `กาน้ำ` | กาต้มน้ำ · หม้อตุ๋น · กลองชุด · กลองทิมปานี · หลุมรูปกาต้มน้ำ · กา | teakettle |
+| sunrise | B1 | wiktionary | `ตะวันขึ้น` | รุ่งอรุณ · พระอาทิตย์ขึ้น · ขึ้นจากขอบฟ้า · ตอนเช้า · รุ่งแจ้ง · เช้าต | — |
+| mend | B1 | adapted | `ปะซ่อม` | ซ่อม · ซ่อมแซม · ฟื้นฟู · การซ่อมแซม · การซ่อม · รอยชุน | — |
+| fasten | B1 | adapted | `รัดให้แน่น` | ทำให้แน่น · ติด · ยึด · ทำให้ติดแน่น · ฟิกซ์ · ยึดให้แน่น · ผูกติด | — |
+| active | B1 | adapted | `กระฉับกระเฉง` | คล่องแคล่ว · มีพลัง · แอคทีฟ · คึกคัก · ที่คึกคัก · ซึ่งรุนแรงมากขึ้น  | — |
+| cherry | B2 | wiktionary | `เชอร์รี่` | แดง · สีแดง · สีแดงเชอร์รี่ · เชอรี่ · ลูกเชอร์รี่ · ผลเชอร์รี่ · ต้นเ | — |
+| rug | B2 | adapted | `พรมผืนเล็ก` | พรม · ลาดพระบาท | — |
+| shed | B2 | adapted | `โรงเก็บของ` | ผลัดขน · ลอกคราบ · ชะล้าง · กำจัด · โยนทิ้ง · เท · หลั่ง | — |
+| cottage | B2 | adapted | `บ้านชนบท` | กระท่อม · บังกะโล | — |
+| arena | B2 | wiktionary | `สนาม` | สนามกีฬา · สเตเดียม · อารีน่า · เส้นทางชีวิต | lawn, yard · field, ground (for sports, airplanes, etc.) |
+| dock | B2 | wiktionary | `ท่า` | ตัดหาง · จอดเรือ · ลด · หาง · หางสั้น · ท่าเรือ · อู่เรือ · คอกจำเลย · | river;<ref> </ref> river water<ref> </ref> · port; pier; quay · postur |
+| mist | B2 | adapted | `หมอกบาง` | มีฝ้าขึ้น · ทำให้มัว · หมอก | — |
+| dandelion | B2 | wiktionary | `แดนดี้ไลออน` | ต้นแดนดิไลออน | — |
+| motorbike | B2 | adapted | `มอเตอร์ไซค์` | นั่งมอเตอร์ไซค์ · นั่งรถเครื่อง · ขับมอเตอร์ไซค์ · ขับรถเครื่อง · ขึ้น | — |
+| ferryboat | B2 | adapted | `เรือข้ามฟาก` | เรือเฟอรี่่ | ferry |
+| soar | B2 | adapted | `ทะยาน` | โผบิน · บินขึ้นอย่างรวดเร็ว · บินเครื่องร่อน | — |
+| invisible | B2 | wiktionary | `ล่องหน` | ไม่สะดุดตา · ไม่โดดเด่น · ที่มองไม่เห็น | to vanish through or as if through magic. · to disappear; to be absent |
+| muddy | B2 | wiktionary | `เลอะโคลน` | ซึ่งเปื้อนโคลน · ขุ่น · ซึ่งเป็นโคลน · ทำให้ขุ่น · ทำให้เปื้อนโคลน · เ | — |
+| clam | B2 | wiktionary | `หอยกาบ` | หอยแคลม · หอย · ดอลลาร์ · ธนบัตรหนึ่งดอลลาร์ · หนึ่งดอลล่าร์ · แบงค์หน | — |
+| dove | B2 | wiktionary | `นกเขา` | นกพิราบ · สัญลักษณ์แห่งสันติภาพ · พิราบ · พิราบขาว · เนื้อนกพิราบ · เน | ( ) any of the various birds of the genus <ref>{{cite-web · ( ) some f |
+| gateway | B2 | adapted | `ประตูทางเข้า` | ทางเข้าออก · เกตเวย์ | — |
+| overcoat | B2 | adapted | `เสื้อคลุมยาว` | เสื้อคลุมกันหนาว | — |
+| snowball | B2 | wiktionary | `ก้อนหิมะ` | เพิ่มทวี · ขว้างบอลหิมะ · ขว้างสโนว์บอล · ลูกบอลหิมะ · สโนว์บอล · บอลห | — |
+| scuba | B2 | wiktionary | `สกูบา` | อุปกรณ์ช่วยหายใจ · สคูบ้า | — |
+| trophy | B2 | wiktionary | `ถ้วยรางวัล` | รางวัล | — |
+| chase | B2 | adapted | `ไล่กวด` | ตัดเป็นคอลัมน์ · สลัก · ไล่จับ · ตามตื้อ · ตามจีบ · ตื้อ · การไล่ · ซั | — |
+| rusty | B2 | wiktionary | `เป็นสนิม` | ที่่มีสีสนิม | — |
+| stiff | B2 | wiktionary | `แข็ง` | เมาหนัก · เมาหัวราน้ำ · เมาปลิ้น · มั่นคง · แน่วแน่ · เหมือนศพ · อย่าง | hard; rigid |
+| creepy | B2 | wiktionary | `น่ากลัว` | — | scary; frightful. |
+| obedient | B2 | wiktionary | `เชื่อฟัง` | — | to obey. |
+| lecturer | B2 | wiktionary | `อาจารย์` | ผู้บรรยาย · ผู้บรรยายวิชา | teacher: one who teaches, especially as a profession · # instructor: t |
+| stamp | B2 | wiktionary | `ย่ำเท้า` | กระทืบ · เหยียบ · จัดประเภท · จำแนก · ประทับ · ปั๊ม · ประทับตรา · สแต็ | — |
+| reward | B2 | wiktionary | `ตอบแทน` | ให้รางวัล · เสริมแรง · ตกรางวัล · ตบรางวัล · ให้เกียรติ · การเสริมแรง  | to repay, to pay back. · to reciprocate, to retaliate. |
+| pounce | C1 | wiktionary | `ตะปบ` | การกระโจน | — |
+| cavity | C1 | wiktionary | `ฟันผุ` | ช่อง · โพรง · หลุม · อาการฟันผุ | — |
+| vertical | C1 | wiktionary | `ตั้งตรง` | ในแนวดิ่ง · ตามแนวตั้ง · ตรง · ซึ่งตั้งตรง · โครงสร้างแนวตั้ง | — |
+| fanciful | C1 | wiktionary | `เพ้อฝัน` | — | to daydream; to fancy; to be delusional. |
+| voracious | C1 | wiktionary | `ตะกละ` | จอมเขมือบ · โลภ | gluttony · gluttonous; greedy; ravenous |
+| salvage | C1 | wiktionary | `กอบกู้` | ช่วยชีวิต · บรรเทา · การกู้เรือ · การกู้ทรัพย์สินจากภัยพิบัติ · ซากทรั | — |
+| overalls | C1 | wiktionary | `เอี๊ยม` | — | (classifier or ) dudou · (classifier ) brace: adjustable strap |
+| accustomed | C1 | wiktionary | `คุ้นเคย` | เคยชิน | to become familiar, habitual |
+| wary | C1 | wiktionary | `ระวัง` | — | to beware; to be careful; to take care |
+| stray | C1 | wiktionary | `จรจัด` | ออกนอกเรื่อง · เร่ร่อน · เร่่ร่อน · เดินหลง | homeless; vagrant. |
+| clutch | C1 | wiktionary | `คว้า` | เกาะกุมจิตใจ · กุม · จับไว้แน่น · ยึดไว้แน่น · การจับ · คลัตช์ · กระเป | to seize; to grab |
 
-## ไม่มีหน้าคำไทยนี้ใน en.wiktionary (90 คำ)
+## ไม่มีแหล่งไหนมีข้อมูลของคำนี้ (3 คำ)
 
 ตรวจด้วยวิธีนี้ไม่ได้ ไม่ได้แปลว่าผิด — ส่วนใหญ่เป็นคำประสม
 เครื่องหมาย `*` คือมีหน้าใน th.wiktionary ให้คนตามไปอ่านได้
-(24 คำ)
+(2 คำ)
 
-sister=พี่สาวหรือน้องสาว · brother=พี่ชายหรือน้องชาย · grandmother=ยายหรือย่า · grandfather=ตาหรือปู่ · face=ใบหน้า* · teacher=คุณครู · happy=มีความสุข · coat=เสื้อโค้ท · medal=เหรียญรางวัล · thirsty=กระหายน้ำ · empty=ว่างเปล่า* · perfect=สมบูรณ์แบบ · useful=มีประโยชน์ · weekday=วันธรรมดา · beginning=จุดเริ่มต้น · quiz=แบบทดสอบ · sunflower=ดอกทานตะวัน* · pea=ลันเตา* · cereal=ซีเรียล* · continue=ทำต่อไป · pocket=กระเป๋าเสื้อ · cure=การรักษา* · correction=การแก้ไข* · anger=ความโกรธ* · boredom=ความเบื่อ* · curiosity=ความอยากรู้ · arrange=จัดเรียง · huge=ใหญ่โต* · boot=รองเท้าบูต · curve=เส้นโค้ง* · builder=ผู้ก่อสร้าง · comedian=นักแสดงตลก · climber=นักไต่เขา · campsite=ที่ตั้งแคมป์ · comparison=การเปรียบเทียบ* · composition=เรียงความ · conclusion=ข้อสรุป* · appetite=ความอยากอาหาร · curious=อยากรู้ · complete=ทำให้เสร็จ · deliver=ส่งมอบ* · careless=สะเพร่า* · amazing=น่าทึ่ง · bald=หัวล้าน · broad=กว้างขวาง* · delicate=บอบบาง · sunrise=ตะวันขึ้น · arrival=การมาถึง · feed=ให้อาหาร · mend=ปะซ่อม · fasten=รัดให้แน่น · active=กระฉับกระเฉง* · cherry=เชอร์รี่ · rug=พรมผืนเล็ก · laptop=แล็ปท็อป · shed=โรงเก็บของ · cottage=บ้านชนบท · villa=วิลล่า · mist=หมอกบาง · dandelion=แดนดี้ไลออน · motorbike=มอเตอร์ไซค์* · yacht=เรือยอชต์ · soar=ทะยาน* · fierce=ดุร้าย* · muddy=เลอะโคลน · clam=หอยกาบ · label=ฉลาก* · doorway=ช่องประตู · gateway=ประตูทางเข้า · costume=เครื่องแต่งกาย · overcoat=เสื้อคลุมยาว · snowball=ก้อนหิมะ · scuba=สกูบา · trophy=ถ้วยรางวัล · nod=พยักหน้า · chase=ไล่กวด · rusty=เป็นสนิม · stamp=ย่ำเท้า · pounce=ตะปบ · seedling=ต้นอ่อน* · pioneer=ผู้บุกเบิก · cavity=ฟันผุ · vertical=ตั้งตรง · folktale=นิทานพื้นบ้าน · salvage=กอบกู้ · resin=ยางไม้ · billiards=บิลเลียด* · credible=น่าเชื่อถือ · daydream=ฝันกลางวัน* · provoke=ยั่วยุ
+amazing=น่าทึ่ง · fierce=ดุร้าย* · seedling=ต้นอ่อน*
+
+## เครดิตของแหล่งข้อมูล
+
+Thai WordNet Copyright 2011 by the National Institute of Information and
+Communications Technology (NICT). WordNet 3.0 Copyright 2006 by Princeton
+University. ทั้งสองอนุญาตให้ใช้ ทำซ้ำ แก้ไข และเผยแพร่เพื่อวัตถุประสงค์ใดก็ได้
+โดยไม่มีค่าธรรมเนียม หากแสดงประกาศลิขสิทธิ์นี้ไว้ในสำเนาทุกชุด
+
+ไฟล์ข้อมูลสองไฟล์ที่สคริปต์โหลดมาเก็บไว้ใน `.cache/` ไม่ได้อยู่ใน repo
+และเนื้อหาของแอปไม่ได้คัดลอกข้อมูลจากแหล่งเหล่านี้ ใช้เพื่อตรวจสอบเท่านั้น

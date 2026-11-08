@@ -999,7 +999,7 @@
   {"id":"w-statistics","en":"statistics","th":"สถิติ","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/stəˈtɪs.tɪks/","sentence":"In {} we count and compare numbers.","image":false,"unitId":"u-b2-school-2"},
   {"id":"w-hygiene","en":"hygiene","th":"อนามัย","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/ˈhaɪˌd͡ʒiːn/","sentence":"In {} we learn to wash our hands.","image":false,"unitId":"u-b2-school-2"},
   {"id":"w-psychology","en":"psychology","th":"จิตวิทยา","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/saɪˈkɑ.lə.d͡ʒi/","sentence":"In {} we study how people feel.","emoji":"🧠","image": true,"unitId":"u-b2-school-2"},
-  {"id":"w-metaphor","en":"metaphor","th":"อุปมา","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/ˈmɛt.ə.foɹ/","sentence":"A {} is like a small picture in words.","image":false,"unitId":"u-b2-school-2"},
+  {"id":"w-metaphor","en":"metaphor","th": "อุปลักษณ์","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/ˈmɛt.ə.foɹ/","sentence":"A {} is like a small picture in words.","image":false,"unitId":"u-b2-school-2"},
   {"id":"w-barometer","en":"barometer","th":"บารอมิเตอร์","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/bəˈɹɑ.mə.tɚ/","sentence":"The {} tells us about the climate.","image":false,"unitId":"u-b2-school-2"},
   {"id":"w-seminar","en":"seminar","th":"สัมมนา","thSource": "wiktionary","pos":"noun","cefr":"B2","ipaSource": "wiktionary","ipa": "/ˈsɛmɪnɑɹ/","sentence":"My father goes to a {} at work.","image":false,"unitId":"u-b2-school-2"},
 
