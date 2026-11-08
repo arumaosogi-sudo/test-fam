@@ -177,6 +177,7 @@ confidence delight boredom achievement comparison definition ฯลฯ)
 | [NGSL 1.2](https://www.newgeneralservicelist.com/new-general-service-list) | 2,809 คำ | CC BY-SA 4.0 | แกนของ A1–B1 เป็นคำที่ใช้บ่อยที่สุดในภาษาอังกฤษทั่วไป |
 | [TOEIC Service List 1.2](https://newgeneralservicelist.com/toeic-service-list) | 1,200 คำ | CC BY-SA 4.0 | ต่อยอดสาย TOEIC — NGSL + TSL ครอบคลุมข้อสอบ TOEIC ราว 98.5% |
 | [CEFR-J Wordlist](https://www.cefr-j.org/download_eng.html) | 7,798 คำ | **ตรวจแล้ว** — ใช้ฟรีเพื่อการศึกษา ต้องอ้างอิง · เชิงพาณิชย์ต้องติดต่อก่อน | แม็ปคำเข้าระดับ CEFR (NGSL/TSL ไม่ได้บอกระดับมาด้วย) — **ใช้จริงแล้วกับคำระดับ A2 B1 และ B2** |
+| [Octanove Vocabulary Profile C1/C2 1.0](https://github.com/openlanguageprofiles/olp-en-cefrj) | C1 1,111 · C2 1,025 คำ | CC BY-SA 4.0 | แม็ปคำเข้าระดับ C1 เพราะ **CEFR-J ไม่มีระดับ C1 เลย** — ยังไม่ได้ใช้ ดู [ADR-0009](adr/0009-c1-level-source.md) |
 
 **ข้อควรรู้**: NGSL กับ TSL เป็น CC BY-SA เหมือนชุดภาพ ถ้าเอามาใช้ต้องให้เครดิต
 และเผยแพร่งานดัดแปลงด้วยสัญญาเดียวกัน ซึ่งกระทบการเลือกสัญญาอนุญาตของทั้งโปรเจกต์
