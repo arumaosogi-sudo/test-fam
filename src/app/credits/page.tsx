@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 /**
  * หน้าเครดิตที่ผู้ใช้เห็นในแอป
  *
- * **นี่ไม่ใช่หน้าตกแต่ง แต่เป็นเงื่อนไขของสัญญาอนุญาต** — ข้อมูลทั้งสามแหล่ง
- * ที่แอปนี้ใช้เป็น CC BY-SA 4.0 ซึ่งบังคับให้ต้องให้เครดิตในที่ที่คนใช้งาน
+ * **นี่ไม่ใช่หน้าตกแต่ง แต่เป็นเงื่อนไขของสัญญาอนุญาต** — ข้อมูลสี่แหล่ง
+ * จากห้าแหล่งที่แอปนี้ใช้เป็น CC BY-SA 4.0 ซึ่งบังคับให้ต้องให้เครดิตในที่ที่คนใช้งาน
  * เห็นได้ ไม่ใช่แค่ในไฟล์ของนักพัฒนา การไม่มีหน้านี้คือการใช้งานผิดสัญญา
  *
  * เขียนเป็น server component ตัวเลขจึงถูกนับจากคลังคำจริงตอน build
@@ -49,6 +49,16 @@ const SOURCES = [
       "การคัดเลือกคำศัพท์อ้างอิงจาก New General Service List (NGSL) 1.2 โดย Browne, Culligan และ Phillips — CC BY-SA 4.0",
   },
   {
+    name: "Octanove Vocabulary Profile C1/C2",
+    url: "https://github.com/openlanguageprofiles/olp-en-cefrj",
+    license: "CC BY-SA 4.0",
+    use: `ระดับ CEFR ของคำศัพท์ระดับ C1 ที่ CEFR-J ไม่ครอบคลุม (${
+      WORDS.filter((word) => word.cefr === "C1").length
+    } คำ)`,
+    attribution:
+      "Octanove Vocabulary Profile C1/C2 ver 1.0 by Octanove Labs — CC BY-SA 4.0. Retrieved via Open Language Profiles (openlanguageprofiles/olp-en-cefrj) on 08/11/26",
+  },
+  {
     name: "CEFR-J Wordlist",
     url: "https://www.cefr-j.org/download_eng.html",
     // เงื่อนไขคนละแบบกับอีกสามแหล่ง — ไม่ใช่ CC และการใช้เชิงพาณิชย์มีเงื่อนไข
@@ -79,7 +89,7 @@ export default function CreditsPage() {
         </Link>
         <h1 className="text-kid-2xl font-extrabold">เครดิตและสัญญาอนุญาต</h1>
         <p className="text-ink-muted text-kid-sm font-bold">
-          แอปนี้สร้างจากข้อมูลเปิด {SOURCES.length} แหล่ง สามแหล่งแรกใช้สัญญา{" "}
+          แอปนี้สร้างจากข้อมูลเปิด {SOURCES.length} แหล่ง สี่แหล่งแรกใช้สัญญา{" "}
           <a
             href={LICENSE_URL}
             target="_blank"
@@ -144,7 +154,7 @@ export default function CreditsPage() {
         <Card className="bg-warn-soft border-warn space-y-2">
           <CardTitle>สิ่งที่ยังไม่ได้ตัดสินใจ</CardTitle>
           <CardNote className="text-ink">
-            สัญญาแบบ share-alike ของสามแหล่งแรกมีผลต่อสัญญาของตัวแอปเองด้วย
+            สัญญาแบบ share-alike ของสี่แหล่งแรกมีผลต่อสัญญาของตัวแอปเองด้วย
             อย่างน้อยส่วนที่เป็น <strong>เนื้อหา</strong> (คลังคำ ภาพ
             และเรื่องอ่าน) ต้องเผยแพร่ด้วย CC BY-SA 4.0
             ส่วนซอร์สโค้ดเป็นงานคนละชิ้นและเลือกสัญญาแยกได้ แต่ยังไม่ได้เลือก
@@ -152,7 +162,7 @@ export default function CreditsPage() {
           <CardNote className="text-ink">
             และถ้าจะนำแอปนี้ไป<strong>ใช้เชิงพาณิชย์</strong> ต้องติดต่อ
             Tono Laboratory ก่อน เพราะ CEFR-J ระบุว่าการใช้เชิงพาณิชย์
-            ต้องตกลงเรื่องค่าใช้จ่ายกันเป็นกรณีไป ต่างจากอีกสามแหล่งที่เปิดให้
+            ต้องตกลงเรื่องค่าใช้จ่ายกันเป็นกรณีไป ต่างจากอีกสี่แหล่งที่เปิดให้
             ใช้เชิงพาณิชย์ได้เลยถ้าให้เครดิตและใช้สัญญาเดียวกัน
           </CardNote>
           <CardNote className="text-ink">

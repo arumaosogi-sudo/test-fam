@@ -1021,5 +1021,164 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-at-the-quiet-pond",
+    "cefr": "C1",
+    "titleTh": "ที่บึงเงียบ",
+    "titleEn": "At the Quiet Pond",
+    "sentences": [
+      "The quiet pond near my village has many birds and fish.",
+      "A brown otter swims in the cold water every morning.",
+      "A slow snail moves on a wet leaf near the water.",
+      "A big white goose eats bread by the pond.",
+      "A grey pigeon sits on the old wood.",
+      "A small hedgehog walks under a green tree.",
+      "In the cold days the bears hibernate in a cave.",
+      "My cat wants to pounce on a small leaf.",
+      "A peacock walks near the trees with long blue feathers.",
+      "I am happy when I see them."
+    ],
+    "question": {
+      "promptTh": "หมีทำอะไรในวันที่อากาศหนาว",
+      "choicesTh": [
+        "จำศีลในถ้ำ",
+        "ว่ายน้ำในบึง",
+        "เดินใต้ต้นไม้"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-rock-hunt",
+    "cefr": "C1",
+    "titleTh": "ตามหาหินเก่า",
+    "titleEn": "The Rock Hunt",
+    "sentences": [
+      "My teacher and I go to a big quarry on a hot day.",
+      "The terrain near the quarry is dry and hard.",
+      "Men cut rock here every day.",
+      "I see an old fossil of a fish in the grey rock.",
+      "My teacher says it is very old.",
+      "Near the quarry I find a small tree with sweet sap.",
+      "A new seedling grows under it.",
+      "A parasite lives on the leaf of the small tree.",
+      "We walk to the peninsula and look at the sea.",
+      "It is a good day."
+    ],
+    "question": {
+      "promptTh": "ฉันเห็นซากดึกดำบรรพ์ของอะไรในหิน",
+      "choicesTh": [
+        "ปลา",
+        "นก",
+        "ต้นไม้"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-people-in-my-village",
+    "cefr": "C1",
+    "titleTh": "ผู้คนในหมู่บ้านของฉัน",
+    "titleEn": "People in My Village",
+    "sentences": [
+      "Many people work in my small village.",
+      "The carpenter makes a chair and a table from wood.",
+      "An apprentice learns from him every day.",
+      "The tailor makes a new dress for my mother.",
+      "My grandmother tells me of a pioneer.",
+      "She walks to a new river with her family.",
+      "People call her the heroine of the village.",
+      "Her offspring live here now.",
+      "I want to help my village too."
+    ],
+    "question": {
+      "promptTh": "ช่างไม้ทำอะไรจากไม้",
+      "choicesTh": [
+        "เก้าอี้กับโต๊ะ",
+        "ชุดใหม่",
+        "เรือลำเก่า"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-things-in-my-room",
+    "cefr": "C1",
+    "titleTh": "ของในห้องของฉัน",
+    "titleEn": "Things in My Room",
+    "sentences": [
+      "My room is small but I like it.",
+      "A heavy pendulum moves up and down near my bed.",
+      "The long line of the pendulum is vertical.",
+      "My fish lives in a big aquarium near the window.",
+      "Water can circulate in my big aquarium.",
+      "My mother has a ring with a blue gem.",
+      "My father takes photos with his new gadget.",
+      "I eat a sour grapefruit in the morning.",
+      "My mother counts every calorie in my food.",
+      "She says sweet food gives me a cavity in my tooth."
+    ],
+    "question": {
+      "promptTh": "แม่บอกว่าของหวานทำให้ฉันเป็นอะไร",
+      "choicesTh": [
+        "ฟันผุ",
+        "ตู้ปลาสกปรก",
+        "ลูกตุ้มหนัก"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-an-old-folktale",
+    "cefr": "C1",
+    "titleTh": "นิทานพื้นบ้านเรื่องเก่า",
+    "titleEn": "An Old Folktale",
+    "sentences": [
+      "My grandmother tells me an old folktale at night.",
+      "A naive boy walks in the forest with his dog.",
+      "A wicked man wants his money.",
+      "The voracious dog of the man eats his bread.",
+      "The boy has a fanciful dream of a flying horse.",
+      "In his dream the horse helps him.",
+      "He is not afraid of the wicked man now.",
+      "The man runs from the forest.",
+      "I like this folktale."
+    ],
+    "question": {
+      "promptTh": "เด็กชายฝันเห็นอะไร",
+      "choicesTh": [
+        "ม้าบิน",
+        "หมาตะกละ",
+        "ชายใจร้าย"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-after-the-storm",
+    "cefr": "C1",
+    "titleTh": "หลังพายุ",
+    "titleEn": "After the Storm",
+    "sentences": [
+      "A big storm comes to my village at night.",
+      "Mice gnaw the hard wood in our old house.",
+      "Water can gush from the old window.",
+      "A wet leaf can plummet to the floor.",
+      "In the morning my father and I walk to the sea.",
+      "We see an old ship under the cold water.",
+      "Men want to salvage it and bring it up.",
+      "I swap my wet hat with my brother.",
+      "We are happy after the storm."
+    ],
+    "question": {
+      "promptTh": "ผู้ชายอยากทำอะไรกับเรือลำเก่า",
+      "choicesTh": [
+        "กอบกู้ขึ้นมา",
+        "แทะไม้ของเรือ",
+        "แลกกับหมวก"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

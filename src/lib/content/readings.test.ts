@@ -55,6 +55,7 @@ describe("เรื่องอ่าน", () => {
     A2: { words: 70, perSentence: 13 },
     B1: { words: 85, perSentence: 15 },
     B2: { words: 100, perSentence: 17 },
+    C1: { words: 115, perSentence: 19 },
   };
 
   it("ประโยคต่อเรื่องและคำต่อประโยคอยู่ในระดับที่เด็กอ่านจบได้", () => {

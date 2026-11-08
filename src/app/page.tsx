@@ -6,6 +6,7 @@ import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { LevelBadge } from "@/components/ui/level-badge";
 import { READINGS } from "@/lib/content/readings";
 import { UNITS, WORDS } from "@/lib/content";
+import { CEFR_ORDER } from "@/lib/types";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const PLANNED_MODES = [
@@ -34,11 +35,11 @@ export default function HomePage() {
             ฝึกคำศัพท์ ฟัง พูด และอ่านภาษาอังกฤษ สำหรับเด็กอนุบาลถึงประถม
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            <LevelBadge level="Pre-A1" withGrade />
-            <LevelBadge level="A1" withGrade />
-            <LevelBadge level="A2" withGrade />
-            <LevelBadge level="B1" withGrade />
-            <LevelBadge level="B2" withGrade />
+            {CEFR_ORDER.filter((level) =>
+              UNITS.some((unit) => unit.cefr === level),
+            ).map((level) => (
+              <LevelBadge key={level} level={level} withGrade />
+            ))}
           </div>
         </div>
 

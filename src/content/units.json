@@ -886,5 +886,53 @@
     "titleTh": "คำกริยา B2 ชุด 5",
     "titleEn": "B2 Verbs 5",
     "emoji": "💥"
+  },
+  {
+    "id": "u-c1-animals-1",
+    "cefr": "C1",
+    "order": 112,
+    "titleTh": "สัตว์ C1",
+    "titleEn": "C1 Animals",
+    "emoji": "🦚"
+  },
+  {
+    "id": "u-c1-nature-1",
+    "cefr": "C1",
+    "order": 113,
+    "titleTh": "ธรรมชาติ C1",
+    "titleEn": "C1 Nature",
+    "emoji": "🏔️"
+  },
+  {
+    "id": "u-c1-people-1",
+    "cefr": "C1",
+    "order": 114,
+    "titleTh": "ผู้คนและอาชีพ C1",
+    "titleEn": "C1 People and Jobs",
+    "emoji": "🛠️"
+  },
+  {
+    "id": "u-c1-things-1",
+    "cefr": "C1",
+    "order": 115,
+    "titleTh": "สิ่งของ C1",
+    "titleEn": "C1 Things",
+    "emoji": "💎"
+  },
+  {
+    "id": "u-c1-stories-1",
+    "cefr": "C1",
+    "order": 116,
+    "titleTh": "นิทาน C1",
+    "titleEn": "C1 Stories",
+    "emoji": "📚"
+  },
+  {
+    "id": "u-c1-verbs-1",
+    "cefr": "C1",
+    "order": 117,
+    "titleTh": "คำกริยา C1",
+    "titleEn": "C1 Verbs",
+    "emoji": "🔄"
   }
 ]

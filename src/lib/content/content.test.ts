@@ -30,8 +30,8 @@ import {
 describe("คลังคำ", () => {
   it("มีคำและหน่วยครบตามที่นำเข้าไว้", () => {
     // ตัวเลขนี้เป็นหมุดกันคำหายโดยไม่มีใครรู้ ไม่ใช่เป้าหมายของเนื้อหา
-    expect(WORDS.length).toBe(920);
-    expect(UNITS.length).toBe(111);
+    expect(WORDS.length).toBe(960);
+    expect(UNITS.length).toBe(117);
   });
 
   /**
