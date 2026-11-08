@@ -1,21 +1,21 @@
 import { describe, expect, it } from "vitest";
 
-import { getUnit, wordsInUnit } from "@/lib/content";
 import { CEFR_ORDER } from "@/lib/types";
 
 import { LANGUAGE_CEILING, buildSystemPrompt } from "./prompt";
+import { FREE_TOPIC_ID, getTopic, topicWords } from "./topics";
 
-function requireUnit(id: string) {
-  const found = getUnit(id);
-  if (!found) throw new Error(`ไม่มีหน่วย ${id} ในคลังคำ`);
+function requireTopic(id: string) {
+  const found = getTopic(id);
+  if (!found) throw new Error(`ไม่มีหมวด ${id}`);
   return found;
 }
 
-const unit = requireUnit("u-animals");
-const targetWords = wordsInUnit(unit.id);
+const topic = requireTopic("nature");
+const targetWords = topicWords(topic.id, "Pre-A1");
 
 function prompt(overrides: Partial<Parameters<typeof buildSystemPrompt>[0]> = {}) {
-  return buildSystemPrompt({ cefr: "Pre-A1", unit, targetWords, ...overrides });
+  return buildSystemPrompt({ cefr: "Pre-A1", topic, targetWords, ...overrides });
 }
 
 describe("LANGUAGE_CEILING", () => {
@@ -61,7 +61,7 @@ describe("buildSystemPrompt", () => {
     expect(prompt({ cefr: "B1" })).toContain("16 words or fewer");
   });
 
-  it("ใส่คำของหน่วยนั้นลงไปเป็นเพดานคำศัพท์", () => {
+  it("ใส่คำของหมวดนั้นลงไปเป็นเพดานคำศัพท์", () => {
     const text = prompt();
 
     // ถ้าคำหลุดไปจาก prompt โมเดลจะใช้คำอะไรก็ได้ แล้วเด็กจะเจอภาษาที่ยากเกิน
@@ -96,5 +96,31 @@ describe("buildSystemPrompt", () => {
 
     expect(text).toContain("Never ask for or repeat personal details");
     expect(text).toContain("never ask the child to keep a secret");
+  });
+
+  it("ย้ำเพดานระดับคำศัพท์ให้ชนะหัวข้อ", () => {
+    // กรองในโค้ดแล้วชั้นหนึ่ง แต่โมเดลหยิบคำนอกลิสต์ได้เอง จึงต้องสั่งซ้ำ
+    expect(prompt({ cefr: "A1" })).toContain(
+      "Never use an English word above CEFR A1",
+    );
+  });
+
+  it("หมวดคุยอะไรก็ได้สั่งให้ตามเด็ก ไม่ใช่ลากกลับเข้าหัวข้อ", () => {
+    const free = buildSystemPrompt({
+      cefr: "A1",
+      topic: requireTopic(FREE_TOPIC_ID),
+      targetWords: topicWords(FREE_TOPIC_ID, "A1"),
+    });
+
+    expect(free).toContain("There is no set topic today");
+    expect(free).toContain("Follow whatever the child wants to talk about");
+  });
+
+  it("หมวดเจาะจงบอกขอบเขตของหมวด ไม่ได้บอกแค่ชื่อหน่วย", () => {
+    const text = prompt();
+
+    expect(text).toContain("Animals and Nature");
+    expect(text).toContain(topic.scope);
+    expect(text).toContain("roam freely within it");
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Languages, Send } from "lucide-react";
+import { ChevronDown, Languages, Mic, Send, Square } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
@@ -9,20 +9,37 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardNote, CardTitle } from "@/components/ui/card";
 import { SpeakerButton } from "@/components/ui/speaker-button";
-import { UNITS, getUnit, wordsInUnit } from "@/lib/content";
+import {
+  CHAT_TOPICS,
+  FREE_TOPIC_ID,
+  getTopic,
+  topicWords,
+} from "@/lib/chat/topics";
 import type { ChatMessage, ChatMistake, ChatTurn } from "@/lib/chat/types";
-import { getTts } from "@/lib/speech";
+import { MILO_VOICE } from "@/lib/chat/voice";
+import type { CefrLevel } from "@/lib/types";
+import {
+  getRecognizer,
+  getTts,
+  micFailureMessage,
+  type ListenHandle,
+} from "@/lib/speech";
 import { cn } from "@/lib/utils";
 import { useHydrateProgress, useProgressStore } from "@/store/progress-store";
 
 /** คำเปิดบทสนทนาที่สร้างในเครื่อง ไม่ต้องเสียเทิร์นเรียกโมเดลเพื่อทักทาย */
-function openingFor(unitId: string) {
-  const unit = getUnit(unitId);
-  const words = wordsInUnit(unitId);
+function openingFor(topicId: string, cefr: CefrLevel) {
+  const topic = getTopic(topicId);
+  const words = topicWords(topicId, cefr, 8);
+  const free = topicId === FREE_TOPIC_ID;
 
   return {
-    text: `Hi! I am Milo. Let's talk about ${unit?.titleEn ?? "English"}!`,
-    textTh: `สวัสดี! ฉันชื่อไมโล มาคุยเรื่อง${unit?.titleTh ?? "ภาษาอังกฤษ"}กัน!`,
+    text: free
+      ? "Hi! I am Milo. What do you want to talk about?"
+      : `Hi! I am Milo. Let's talk about ${topic?.titleEn ?? "English"}!`,
+    textTh: free
+      ? "สวัสดี! ฉันชื่อไมโล อยากคุยเรื่องอะไรดี"
+      : `สวัสดี! ฉันชื่อไมโล มาคุยเรื่อง${topic?.titleTh ?? "ภาษาอังกฤษ"}กัน!`,
     suggestions: [
       "Hello Milo!",
       words[0] ? `I like ${words[0].en}.` : "I am happy!",
@@ -62,8 +79,13 @@ function Bubble({
 
         {!fromChild ? (
           <div className="flex items-center gap-2">
-            <SpeakerButton text={message.text} size="sm" />
-            <SpeakerButton text={message.text} slow size="sm" />
+            <SpeakerButton text={message.text} size="sm" voice={MILO_VOICE} />
+            <SpeakerButton
+              text={message.text}
+              slow
+              size="sm"
+              voice={MILO_VOICE}
+            />
             {message.textTh ? (
               <Button
                 variant="ghost"
@@ -114,9 +136,11 @@ export function ChatRoom() {
   const hydrated = useProgressStore((state) => state.hydrated);
   const profile = useProgressStore((state) => state.profile);
 
-  const [unitId, setUnitId] = useState(UNITS[0]?.id ?? "");
-  const opening = useMemo(() => openingFor(unitId), [unitId]);
-  const currentUnit = getUnit(unitId);
+  // เริ่มที่ "คุยอะไรก็ได้" เพราะเด็กส่วนใหญ่เปิดมาเพื่อคุย ไม่ได้มาเลือกหมวด
+  const [topicId, setTopicId] = useState(FREE_TOPIC_ID);
+  const cefr = profile.cefr;
+  const opening = useMemo(() => openingFor(topicId, cefr), [topicId, cefr]);
+  const currentTopic = getTopic(topicId);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -126,9 +150,18 @@ export function ChatRoom() {
   const [concerned, setConcerned] = useState(false);
   const [thaiShown, setThaiShown] = useState<string[]>([]);
   const [topicOpen, setTopicOpen] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [heard, setHeard] = useState("");
+  const [micError, setMicError] = useState<string | null>(null);
 
   const nextId = useRef(0);
   const bottom = useRef<HTMLDivElement>(null);
+  const listenHandle = useRef<ListenHandle | null>(null);
+
+  // ไมค์ที่ยังเปิดค้างอยู่ตอนออกจากหน้าต้องถูกปิด ไม่งั้นเบราว์เซอร์ยังอัดต่อ
+  useEffect(() => {
+    return () => listenHandle.current?.abort();
+  }, []);
 
   // เลื่อนลงล่างสุดเมื่อมีข้อความใหม่ เด็กไม่ต้องหาเอง
   useEffect(() => {
@@ -141,7 +174,7 @@ export function ChatRoom() {
   }
 
   function changeTopic(id: string) {
-    setUnitId(id);
+    setTopicId(id);
     setTopicOpen(false);
     setMessages([]);
     setSuggestions([]);
@@ -179,8 +212,8 @@ export function ChatRoom() {
         body: JSON.stringify({
           history,
           message: trimmed,
-          cefr: profile.cefr,
-          unitId,
+          cefr,
+          topicId,
           childName: profile.displayName,
         }),
       });
@@ -216,12 +249,61 @@ export function ChatRoom() {
       if (payload.notice) setNotice(payload.notice);
 
       // อ่านคำตอบให้ฟังทันที ตามที่โจทย์ขอว่า "พิมพ์กลับมาและมีเสียงตอบกลับ"
-      void getTts().speak(turn.reply);
+      void getTts().speak(turn.reply, MILO_VOICE);
     } catch {
       setNotice("ต่อเน็ตไม่ได้ ลองใหม่อีกครั้งนะ");
     } finally {
       setSending(false);
     }
+  }
+
+  /**
+   * ฟังเด็กพูดแล้วเติมลงช่องพิมพ์ ไม่ได้ส่งทันที
+   *
+   * ตั้งใจให้เด็กได้เห็นคำที่ระบบถอดได้ก่อนกดส่ง เพราะตัวถอดเสียงพลาดบ่อย
+   * กับเสียงเด็กและสำเนียงไทย ถ้าส่งอัตโนมัติ เด็กจะงงว่าทำไม Milo
+   * ตอบเรื่องที่ตัวเองไม่ได้พูด และแก้ก่อนส่งก็ไม่ได้
+   */
+  function startListening() {
+    if (listening || sending) return;
+
+    const recognizer = getRecognizer();
+    if (!recognizer.isSupported()) {
+      setMicError("เบราว์เซอร์นี้ยังฟังเสียงไม่ได้ ลองใช้ Chrome นะ");
+      return;
+    }
+
+    setMicError(null);
+    setHeard("");
+    setListening(true);
+
+    listenHandle.current = recognizer.listen({
+      lang: "en-US",
+      onInterim: setHeard,
+      onDone: (outcome) => {
+        setListening(false);
+        setHeard("");
+        listenHandle.current = null;
+
+        if (outcome.kind === "failed") {
+          setMicError(micFailureMessage(outcome.reason, "พูด"));
+          return;
+        }
+
+        const said = outcome.heard.alternatives[0]?.trim();
+        if (!said) {
+          setMicError("ยังไม่ได้ยินเลย ลองพูดดัง ๆ อีกครั้งนะ");
+          return;
+        }
+
+        // ต่อท้ายของเดิม เผื่อเด็กพิมพ์ไว้บางส่วนแล้วค่อยพูดต่อ
+        setInput((current) => (current ? `${current} ${said}` : said));
+      },
+    });
+  }
+
+  function stopListening() {
+    listenHandle.current?.stop();
   }
 
   function handleSubmit(event: FormEvent) {
@@ -273,8 +355,11 @@ export function ChatRoom() {
         </div>
       </header>
 
-{/* หัวข้อย่อไว้บรรทัดเดียว กางเฉพาะตอนจะเปลี่ยน — สิบหัวข้อเรียงเต็มจอ
-          กินที่จนเหลือพื้นที่ให้บทสนทนาน้อยเกินไป ซึ่งคือสิ่งที่เด็กมาทำจริง */}
+{/* หัวข้อย่อไว้บรรทัดเดียว กางเฉพาะตอนจะเปลี่ยน
+          เมนูนี้เคยไล่ทุกหน่วยในคลัง ซึ่งตอนเขียนมีสิบหน่วยจึงพอไหว
+          พอคลังโตเป็น 121 หน่วยก็กลายเป็นปุ่มร้อยกว่าปุ่มที่เด็กเลือกไม่ถูก
+          และหลายหน่วยก็ไม่ใช่เรื่องที่ใครจะชวนคุย เช่น "คำกริยา B2 ชุด 4"
+          ตอนนี้จัดเป็นหมวดใหญ่ไม่กี่หมวดใน lib/chat/topics.ts แทน */}
       <div className="relative">
         <button
           type="button"
@@ -283,8 +368,8 @@ export function ChatRoom() {
           className="pressable active:pressable-sunk rounded-pill [--edge:var(--border)] bg-surface border-border text-ink text-kid-sm inline-flex items-center gap-2 border-2 px-4 py-2 font-extrabold"
         >
           <span>คุยเรื่อง</span>
-          <span>{currentUnit?.emoji}</span>
-          <span>{currentUnit?.titleTh}</span>
+          <span>{currentTopic?.emoji}</span>
+          <span>{currentTopic?.titleTh}</span>
           <ChevronDown
             className={cn("size-5 transition-transform", topicOpen && "rotate-180")}
             strokeWidth={2.75}
@@ -298,20 +383,20 @@ export function ChatRoom() {
             aria-label="เลือกหัวข้อที่จะคุย"
             className="bg-surface border-border rounded-card shadow-card absolute z-10 mt-2 grid w-full grid-cols-2 gap-2 border-2 p-3 sm:grid-cols-3"
           >
-            {UNITS.map((unit) => (
+            {CHAT_TOPICS.map((topic) => (
               <button
-                key={unit.id}
+                key={topic.id}
                 type="button"
-                onClick={() => changeTopic(unit.id)}
-                aria-pressed={unit.id === unitId}
+                onClick={() => changeTopic(topic.id)}
+                aria-pressed={topic.id === topicId}
                 className={cn(
                   "rounded-pill text-kid-sm border-2 px-3 py-2 font-extrabold",
-                  unit.id === unitId
+                  topic.id === topicId
                     ? "bg-primary border-primary text-primary-ink"
                     : "bg-surface-2 border-border text-ink",
                 )}
               >
-                {unit.emoji} {unit.titleTh}
+                {topic.emoji} {topic.titleTh}
               </button>
             ))}
           </div>
@@ -381,10 +466,42 @@ export function ChatRoom() {
         </div>
       ) : null}
 
+      {listening || heard ? (
+        <p
+          className="text-ink-muted text-kid-sm font-bold"
+          aria-live="polite"
+        >
+          {heard ? `ได้ยินว่า: ${heard}` : "กำลังฟัง… พูดเป็นภาษาอังกฤษได้เลย"}
+        </p>
+      ) : null}
+
+      {micError ? (
+        <Card className="border-warn bg-warn-soft border-2">
+          <CardNote className="text-ink font-bold">{micError}</CardNote>
+        </Card>
+      ) : null}
+
       <form onSubmit={handleSubmit} className="flex gap-2">
         <label htmlFor="chat-input" className="sr-only">
           พิมพ์ข้อความถึง Milo
         </label>
+
+        <Button
+          type="button"
+          size="md"
+          square
+          variant={listening ? "accent" : "neutral"}
+          onClick={listening ? stopListening : startListening}
+          disabled={sending}
+          aria-pressed={listening}
+          aria-label={listening ? "หยุดฟัง" : "พูดแทนการพิมพ์"}
+        >
+          {listening ? (
+            <Square className="size-5" strokeWidth={2.75} aria-hidden />
+          ) : (
+            <Mic className="size-6" strokeWidth={2.75} aria-hidden />
+          )}
+        </Button>
         <input
           id="chat-input"
           value={input}
@@ -392,7 +509,7 @@ export function ChatRoom() {
           disabled={sending}
           maxLength={500}
           autoComplete="off"
-          placeholder="พิมพ์เป็นภาษาอังกฤษ…"
+          placeholder={listening ? "กำลังฟัง…" : "พิมพ์หรือกดไมค์พูด…"}
           className="rounded-pill border-border bg-surface text-ink text-kid focus:border-primary h-13 flex-1 border-2 px-4 font-bold outline-none"
         />
         <Button

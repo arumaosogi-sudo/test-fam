@@ -3,7 +3,7 @@
 import { Turtle, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-import { getTts } from "@/lib/speech";
+import { getTts, type SpeakOptions } from "@/lib/speech";
 import { cn } from "@/lib/utils";
 
 type SpeakerButtonProps = {
@@ -13,6 +13,13 @@ type SpeakerButtonProps = {
   /** ช้าลงสำหรับเด็กที่ต้องการฟังทีละคำ */
   slow?: boolean;
   size?: "sm" | "md" | "lg";
+  /**
+   * ปรับแต่งเสียงเฉพาะที่ เช่น เสียงของ Milo ในหน้าแชท
+   *
+   * ค่าเริ่มต้นคือเสียงอ่านคำศัพท์ที่เน้นความชัด ไม่ใช่เสียงตัวละคร
+   * สองอย่างนี้ต้องต่างกัน เพราะการ์ดคำศัพท์ต้องการให้เด็กได้ยินคำชัด ๆ
+   */
+  voice?: SpeakOptions;
   className?: string;
 };
 
@@ -55,6 +62,7 @@ export function SpeakerButton({
   lang = "en-US",
   slow = false,
   size = "md",
+  voice,
   className,
 }: SpeakerButtonProps) {
   const supported = useTtsAvailable();
@@ -74,7 +82,12 @@ export function SpeakerButton({
     if (!tts.isAvailable()) return;
 
     setSpeaking(true);
-    await tts.speak(text, { lang, rate: slow ? 0.6 : 0.9 });
+    await tts.speak(text, {
+      lang,
+      ...voice,
+      // ปุ่มฟังช้าต้องช้าจริงเสมอ แม้เสียงตัวละครจะตั้งความเร็วไว้แล้ว
+      rate: slow ? 0.6 : (voice?.rate ?? 0.9),
+    });
     // ถ้า component ถูกถอดออกไปแล้วระหว่างอ่าน ก็ไม่ต้อง setState
     if (mounted.current) setSpeaking(false);
   }

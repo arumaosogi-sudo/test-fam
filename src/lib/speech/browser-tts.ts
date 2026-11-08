@@ -27,12 +27,33 @@ class BrowserTtsProvider implements TtsProvider {
   }
 
   /** เลือกเสียงที่ "ฟังเป็นธรรมชาติที่สุด" ที่หาได้ในเครื่องนี้ */
-  private pickVoice(lang: string): SpeechSynthesisVoice | undefined {
+  private pickVoice(
+    lang: string,
+    preferFemale = false,
+  ): SpeechSynthesisVoice | undefined {
     this.loadVoices();
     const sameLang = this.voices.filter((v) =>
       v.lang.toLowerCase().startsWith(lang.slice(0, 2).toLowerCase()),
     );
     if (sameLang.length === 0) return undefined;
+
+    /*
+     * ชื่อเสียงไม่มีมาตรฐาน และ SpeechSynthesisVoice ไม่บอกเพศมาด้วย
+     * จึงเดาจากชื่อที่พบบ่อยในเครื่องจริง — เดาพลาดก็แค่ได้เสียงอื่น
+     * ไม่ได้ทำให้พัง และยังถูกปรับให้สูงขึ้นด้วย pitch อยู่ดี
+     */
+    const female =
+      /female|zira|aria|jenny|samantha|karen|moira|tessa|google us english/i;
+
+    if (preferFemale) {
+      const pick = sameLang.find(
+        (v) => female.test(v.name) && /google|natural/i.test(v.name),
+      );
+      if (pick) return pick;
+
+      const anyFemale = sameLang.find((v) => female.test(v.name));
+      if (anyFemale) return anyFemale;
+    }
 
     // เสียง Google / Microsoft Natural มักคุณภาพดีกว่าเสียง default ของ OS
     const preferred = sameLang.find((v) => /google|natural|aria|jenny/i.test(v.name));
@@ -42,7 +63,13 @@ class BrowserTtsProvider implements TtsProvider {
   speak(text: string, options: SpeakOptions = {}): Promise<void> {
     if (!this.isAvailable()) return Promise.resolve();
 
-    const { lang = "en-US", rate = 0.9, volume = 1 } = options;
+    const {
+      lang = "en-US",
+      rate = 0.9,
+      volume = 1,
+      pitch = 1,
+      preferFemale = false,
+    } = options;
 
     return new Promise<void>((resolve) => {
       window.speechSynthesis.cancel();
@@ -52,8 +79,10 @@ class BrowserTtsProvider implements TtsProvider {
       // เด็กต้องการช้ากว่าผู้ใหญ่เพื่อจับเสียงแต่ละคำได้ทัน
       utterance.rate = rate;
       utterance.volume = volume;
+      // เบราว์เซอร์รับ 0–2 ค่านอกช่วงบางตัวเงียบไปเลย จึงหนีบไว้ก่อน
+      utterance.pitch = Math.min(2, Math.max(0, pitch));
 
-      const voice = this.pickVoice(lang);
+      const voice = this.pickVoice(lang, preferFemale);
       if (voice) utterance.voice = voice;
 
       utterance.onend = () => resolve();

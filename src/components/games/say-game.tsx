@@ -12,6 +12,7 @@ import {
   getTts,
   hintsForWord,
   judgeSpoken,
+  micFailureMessage,
   type ListenFailure,
   type ListenHandle,
   type RecognizerAvailability,
@@ -29,15 +30,6 @@ import { useItemTimer } from "./use-item-timer";
  * ครั้งเดียวแล้วตัดว่าผิดจะวัดความแม่นของเครื่องมากกว่าวัดเด็ก
  */
 const MAX_TRIES = 3;
-
-const FAILURE_MESSAGE: Record<ListenFailure, string> = {
-  "no-speech": "ยังไม่ได้ยินเสียงเลย ลองพูดดัง ๆ อีกครั้งนะ",
-  "not-allowed": "เบราว์เซอร์ยังไม่ได้อนุญาตให้ใช้ไมโครโฟน",
-  "audio-capture": "เปิดไมโครโฟนไม่ได้ ลองเช็คว่ามีโปรแกรมอื่นใช้อยู่ไหม",
-  network: "ต่อเน็ตไม่ได้ การตรวจเสียงต้องใช้อินเทอร์เน็ต",
-  aborted: "หยุดกลางทาง ลองอีกครั้งได้เลย",
-  unknown: "ตรวจเสียงไม่สำเร็จ ลองอีกครั้งนะ",
-};
 
 /**
  * ไม่มี itemId เหมือนโหมดอื่น เพราะโหมดนี้ไม่มีตัวลวงให้สุ่ม
@@ -218,7 +210,7 @@ export function SayGame({ word, onComplete }: SayGameProps) {
           aria-live="polite"
           className="bg-surface-2 border-border rounded-card text-kid-sm border-2 p-3 text-center font-bold"
         >
-          {FAILURE_MESSAGE[failure]}
+          {micFailureMessage(failure, "พูด")}
         </p>
       ) : null}
 

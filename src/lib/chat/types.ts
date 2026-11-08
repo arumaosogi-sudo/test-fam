@@ -73,8 +73,8 @@ export const chatRequestSchema = z.object({
   /** ข้อความล่าสุดที่เด็กพิมพ์ */
   message: z.string().min(1).max(500),
   cefr: cefrLevelSchema,
-  /** หน่วยคำศัพท์ที่เป็นเป้าหมายของบทสนทนานี้ */
-  unitId: z.string().min(1),
+  /** หมวดที่เลือกคุย (ดู lib/chat/topics.ts) ไม่ใช่หน่วยคำศัพท์เดี่ยว ๆ แล้ว */
+  topicId: z.string().min(1),
   childName: z.string().max(40).optional(),
 });
 export type ChatRequest = z.infer<typeof chatRequestSchema>;

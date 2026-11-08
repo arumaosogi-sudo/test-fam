@@ -20,6 +20,7 @@ export function getRecognizer(): SpeechRecognizer {
   return browserRecognizer;
 }
 
+export * from "./failure-message";
 export * from "./hints";
 export * from "./judge";
 export * from "./read-aloud";

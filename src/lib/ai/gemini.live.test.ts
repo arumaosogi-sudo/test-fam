@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { getUnit, wordsInUnit } from "@/lib/content";
 import { buildSystemPrompt } from "@/lib/chat/prompt";
+import { getTopic, topicWords } from "@/lib/chat/topics";
 
 import { PRIMARY_MODEL, geminiChat } from "./gemini";
 
@@ -18,13 +18,13 @@ import { PRIMARY_MODEL, geminiChat } from "./gemini";
 const live = process.env.RUN_LIVE_AI === "1" ? describe : describe.skip;
 
 live("Gemini ตัวจริง", () => {
-  const unit = getUnit("u-animals");
-  if (!unit) throw new Error("ไม่มีหน่วย u-animals");
+  const topic = getTopic("nature");
+  if (!topic) throw new Error("ไม่มีหมวด nature");
 
   const systemPrompt = buildSystemPrompt({
     cefr: "Pre-A1",
-    unit,
-    targetWords: wordsInUnit(unit.id),
+    topic,
+    targetWords: topicWords(topic.id, "Pre-A1"),
     childName: "Nong",
   });
 

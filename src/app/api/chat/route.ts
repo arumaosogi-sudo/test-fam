@@ -7,8 +7,8 @@ import {
   type TurnBudget,
 } from "@/lib/chat/guardrail";
 import { buildSystemPrompt } from "@/lib/chat/prompt";
+import { getTopic, topicWords } from "@/lib/chat/topics";
 import { chatRequestSchema } from "@/lib/chat/types";
-import { getUnit, wordsInUnit } from "@/lib/content";
 import { localDateKey } from "@/lib/progress/xp";
 
 /**
@@ -49,10 +49,10 @@ export async function POST(request: Request) {
     return fail(400, "ข้อความยาวเกินไปหรือข้อมูลไม่ครบ", "bad_request");
   }
 
-  const { history, message, cefr, unitId, childName } = parsed.data;
+  const { history, message, cefr, topicId, childName } = parsed.data;
 
-  const unit = getUnit(unitId);
-  if (!unit) return fail(400, "ไม่พบหัวข้อที่เลือก", "unknown_unit");
+  const topic = getTopic(topicId);
+  if (!topic) return fail(400, "ไม่พบหัวข้อที่เลือก", "unknown_topic");
 
   const key = clientKey(request);
   const today = localDateKey(new Date());
@@ -79,8 +79,9 @@ export async function POST(request: Request) {
     const { turn, model } = await provider.respond({
       systemPrompt: buildSystemPrompt({
         cefr,
-        unit,
-        targetWords: wordsInUnit(unit.id),
+        topic,
+        // กรองตามระดับเด็กตรงนี้ ไม่ใช่ฝากความหวังไว้กับ prompt อย่างเดียว
+        targetWords: topicWords(topic.id, cefr),
         childName,
       }),
       history,

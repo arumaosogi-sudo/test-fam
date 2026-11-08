@@ -17,6 +17,7 @@ import { starsFromAccuracy } from "@/lib/progress/xp";
 import {
   getRecognizer,
   paceLabel,
+  micFailureMessage,
   scoreReading,
   type ListenFailure,
   type ListenHandle,
@@ -28,15 +29,6 @@ import { cn } from "@/lib/utils";
 
 /** เรื่องยาวกว่าคำเดียวมาก ต้องให้เวลาอ่านจบโดยไม่ถูกตัด */
 const READING_TIMEOUT_MS = 120_000;
-
-const FAILURE_MESSAGE: Record<ListenFailure, string> = {
-  "no-speech": "ยังไม่ได้ยินเสียงเลย ลองอ่านดัง ๆ อีกครั้งนะ",
-  "not-allowed": "เบราว์เซอร์ยังไม่ได้อนุญาตให้ใช้ไมโครโฟน",
-  "audio-capture": "เปิดไมโครโฟนไม่ได้ ลองเช็คว่ามีโปรแกรมอื่นใช้อยู่ไหม",
-  network: "ต่อเน็ตไม่ได้ การตรวจเสียงต้องใช้อินเทอร์เน็ต",
-  aborted: "หยุดกลางทาง ลองอ่านอีกครั้งได้เลย",
-  unknown: "ตรวจเสียงไม่สำเร็จ ลองอีกครั้งนะ",
-};
 
 type ReadAloudGameProps = {
   reading: Reading;
@@ -236,7 +228,7 @@ export function ReadAloudGame({ reading, onFinish }: ReadAloudGameProps) {
               aria-live="polite"
               className="bg-surface-2 border-border rounded-card text-kid-sm border-2 p-3 text-center font-bold"
             >
-              {FAILURE_MESSAGE[failure]}
+              {micFailureMessage(failure, "อ่าน")}
             </p>
           ) : null}
         </div>
