@@ -813,5 +813,57 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-the-crab-and-the-sparrow",
+    "cefr": "B2",
+    "titleTh": "ปูกับนกกระจอก",
+    "titleEn": "The Crab and the Sparrow",
+    "sentences": [
+      "A crab walks slow on the wet sand near the sea.",
+      "A sparrow sits on a rock and looks at him.",
+      "The crab finds a clam in the sand and he is happy.",
+      "The sparrow wants the clam and she flies down.",
+      "The crab is clumsy but he is not afraid.",
+      "He puts the clam under a shell.",
+      "The sparrow waits for a long time.",
+      "After that a big wasp comes and the sparrow goes.",
+      "The crab eats the clam and he sleeps in the sun."
+    ],
+    "question": {
+      "promptTh": "ปูเอาหอยไปซ่อนไว้ที่ไหน",
+      "choicesTh": [
+        "ใต้เปลือกหอย",
+        "ใต้หิน",
+        "ในทราย"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-big-day",
+    "cefr": "B2",
+    "titleTh": "วันกีฬาที่โรงเรียน",
+    "titleEn": "The Big Day",
+    "sentences": [
+      "Today is a big day at my school.",
+      "My brother learns judo and he is very strong.",
+      "I ride my skateboard in the playground.",
+      "A boxer comes to our school and he talks to us.",
+      "He tells us to study and to be obedient.",
+      "My father runs a marathon every year.",
+      "The winner keeps the gold trophy.",
+      "I want a trophy too but I am slow.",
+      "My teacher says I am brave and I am happy."
+    ],
+    "question": {
+      "promptTh": "ใครมาคุยกับเด็กที่โรงเรียน",
+      "choicesTh": [
+        "นักมวย",
+        "ครูคนใหม่",
+        "พ่อของฉัน"
+      ],
+      "answerIndex": 0
+    }
   }
 ]

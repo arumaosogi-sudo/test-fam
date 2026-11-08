@@ -758,5 +758,69 @@
     "titleTh": "คำบอกลักษณะ B2",
     "titleEn": "B2 Describing Words",
     "emoji": "🔍"
+  },
+  {
+    "id": "u-b2-animals-2",
+    "cefr": "B2",
+    "order": 96,
+    "titleTh": "สัตว์ B2 ชุด 2",
+    "titleEn": "B2 Animals 2",
+    "emoji": "🦀"
+  },
+  {
+    "id": "u-b2-food-2",
+    "cefr": "B2",
+    "order": 97,
+    "titleTh": "ของกิน B2 ชุด 2",
+    "titleEn": "B2 Food 2",
+    "emoji": "🍖"
+  },
+  {
+    "id": "u-b2-things-2",
+    "cefr": "B2",
+    "order": 98,
+    "titleTh": "ของใช้ B2 ชุด 2",
+    "titleEn": "B2 Things 2",
+    "emoji": "🏷️"
+  },
+  {
+    "id": "u-b2-clothes-1",
+    "cefr": "B2",
+    "order": 99,
+    "titleTh": "เสื้อผ้า B2",
+    "titleEn": "B2 Clothes",
+    "emoji": "👕"
+  },
+  {
+    "id": "u-b2-school-1",
+    "cefr": "B2",
+    "order": 100,
+    "titleTh": "ในห้องเรียน B2",
+    "titleEn": "B2 At School",
+    "emoji": "🔭"
+  },
+  {
+    "id": "u-b2-sport-1",
+    "cefr": "B2",
+    "order": 101,
+    "titleTh": "กีฬา B2",
+    "titleEn": "B2 Sport",
+    "emoji": "🥋"
+  },
+  {
+    "id": "u-b2-verbs-2",
+    "cefr": "B2",
+    "order": 102,
+    "titleTh": "คำกริยา B2 ชุด 2",
+    "titleEn": "B2 Verbs 2",
+    "emoji": "🤧"
+  },
+  {
+    "id": "u-b2-describe-2",
+    "cefr": "B2",
+    "order": 103,
+    "titleTh": "คำบอกลักษณะ B2 ชุด 2",
+    "titleEn": "B2 Describing Words 2",
+    "emoji": "🔅"
   }
 ]
