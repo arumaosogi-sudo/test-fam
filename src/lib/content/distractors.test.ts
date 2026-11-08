@@ -50,6 +50,58 @@ describe("pickDistractors", () => {
     expect(picked.map((item) => item.en)).not.toContain(answer.en);
   });
 
+  /**
+   * คู่แฝดคำแปลไทยอันตรายกว่าคู่แฝดคำอังกฤษ เพราะด่าน "ฟังแล้วเลือก"
+   * ไม่โชว์คำอังกฤษเลย เด็กเห็นแต่คำแปลไทย ถ้าตัวลวงแปลเหมือนคำตอบ
+   * บนจอจะมีสองใบที่เขียนตรงกันเป๊ะ แล้วใบหนึ่งถูกนับว่าผิด
+   *
+   * ใช้ pool ที่ทำขึ้นเอง เพราะในคลังจริงตอนนี้ยังไม่มีทางเกิด —
+   * คู่ที่แปลตรงกันทั้งสามคู่อยู่คนละหน่วย และแต่ละหน่วยมีคำชนิดเดียวกัน
+   * พอให้ชั้นแรกเติมครบก่อนเสมอ ด่านนี้จึงกันอนาคต ไม่ใช่แก้ของที่พังอยู่
+   */
+  it("ไม่เอาคำที่แปลไทยเหมือนคำตอบมาเป็นตัวลวง", () => {
+    const answer = word("w-cat");
+    const twin: Word = { ...answer, id: "w-cat-twin", en: "kitty" };
+    const others = WORDS.filter(
+      (item) => item.unitId === answer.unitId && item.th !== answer.th,
+    ).slice(0, 2);
+
+    // pool เล็กพอที่ถ้าไม่กรองคู่แฝดออก มันต้องถูกหยิบแน่ ๆ ไม่ขึ้นกับ seed
+    const picked = pickDistractors(answer, 3, seededRandom("s"), [
+      answer,
+      twin,
+      ...others,
+    ]);
+
+    expect(picked.map((item) => item.th)).not.toContain(answer.th);
+    expect(picked.length).toBe(others.length);
+  });
+
+  /**
+   * ด่านบนใช้ pool ปลอม ด่านนี้จึงไล่ของจริงทั้งคลังหลาย seed
+   * เพื่อกันกรณีที่เนื้อหาถูกจัดหน่วยใหม่แล้วคู่แฝดมาอยู่ใกล้กันพอจะถูกหยิบ
+   */
+  it("ตัวเลือกบนจอไม่มีคำแปลไทยซ้ำกันเลยทั้งคลัง", () => {
+    const bad: string[] = [];
+
+    for (const answer of WORDS) {
+      for (let round = 1; round <= 5; round += 1) {
+        const choices = buildChoices(
+          answer,
+          4,
+          seededRandom(`${answer.id}-listen-${round}`),
+        );
+        const thais = choices.map((choice) => choice.th);
+
+        if (new Set(thais).size !== thais.length) {
+          bad.push(`${answer.en}: ${thais.join(" | ")}`);
+        }
+      }
+    }
+
+    expect(bad).toEqual([]);
+  });
+
   it("หน่วยเล็กกว่าจำนวนที่ขอ ก็ยังได้ตัวลวงครบจากหน่วยอื่น", () => {
     // ขอตัวลวงมากกว่าจำนวนคำในหน่วยนั้น ต้องไม่คืนมาขาด
     const answer = word("w-one");
