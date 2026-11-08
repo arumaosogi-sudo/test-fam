@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { CEFR_ORDER } from "@/lib/types";
 
-import { LANGUAGE_CEILING, buildSystemPrompt } from "./prompt";
+import {
+  LANGUAGE_CEILING,
+  buildSystemPrompt,
+  recentQuestionsFrom,
+} from "./prompt";
 import { FREE_TOPIC_ID, getTopic, topicWords } from "./topics";
 
 function requireTopic(id: string) {
@@ -122,5 +126,73 @@ describe("buildSystemPrompt", () => {
     expect(text).toContain("Animals and Nature");
     expect(text).toContain(topic.scope);
     expect(text).toContain("roam freely within it");
+  });
+});
+
+describe("กันคำถามวน", () => {
+  /**
+   * มาจากการทดสอบจริง: Milo ถาม "Do you like a bear?" แล้ว "Do you like a cat?"
+   * แล้ว "Do you like a dog?" สามเทิร์นติด จนเด็กเลิกคุย
+   */
+  it("สั่งห้ามถามซ้ำแบบเดิม และบอกรูปคำถามอื่นให้เลือก", () => {
+    const text = prompt();
+
+    expect(text).toContain("Never ask the same kind of question twice");
+    expect(text).toContain("Do you like X?");
+    expect(text).toContain("ask them to choose");
+  });
+
+  it("สั่งให้ตอบคำถามเด็กก่อน และห้ามตอบว่าไม่รู้", () => {
+    const text = prompt();
+
+    expect(text).toContain("ANSWER IT FIRST");
+    expect(text).toContain("is a dead end");
+  });
+
+  it("เอาคำถามเก่าใส่ลงไปในคำสั่งเมื่อมีประวัติ", () => {
+    const text = prompt({
+      recentQuestions: ["Do you like a bear?", "Do you like a cat?"],
+    });
+
+    expect(text).toContain("Do not ask any of them again");
+    expect(text).toContain('"Do you like a bear?"');
+    expect(text).toContain('"Do you like a cat?"');
+  });
+
+  it("บทสนทนาที่เพิ่งเริ่มไม่มีรายการคำถามเก่า", () => {
+    expect(prompt()).toContain("This is the start of the conversation");
+  });
+});
+
+describe("recentQuestionsFrom", () => {
+  it("เอาเฉพาะประโยคคำถามของ Milo ไม่เอาของเด็ก", () => {
+    const got = recentQuestionsFrom([
+      { role: "milo", text: "I am a bear. Do you like a bear?" },
+      { role: "child", text: "No. Do you like me?" },
+      { role: "milo", text: "I like cats! What is your name?" },
+    ]);
+
+    expect(got).toEqual(["Do you like a bear?", "What is your name?"]);
+  });
+
+  it("ข้อความที่ไม่มีคำถามไม่ให้อะไรเลย", () => {
+    expect(
+      recentQuestionsFrom([{ role: "milo", text: "I like cats. Me too." }]),
+    ).toEqual([]);
+  });
+
+  it("เอาแค่คำถามล่าสุดตามจำนวนที่ขอ เพราะ prompt ยาวเกินไปก็ไม่ดี", () => {
+    const history = Array.from({ length: 10 }, (_, i) => ({
+      role: "milo" as const,
+      text: `Question ${i}?`,
+    }));
+
+    const got = recentQuestionsFrom(history, 3);
+
+    expect(got).toEqual(["Question 7?", "Question 8?", "Question 9?"]);
+  });
+
+  it("รับประวัติว่างได้", () => {
+    expect(recentQuestionsFrom([])).toEqual([]);
   });
 });

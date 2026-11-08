@@ -6,7 +6,7 @@ import {
   spendTurn,
   type TurnBudget,
 } from "@/lib/chat/guardrail";
-import { buildSystemPrompt } from "@/lib/chat/prompt";
+import { buildSystemPrompt, recentQuestionsFrom } from "@/lib/chat/prompt";
 import { getTopic, topicWords } from "@/lib/chat/topics";
 import { chatRequestSchema } from "@/lib/chat/types";
 import { localDateKey } from "@/lib/progress/xp";
@@ -83,6 +83,8 @@ export async function POST(request: Request) {
         // กรองตามระดับเด็กตรงนี้ ไม่ใช่ฝากความหวังไว้กับ prompt อย่างเดียว
         targetWords: topicWords(topic.id, cefr),
         childName,
+        // เอาคำถามเก่าของ Milo กลับเข้าไปห้ามถามซ้ำ โมเดลไม่ได้จำเอง
+        recentQuestions: recentQuestionsFrom(history),
       }),
       history,
       message: screened.text,

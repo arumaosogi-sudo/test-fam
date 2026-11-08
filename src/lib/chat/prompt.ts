@@ -65,6 +65,13 @@ export type PromptOptions = {
   /** คำที่หยิบมาใช้ได้ กรองตามระดับเด็กมาแล้วจาก topicWords() */
   targetWords: Word[];
   childName?: string;
+  /**
+   * คำถามที่ Milo เพิ่งถามไปในบทสนทนานี้
+   *
+   * ส่งกลับเข้าไปเพื่อห้ามถามซ้ำ เพราะการสั่งลอย ๆ ว่า "อย่าถามซ้ำ" ไม่พอ —
+   * โมเดลไม่ได้นับเองว่าถามอะไรไปแล้ว ต้องเอาของจริงไปวางให้เห็น
+   */
+  recentQuestions?: string[];
 };
 
 /** ชื่อที่ใช้เรียกเด็กในบทสนทนา — ไม่รู้ชื่อก็เรียกว่าเพื่อน */
@@ -78,6 +85,7 @@ export function buildSystemPrompt({
   topic,
   targetWords,
   childName,
+  recentQuestions = [],
 }: PromptOptions): string {
   const ceiling = LANGUAGE_CEILING[cefr];
   const words = targetWords.map((word) => word.en).join(", ");
@@ -101,9 +109,25 @@ export function buildSystemPrompt({
     `If you must introduce a new word, use at most one per reply.`,
     ``,
     `# 3. Keep the conversation alive`,
-    `Reply with 1 or 2 short sentences, then ask the child one simple question back.`,
-    `A conversation that stops is a failed turn. The only exception is rule 6 below.`,
+    `Reply with 1 or 2 short sentences. A conversation that stops is a failed turn. The only exception is rule 6 below.`,
     `Let the child steer. If they bring up something else inside today's subject, follow them — do not drag them back to the word list.`,
+    ``,
+    `## 3a. Answer the child before you ask anything`,
+    `If the child asked you something, ANSWER IT FIRST with something real — a favourite, a feeling, a tiny made-up memory of your own.`,
+    `"I do not know." is a dead end. Never reply that way to a friendly question. Give a small real answer instead, even for a question you were not expecting.`,
+    ``,
+    `## 3b. Never ask the same kind of question twice`,
+    `"Do you like X?" over and over is the single worst thing you can do. It is an interrogation, not a chat, and the child will leave.`,
+    `Use a different shape every turn. Rotate through these:`,
+    `- tell the child something about yourself, then stop and let them answer however they want`,
+    `- ask what, where, who, when or how many (never only yes/no)`,
+    `- ask them to choose: "Cats or dogs?"`,
+    `- ask them to tell you more about what they just said`,
+    `- react with surprise or delight and add one fact, with no question at all`,
+    `At most one reply in three may end with no question. Every other reply needs one, but it must be a NEW one.`,
+    recentQuestions.length > 0
+      ? `You have already asked these in this conversation. Do not ask any of them again, and do not ask anything that is the same question with one word swapped: ${recentQuestions.map((q) => `"${q}"`).join(", ")}`
+      : `This is the start of the conversation.`,
     ``,
     `# 4. How to correct mistakes`,
     `Never scold and never say the child is wrong. Use recast: naturally repeat the correct form inside your own reply, as if you were just talking.`,
@@ -132,4 +156,26 @@ export function buildSystemPrompt({
     `- "objectiveMet": true once the child has used at least three words from the list correctly during this conversation.`,
     `- "suggestedReplies": exactly 3 very short English sentences the child could send next. They must be things a ${cefr} child can actually say, and must answer your question.`,
   ].join("\n");
+}
+
+/**
+ * คำถามที่ Milo ถามไปแล้วในบทสนทนานี้
+ *
+ * โมเดลไม่ได้จำว่าตัวเองถามอะไรไปบ้าง การสั่งว่า "อย่าถามซ้ำ" เฉย ๆ จึงไม่พอ
+ * — ทดสอบกับเด็กจริงแล้วได้ "Do you like a bear?" ตามด้วย "Do you like a cat?"
+ * แล้ว "Do you like a dog?" สามเทิร์นติด ต้องเอาคำถามเก่าไปวางให้เห็นตรง ๆ
+ *
+ * เอาเฉพาะของ Milo ไม่เอาของเด็ก เพราะเด็กถามซ้ำได้ ไม่ใช่ปัญหา
+ */
+export function recentQuestionsFrom(
+  history: { role: "child" | "milo"; text: string }[],
+  limit = 6,
+): string[] {
+  const questions = history
+    .filter((message) => message.role === "milo")
+    .flatMap((message) => message.text.split(/(?<=[.!?])\s+/))
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.endsWith("?"));
+
+  return questions.slice(-limit);
 }
