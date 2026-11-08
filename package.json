@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:thai": "node scripts/check-thai.mjs",
+    "check:thai-back": "node scripts/check-thai-back.mjs",
     "check:ipa": "node scripts/check-ipa.mjs"
   },
   "dependencies": {

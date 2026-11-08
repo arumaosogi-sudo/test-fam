@@ -780,7 +780,7 @@
 
   { "id": "w-peanut", "en": "peanut", "th": "ถั่วลิสง", "thSource": "wiktionary", "pos": "noun", "cefr": "B1", "ipaSource": "wiktionary", "ipa": "/ˈpiˌnʌt/", "sentence": "A {} is small and brown.", "emoji": "🥜", "image": true, "unitId": "u-b1-food-5" },
   { "id": "w-popcorn", "en": "popcorn", "th": "ป๊อปคอร์น", "thSource": "wiktionary", "pos": "noun", "cefr": "B1", "ipaSource": "wiktionary", "ipa": "/ˈpɑp.kɔɹn/", "sentence": "We eat {} and we watch television.", "emoji": "🍿", "image": true, "unitId": "u-b1-food-5" },
-  { "id": "w-spinach", "en": "spinach", "th": "ผักโขม", "thSource": "adapted", "pos": "noun", "cefr": "B1", "ipaSource": "wiktionary", "ipa": "/ˈspɪnɪt͡ʃ/", "sentence": "We cook the {} with the egg.", "image": false, "unitId": "u-b1-food-5" },
+  { "id": "w-spinach", "en": "spinach", "th": "ปวยเล้ง", "thSource": "wiktionary", "pos": "noun", "cefr": "B1", "ipaSource": "wiktionary", "ipa": "/ˈspɪnɪt͡ʃ/", "sentence": "We cook the {} with the egg.", "image": false, "unitId": "u-b1-food-5" },
   { "id": "w-lettuce", "en": "lettuce", "th": "ผักกาดหอม", "thSource": "wiktionary", "pos": "noun", "cefr": "B1", "ipaSource": "wiktionary", "ipa": "/ˈlɛt.ɪs/", "sentence": "I put {} in my soup.", "image": false, "unitId": "u-b1-food-5" },
   { "id": "w-pie", "en": "pie", "th": "พาย", "thSource": "wiktionary", "pos": "noun", "cefr": "B1", "ipaSource": "wiktionary", "ipa": "/paɪ/", "sentence": "My mother bakes an apple {}.", "emoji": "🥧", "image": true, "unitId": "u-b1-food-5" },
 
@@ -1034,7 +1034,6 @@
   {"id":"w-snail","en":"snail","th":"หอยทาก","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/sneɪl/","sentence":"A {} is very slow on the leaf.","emoji":"🐌","image":false,"unitId":"u-c1-animals-1"},
   {"id":"w-goose","en":"goose","th":"ห่าน","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ɡus/","sentence":"A big white {} is near the water.","emoji":"🪿","image":false,"unitId":"u-c1-animals-1"},
   {"id":"w-otter","en":"otter","th":"นาก","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈɑtɚ/","sentence":"The {} swims and eats fish.","emoji":"🦦","image":false,"unitId":"u-c1-animals-1"},
-  {"id":"w-hedgehog","en":"hedgehog","th":"เม่น","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈhɛd͡ʒ.hɔɡ/","sentence":"The {} is small and has brown hair.","emoji":"🦔","image":false,"unitId":"u-c1-animals-1"},
   {"id":"w-pigeon","en":"pigeon","th":"พิราบ","thSource": "wiktionary","pos":"noun","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈpɪ.dʒɪn/","sentence":"A grey {} sits on the roof.","image":false,"unitId":"u-c1-animals-1"},
   {"id":"w-hibernate","en":"hibernate","th":"จำศีล","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/ˈhaɪbəɹˌneɪt/","sentence":"Bears {} when the days are cold.","emoji":"🛌","image":false,"unitId":"u-c1-animals-1"},
   {"id":"w-pounce","en":"pounce","th":"ตะปบ","thSource": "wiktionary","pos":"verb","cefr":"C1","ipaSource": "wiktionary","ipa": "/paʊns/","sentence":"Cats {} on a small toy.","image":false,"unitId":"u-c1-animals-1"},
