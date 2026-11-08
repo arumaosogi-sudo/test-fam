@@ -917,5 +917,109 @@
       ],
       "answerIndex": 0
     }
+  },
+  {
+    "id": "r-at-the-zoo",
+    "cefr": "B1",
+    "titleTh": "ที่สวนสัตว์",
+    "titleEn": "The Animal Park",
+    "sentences": [
+      "At the park we see a giraffe and a gorilla.",
+      "The giraffe has a very long tongue.",
+      "A parrot sits on my arm and it is adorable.",
+      "Two tiny kittens sleep near a puppy.",
+      "The dolphin and the whale swim in the big ocean.",
+      "The skin of the gorilla is black and hard.",
+      "My sister takes a photo of the parrot.",
+      "After that we eat popcorn and a peanut."
+    ],
+    "question": {
+      "promptTh": "อะไรอยู่บนแขนของฉัน",
+      "choicesTh": [
+        "นกแก้ว",
+        "ลูกแมว",
+        "ยีราฟ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-the-campsite",
+    "cefr": "B1",
+    "titleTh": "ค่ายข้างบึง",
+    "titleEn": "The Campsite",
+    "sentences": [
+      "On Friday we go to a campsite near a pond.",
+      "My father puts the tent up with a hammer.",
+      "I climb the ladder and I wear a helmet.",
+      "We see the sunset and the sky is orange.",
+      "At night we hear thunder and I am afraid.",
+      "My pillow is on the floor of the tent.",
+      "In the morning the mud near the pond is wet.",
+      "We put honey in a jar and we eat it.",
+      "The sunrise is bright and the birds sing."
+    ],
+    "question": {
+      "promptTh": "พ่อใช้อะไรตั้งเต็นท์",
+      "choicesTh": [
+        "ค้อน",
+        "บันได",
+        "โหล"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-jobs-in-my-town",
+    "cefr": "B1",
+    "titleTh": "อาชีพในหมู่บ้านของฉัน",
+    "titleEn": "Jobs in My Village",
+    "sentences": [
+      "In my village a baker makes bread every morning.",
+      "The chemist gives the cure to a patient.",
+      "An architect makes a picture of a new house.",
+      "A builder puts the brick on the floor.",
+      "A designer makes a dress for the actress.",
+      "A diver swims under the ship and he is brave.",
+      "A magician and a comedian come to my school.",
+      "The champion gets a gold medal.",
+      "A climber goes up the high mountain.",
+      "I want to be a blogger and write every day."
+    ],
+    "question": {
+      "promptTh": "ใครทำขนมปังทุกเช้า",
+      "choicesTh": [
+        "คนทำขนมปัง",
+        "เภสัชกร",
+        "นักออกแบบ"
+      ],
+      "answerIndex": 0
+    }
+  },
+  {
+    "id": "r-how-i-feel",
+    "cefr": "B1",
+    "titleTh": "ความรู้สึกของฉัน",
+    "titleEn": "How I Feel",
+    "sentences": [
+      "Today I am eager to go to school.",
+      "My teacher gives me comfort when I am sad.",
+      "I have courage and I am bold in the big game.",
+      "My anger goes when my friend says an apology.",
+      "A careless mistake makes confusion in my head.",
+      "I am curious about the amazing comet in the sky.",
+      "My appetite is big after the game.",
+      "Boredom comes when the day is very long.",
+      "My confidence grows and I feel delight."
+    ],
+    "question": {
+      "promptTh": "อะไรทำให้ความโกรธของฉันหายไป",
+      "choicesTh": [
+        "คำขอโทษของเพื่อน",
+        "การเล่นเกม",
+        "ครูของฉัน"
+      ],
+      "answerIndex": 0
+    }
   }
 ]
