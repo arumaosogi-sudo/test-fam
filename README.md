@@ -27,6 +27,7 @@
 | [docs/thai-review.md](docs/thai-review.md) | คำแปลไทยที่ยังรอคนตรวจ เทียบกับพจนานุกรมเปิดแล้ว (สร้างอัตโนมัติ) |
 | [docs/ipa-review.md](docs/ipa-review.md) | คำอ่าน IPA ที่ตรวจกับพจนานุกรม และสำเนียงที่เลือกใช้ (สร้างอัตโนมัติ) |
 | [docs/thai-reverse-check.md](docs/thai-reverse-check.md) | ตรวจคำแปลไทยย้อนทาง — คำไทยคำนี้แปลกลับแล้วได้คำเดิมไหม (สร้างอัตโนมัติ) |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | วิธีเอาแอปออกไปให้คนอื่นลอง ทั้งในวง Wi-Fi และบน Vercel พร้อมสิ่งที่ยังไม่พร้อมเปิดสาธารณะ |
 | [docs/CURRICULUM.md](docs/CURRICULUM.md) | หลักสูตรและระดับความยาก อ้างอิงวิธีของ Duolingo · แหล่งคำศัพท์ NGSL/TOEIC และสิ่งที่ขวางการขยายเนื้อหา |
 | [docs/TASKS.md](docs/TASKS.md) | รายการงาน 60 รายการแบ่งเป็น 8 epic พร้อมลำดับที่ควรทำ |
 | [docs/adr/0008-speech-recognition.md](docs/adr/0008-speech-recognition.md) | วิธีตรวจการพูดและการอ่านออกเสียง ทำไมวัด “ฟังออกไหม” ไม่ใช่ “สำเนียงตรงไหม” และเสียงเด็กถูกส่งไปไหน |
