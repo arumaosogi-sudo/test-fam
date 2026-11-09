@@ -10,8 +10,13 @@ import { z } from "zod";
  * ยังไม่ตั้งคีย์ก็ไม่เป็นไร — ตอบ 503 แล้วฝั่งหน้าเว็บถอยไปใช้เสียงอื่นเอง
  */
 
-/** Harry — Fierce Warrior (ผู้ใช้เลือกเอง) */
-const VOICE_ID = "SOYHLrjzK2X1ezoPC6cr";
+/**
+ * เสียงที่ผู้ใช้เลือกจากคลังเสียงของ ElevenLabs
+ *
+ * เปลี่ยนเสียงแก้ที่บรรทัดเดียวนี้ รหัสเอามาจาก URL หรือหน้า Voices
+ * ของ elevenlabs.io — เคยใช้ SOYHLrjzK2X1ezoPC6cr (Harry) มาก่อน
+ */
+const VOICE_ID = "SX2xBM4KMJnkgx6wnt4M";
 const MODEL_ID = "eleven_multilingual_v2";
 
 /**
