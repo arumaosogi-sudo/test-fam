@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { spendTurn, type TurnBudget } from "@/lib/chat/guardrail";
+import { localDateKey } from "@/lib/progress/xp";
+
 /**
  * อ่านออกเสียงด้วย ElevenLabs — ผ่านเซิร์ฟเวอร์เท่านั้น
  *
@@ -27,6 +30,27 @@ const requestSchema = z.object({
   text: z.string().min(1).max(500),
 });
 
+/**
+ * โควตาต่อเครื่องต่อวัน — เหมือน route ของแชท
+ *
+ * ElevenLabs คิดเงินตามจำนวนตัวอักษร ถ้าไม่จำกัด ใครที่เข้าถึงเซิร์ฟเวอร์ได้
+ * ก็ยิงรัวจนโควตาของเจ้าของแอปหมดภายในไม่กี่นาที จำเป็นมากตอนเอาขึ้นออนไลน์
+ * ให้คนอื่นลอง ซึ่งเป็นสิ่งที่ยังขาดอยู่ตอนต่อเสียงครั้งแรก
+ *
+ * ตั้งสูงกว่าโควตาแชท เพราะหนึ่งเทิร์นแชทเด็กกดฟังซ้ำได้หลายครั้ง
+ * และคำทักทายที่แอปสร้างเองก็กินโควตานี้ด้วยโดยไม่ได้เรียกโมเดลเลย
+ *
+ * เก็บในหน่วยความจำของโปรเซส หายเมื่อรีสตาร์ตและแยกกันคนละอินสแตนซ์
+ * รับได้ในเฟสเดโม พอถึง E6 ต้องย้ายไปนับในฐานข้อมูลต่อผู้ใช้จริง
+ */
+const DAILY_SPEAK_LIMIT = 120;
+const budgets = new Map<string, TurnBudget>();
+
+function clientKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  return forwarded?.split(",")[0]?.trim() || "local";
+}
+
 export async function POST(request: Request) {
   const key = process.env.ELEVENLABS_API_KEY;
   if (!key) {
@@ -51,6 +75,22 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "bad_request", message: "ข้อความว่างหรือยาวเกินไป" },
       { status: 400 },
+    );
+  }
+
+  // นับโควตา **ก่อน** ยิงไปปลายทาง ไม่งั้นก็จ่ายเงินไปแล้วถึงค่อยปฏิเสธ
+  const clientId = clientKey(request);
+  const spent = spendTurn(
+    budgets.get(clientId),
+    localDateKey(new Date()),
+    DAILY_SPEAK_LIMIT,
+  );
+  budgets.set(clientId, spent.budget);
+
+  if (!spent.allowed) {
+    return Response.json(
+      { error: "daily_limit", message: "วันนี้ฟังเสียงครบแล้ว พรุ่งนี้มาฟังใหม่นะ" },
+      { status: 429 },
     );
   }
 
