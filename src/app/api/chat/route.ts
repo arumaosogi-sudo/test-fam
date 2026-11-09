@@ -106,7 +106,9 @@ export async function POST(request: Request) {
     if (error instanceof ChatProviderError && error.kind === "not_configured") {
       return fail(
         503,
-        "ยังไม่ได้ตั้งค่า GEMINI_API_KEY ในไฟล์ .env.local",
+        // ข้อความนี้เด็กไม่เห็น แต่คนดูแลเห็น จึงต้องไม่ชี้ไปผิดที่
+        // เดิมเขียนว่า "ในไฟล์ .env.local" ซึ่งบนโฮสต์จริงไม่มีไฟล์นั้น
+        "ยังไม่ได้ตั้งค่า GEMINI_API_KEY — ใส่ใน .env.local ถ้ารันในเครื่อง หรือในหน้า Environment Variables ของโฮสต์",
         "not_configured",
       );
     }
