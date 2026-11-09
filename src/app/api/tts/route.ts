@@ -67,7 +67,19 @@ export async function POST(request: Request) {
     );
 
     if (!upstream.ok) {
-      // ไม่ส่งข้อความจาก ElevenLabs ต่อ เพราะอาจมีรายละเอียดบัญชีติดมา
+      /*
+       * ไม่ส่งข้อความของผู้ให้บริการต่อไปให้เบราว์เซอร์ เพราะมีรายละเอียด
+       * บัญชีติดมา แต่ต้องพิมพ์ลง log ของเซิร์ฟเวอร์ ไม่งั้นปัญหาการตั้งค่า
+       * จะกลายเป็น "เสียงไม่ออก" เฉย ๆ โดยไม่มีใครรู้สาเหตุ
+       *
+       * เจอจริงตอนต่อครั้งแรก: คีย์ถูกต้องแต่ไม่มีสิทธิ์ text_to_speech
+       * ซึ่งมองจากหน้าเว็บแล้วเหมือนเสียงพังเฉย ๆ
+       */
+      const detail = await upstream.text().catch(() => "");
+      console.error(
+        `[tts] ElevenLabs ตอบ ${upstream.status}: ${detail.slice(0, 300)}`,
+      );
+
       return Response.json(
         { error: "upstream", message: "ตอนนี้อ่านออกเสียงไม่ได้" },
         { status: 502 },
