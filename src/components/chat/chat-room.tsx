@@ -260,11 +260,14 @@ export function ChatRoom() {
   }
 
   /**
-   * ฟังเด็กพูดแล้วเติมลงช่องพิมพ์ ไม่ได้ส่งทันที
+   * ฟังเด็กพูดแล้ว **ส่งเข้าแชทเลย** ไม่ต้องกดส่งอีกที
    *
-   * ตั้งใจให้เด็กได้เห็นคำที่ระบบถอดได้ก่อนกดส่ง เพราะตัวถอดเสียงพลาดบ่อย
-   * กับเสียงเด็กและสำเนียงไทย ถ้าส่งอัตโนมัติ เด็กจะงงว่าทำไม Milo
-   * ตอบเรื่องที่ตัวเองไม่ได้พูด และแก้ก่อนส่งก็ไม่ได้
+   * ตอนแรกทำเป็นเติมลงช่องพิมพ์ให้เด็กตรวจก่อน เพราะตัวถอดเสียงพลาดบ่อย
+   * กับสำเนียงไทย แต่พอใช้จริงแล้วมันขัดจังหวะการคุย — เด็กพูดจบแล้วยัง
+   * ต้องละมือไปกดปุ่มอีกครั้ง ทำให้การคุยไม่ต่อเนื่อง
+   *
+   * ถ้าถอดผิด เด็กพูดใหม่หรือพิมพ์แก้ในเทิร์นถัดไปได้ ซึ่งเป็นสิ่งที่
+   * เกิดในการคุยกับคนจริงอยู่แล้ว
    */
   function startListening() {
     if (listening || sending) return;
@@ -290,6 +293,8 @@ export function ChatRoom() {
        */
       continuous: true,
       timeoutMs: 45_000,
+      // ยอมให้เงียบได้หกวินาทีก่อนถือว่าพูดจบ เด็กต้องใช้เวลานึกประโยคอังกฤษ
+      silenceGraceMs: 6_000,
       onInterim: setHeard,
       onDone: (outcome) => {
         setListening(false);
@@ -307,8 +312,9 @@ export function ChatRoom() {
           return;
         }
 
-        // ต่อท้ายของเดิม เผื่อเด็กพิมพ์ไว้บางส่วนแล้วค่อยพูดต่อ
-        setInput((current) => (current ? `${current} ${said}` : said));
+        // พิมพ์ค้างไว้ก่อนแล้วค่อยพูดต่อ ก็ส่งรวมกันทั้งก้อน
+        const typed = input.trim();
+        void send(typed ? `${typed} ${said}` : said);
       },
     });
   }
@@ -419,29 +425,39 @@ export function ChatRoom() {
         เปิดอัตโนมัติไม่ได้ เด็กที่ใช้เน็ตมือถือจะเสียค่าเน็ตโดยไม่รู้ตัว
       */}
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          type="button"
-          size="sm"
-          variant={voice.useKokoro ? "accent" : "neutral"}
-          onClick={() =>
-            voice.useKokoro ? voice.disableKokoro() : void voice.enableKokoro()
-          }
-          aria-pressed={voice.useKokoro}
-        >
-          {voice.useKokoro ? "เสียงใหม่ของ Milo" : "ลองเสียงใหม่ของ Milo"}
-        </Button>
+        {voice.serverReady ? (
+          <span className="text-ink-muted text-kid-sm font-bold">
+            กำลังใช้เสียง Milo จากบริการเสียง
+          </span>
+        ) : (
+          <>
+            <Button
+              type="button"
+              size="sm"
+              variant={voice.useKokoro ? "accent" : "neutral"}
+              onClick={() =>
+                voice.useKokoro
+                  ? voice.disableKokoro()
+                  : void voice.enableKokoro()
+              }
+              aria-pressed={voice.useKokoro}
+            >
+              {voice.useKokoro ? "เสียงใหม่ของ Milo" : "ลองเสียงใหม่ของ Milo"}
+            </Button>
 
-        <span className="text-ink-muted text-kid-sm font-bold">
-          {!voice.useKokoro
-            ? "ตอนนี้ใช้เสียงของเบราว์เซอร์"
-            : voice.status.kind === "loading"
-              ? "กำลังโหลดเสียง ~88 MB ครั้งแรกครั้งเดียว…"
-              : voice.status.kind === "ready"
-                ? "พร้อมแล้ว"
-                : voice.status.kind === "failed"
-                  ? "โหลดเสียงไม่สำเร็จ ใช้เสียงเบราว์เซอร์ไปก่อน"
-                  : "กำลังเตรียม…"}
-        </span>
+            <span className="text-ink-muted text-kid-sm font-bold">
+              {!voice.useKokoro
+                ? "ตอนนี้ใช้เสียงของเบราว์เซอร์"
+                : voice.status.kind === "loading"
+                  ? "กำลังโหลดเสียง ~88 MB ครั้งแรกครั้งเดียว…"
+                  : voice.status.kind === "ready"
+                    ? "พร้อมแล้ว"
+                    : voice.status.kind === "failed"
+                      ? "โหลดเสียงไม่สำเร็จ ใช้เสียงเบราว์เซอร์ไปก่อน"
+                      : "กำลังเตรียม…"}
+            </span>
+          </>
+        )}
       </div>
 
       <div

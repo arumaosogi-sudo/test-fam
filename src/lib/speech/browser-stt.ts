@@ -75,6 +75,8 @@ const MAX_ALTERNATIVES = 5;
  * ถ้าไม่มีตัวนับนี้ ปุ่มจะค้างอยู่ที่ "กำลังฟัง" ไปตลอดโดยไม่มีอะไรฟ้อง
  */
 const HARD_TIMEOUT_MS = 12_000;
+/** เปิดฟังต่อได้มากสุดกี่ครั้งต่อการกดไมค์หนึ่งครั้ง */
+const MAX_RESTARTS = 12;
 
 /** รหัส error จากสเปกที่เราแปลเป็นสาเหตุของเราเอง */
 const FAILURE_BY_CODE: Record<string, ListenFailure> = {
@@ -155,6 +157,7 @@ class BrowserRecognizer implements SpeechRecognizer {
     lang = DEFAULT_LANG,
     continuous = false,
     timeoutMs = HARD_TIMEOUT_MS,
+    silenceGraceMs = 0,
     onInterim,
     onSpeechStart,
     onDone,
@@ -183,6 +186,11 @@ class BrowserRecognizer implements SpeechRecognizer {
     if (this.localReady === true) recognition.processLocally = true;
 
     let settled = false;
+    /** ผู้ใช้สั่งหยุดเองแล้ว — ห้ามเปิดฟังต่ออีก */
+    let stopped = false;
+    let lastSoundAt = Date.now();
+    /** กันลูปเปิดฟังใหม่ไม่รู้จบเวลาไมค์มีปัญหาจริง ๆ */
+    let restarts = 0;
     let bestAlternatives: string[] = [];
     let bestConfidence: number | undefined;
     /** ข้อความช่วงที่ถอดจบแล้ว ใช้เฉพาะโหมดต่อเนื่อง */
@@ -200,9 +208,13 @@ class BrowserRecognizer implements SpeechRecognizer {
       finish({ kind: "failed", reason: "no-speech" });
     }, timeoutMs);
 
-    recognition.onspeechstart = () => onSpeechStart?.();
+    recognition.onspeechstart = () => {
+      lastSoundAt = Date.now();
+      onSpeechStart?.();
+    };
 
     recognition.onresult = (event) => {
+      lastSoundAt = Date.now();
       let interim = "";
 
       for (let i = event.resultIndex; i < event.results.length; i += 1) {
@@ -254,6 +266,28 @@ class BrowserRecognizer implements SpeechRecognizer {
     };
 
     recognition.onend = () => {
+      /*
+       * เบราว์เซอร์ปิดเองเมื่อคิดว่าพูดจบ ซึ่งเร็วเกินไปสำหรับเด็กที่กำลัง
+       * นึกประโยค ถ้ายังไม่เงียบครบตามที่ขอ ให้เปิดฟังต่อเองเงียบ ๆ
+       * เด็กจะไม่รู้เลยว่ามันเปิดใหม่ รู้แค่ว่าไมค์ยังเปิดอยู่
+       */
+      const quietFor = Date.now() - lastSoundAt;
+      if (
+        !settled &&
+        !stopped &&
+        silenceGraceMs > 0 &&
+        quietFor < silenceGraceMs &&
+        restarts < MAX_RESTARTS
+      ) {
+        restarts += 1;
+        try {
+          recognition.start();
+          return;
+        } catch {
+          // เปิดต่อไม่ได้ก็ปิดงานตามปกติด้านล่าง
+        }
+      }
+
       if (bestAlternatives.length === 0) {
         finish({ kind: "failed", reason: "no-speech" });
         return;
@@ -284,9 +318,11 @@ class BrowserRecognizer implements SpeechRecognizer {
 
     return {
       stop() {
+        stopped = true;
         recognition.stop();
       },
       abort() {
+        stopped = true;
         recognition.abort();
         finish({ kind: "failed", reason: "aborted" });
       },

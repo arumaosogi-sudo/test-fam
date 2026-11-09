@@ -10,6 +10,7 @@ import {
   kokoroTts,
   type KokoroStatus,
 } from "@/lib/speech/kokoro-tts";
+import { serverTts } from "@/lib/speech/server-tts";
 
 const STORAGE_KEY = "linguakids.milo-voice";
 
@@ -53,18 +54,20 @@ function setPreference(next: boolean) {
   notify();
 }
 
+/** เสียงที่กำลังใช้จริงอยู่ เอาไว้บอกผู้ใช้บนหน้าจอ */
+export type VoiceSource = "server" | "kokoro" | "browser";
+
 /**
- * เสียงของ Milo มีสองทาง และต้องสลับได้โดยไม่ทำให้แชทพัง
+ * เสียงของ Milo มีสามทาง เรียงจากดีที่สุดลงมา และต้องถอยลงมาเองได้เสมอ
  *
- * ทางปกติคือเสียงที่ติดมากับเบราว์เซอร์ — ฟรี เร็ว ไม่ต้องโหลดอะไร
- * แต่คุณภาพขึ้นกับเครื่องและฟังเหมือนระบบประกาศ
+ * 1. **บริการคลาวด์** ผ่าน `/api/tts` — เสียงดีที่สุด ไม่ต้องโหลดอะไร
+ *    แต่ต้องตั้งคีย์ไว้ที่เซิร์ฟเวอร์ ต่อเน็ตทุกครั้ง และคิดเงินตามตัวอักษร
+ * 2. **Kokoro ในเครื่อง** — ดีรองลงมา ฟรี ใช้ออฟไลน์ได้ แต่ครั้งแรกโหลด 88 MB
+ *    จึงต้องให้ผู้ใช้กดเลือกเอง
+ * 3. **เสียงของเบราว์เซอร์** — คุณภาพขึ้นกับเครื่อง แต่มีทุกที่และไม่ต้องรอ
  *
- * อีกทางคือโมเดล Kokoro ที่รันในเครื่อง เสียงเป็นธรรมชาติกว่ามาก
- * แต่ครั้งแรกต้องโหลดราว 82 MB จึง **ต้องให้ผู้ใช้กดเลือกเอง**
- * เปิดให้อัตโนมัติไม่ได้ เพราะเด็กที่ใช้เน็ตมือถืออาจเสียค่าเน็ตฟรี ๆ
- *
- * ถ้าโหลดไม่สำเร็จหรือยังโหลดไม่เสร็จ ต้องพูดด้วยเสียงเบราว์เซอร์ไปก่อนเสมอ
- * — เด็กต้องได้ยินเสียงตอบทุกครั้ง ไม่ใช่เงียบไปเพราะโมเดลยังโหลดอยู่
+ * กฎที่ห้ามพัง: **เด็กต้องได้ยินเสียงตอบทุกครั้ง** ถ้าทางบนใช้ไม่ได้
+ * ต้องไหลลงทางล่างเงียบ ๆ ไม่ใช่เงียบไปเฉย ๆ แล้วเด็กไม่รู้ว่าเกิดอะไรขึ้น
  */
 export function useMiloVoice() {
   const useKokoro = useSyncExternalStore(
@@ -74,13 +77,30 @@ export function useMiloVoice() {
   );
 
   const [status, setStatus] = useState<KokoroStatus>(kokoroTts.status);
+  const [serverReady, setServerReady] = useState(false);
 
   useEffect(() => kokoroTts.subscribe(setStatus), []);
 
+  useEffect(() => {
+    let alive = true;
+    void serverTts.isConfigured().then((ready) => {
+      if (alive) setServerReady(ready);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   // เคยเลือกไว้แล้วก็โหลดต่อเองตอนกลับเข้าหน้า ไม่ต้องให้กดซ้ำ
   useEffect(() => {
-    if (useKokoro) void kokoroTts.load();
-  }, [useKokoro]);
+    if (useKokoro && !serverReady) void kokoroTts.load();
+  }, [useKokoro, serverReady]);
+
+  const source: VoiceSource = serverReady
+    ? "server"
+    : useKokoro && status.kind === "ready"
+      ? "kokoro"
+      : "browser";
 
   const enableKokoro = useCallback(async () => {
     setPreference(true);
@@ -97,19 +117,36 @@ export function useMiloVoice() {
       const spoken = speakableText(text);
       if (spoken.length === 0) return;
 
-      if (useKokoro && kokoroTts.status.kind === "ready") {
+      if (source === "server") {
+        await serverTts.speak(spoken);
+        // ถ้าคีย์หายไประหว่างทาง isConfigured จะกลายเป็น false ในรอบหน้า
+        return;
+      }
+
+      if (source === "kokoro") {
         await kokoroTts.speak(spoken, { voiceId: DEFAULT_KOKORO_VOICE });
         return;
       }
+
       await getTts().speak(spoken, MILO_VOICE);
     },
-    [useKokoro],
+    [source],
   );
 
   const cancel = useCallback(() => {
+    serverTts.cancel();
     kokoroTts.cancel();
     getTts().cancel();
   }, []);
 
-  return { useKokoro, status, enableKokoro, disableKokoro, speak, cancel };
+  return {
+    source,
+    serverReady,
+    useKokoro,
+    status,
+    enableKokoro,
+    disableKokoro,
+    speak,
+    cancel,
+  };
 }
