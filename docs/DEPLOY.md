@@ -45,6 +45,22 @@ Gemini กับ ElevenLabs ของเจ้าของเครื่อง 
 - บัญชี GitHub และบัญชี Vercel (สมัครฟรี)
 - คีย์ `GEMINI_API_KEY` และ `ELEVENLABS_API_KEY` ที่ใช้งานได้
 
+### ⚠ Vercel CLI ใช้บนเครื่องนี้ไม่ได้
+
+`npx vercel` ทุกคำสั่งพังด้วย
+
+```
+TypeError: Cannot convert argument to a ByteString because the character
+at index 0 has a value of 3609 which is greater than 255
+```
+
+3609 คือรหัสของตัว "น" — ชื่อเครื่องนี้เป็นภาษาไทย ("นิติภูมิ") และ CLI
+เอาไปใส่ใน HTTP header ซึ่งรับได้แต่ ASCII ลองแก้ด้วยการเปลี่ยน
+`COMPUTERNAME` และ patch `os.hostname()` แล้วก็ยังพัง เพราะค่ามาจากที่อื่น
+
+**ให้ใช้ทาง GitHub + หน้าเว็บ Vercel แทน ไม่ต้องใช้ CLI เลย**
+(ถ้าอยากใช้ CLI จริง ๆ ต้องเปลี่ยนชื่อเครื่องใน Windows เป็นอักษรอังกฤษก่อน)
+
 ### ขั้นตอน
 
 1. **สร้าง repo บน GitHub แล้วพุชขึ้นไป** — โปรเจกต์นี้ยังไม่มี remote
