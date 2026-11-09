@@ -55,6 +55,21 @@ class KokoroTtsProvider implements TtsProvider {
   private url: string | null = null;
   private listeners = new Set<(status: KokoroStatus) => void>();
 
+  /**
+   * หมายเลขรุ่นของคำสั่งอ่าน — ตัวกันเสียงซ้อน เหมือนฝั่ง server-tts
+   *
+   * การสังเคราะห์เสียงในเครื่องกินเวลาหลายวินาที ช่วงนั้นยังไม่มี element
+   * ให้ cancel() หยุด ถ้ากดฟังซ้ำตอนนั้นจะได้สองเสียงเล่นทับกัน
+   */
+  private generation = 0;
+
+  /**
+   * ตัวปลด await ของคำสั่งที่กำลังเล่นอยู่ เหมือนฝั่ง server-tts
+   *
+   * ถูกยกเลิกกลางคันแล้ว onended จะไม่ยิง ถ้าไม่ปลดเอง ปุ่มที่รออยู่จะค้าง
+   */
+  private finish: (() => void) | null = null;
+
   status: KokoroStatus = { kind: "idle" };
 
   /**
@@ -108,10 +123,12 @@ class KokoroTtsProvider implements TtsProvider {
   }
 
   async speak(text: string, options: SpeakOptions = {}): Promise<void> {
+    this.cancel();
+    const generation = this.generation;
+
     const model = await this.load();
     if (!model) return;
-
-    this.cancel();
+    if (generation !== this.generation) return;
 
     try {
       const audio = await model.generate(text, {
@@ -119,6 +136,9 @@ class KokoroTtsProvider implements TtsProvider {
         // Kokoro คุม pitch ไม่ได้ ความน่ารักจึงมาจากตัวเสียงที่เลือก ไม่ใช่การปรับ
         speed: options.rate ?? 1,
       });
+
+      // มีคำสั่งใหม่แซงมาแล้ว เสียงก้อนนี้ไม่ต้องเล่น
+      if (generation !== this.generation) return;
 
       const url = URL.createObjectURL(audio.toBlob());
       const element = new Audio(url);
@@ -128,6 +148,7 @@ class KokoroTtsProvider implements TtsProvider {
       this.url = url;
 
       await new Promise<void>((resolve) => {
+        this.finish = resolve;
         element.onended = () => resolve();
         // อ่านไม่ออกไม่ควรทำให้หน้าจอค้าง — จบเงียบ ๆ เหมือนตัว browser
         element.onerror = () => resolve();
@@ -136,7 +157,8 @@ class KokoroTtsProvider implements TtsProvider {
     } catch {
       // ปล่อยผ่าน ผู้เรียกมีทางถอยไปเสียงเบราว์เซอร์อยู่แล้ว
     } finally {
-      this.release();
+      // คำสั่งที่ถูกแทนที่ไปแล้วต้องไม่ไปล้างสถานะของคำสั่งใหม่
+      if (generation === this.generation) this.release();
     }
   }
 
@@ -144,13 +166,18 @@ class KokoroTtsProvider implements TtsProvider {
     if (this.url) URL.revokeObjectURL(this.url);
     this.url = null;
     this.audio = null;
+    this.finish = null;
   }
 
   cancel(): void {
+    // ขึ้นรุ่นใหม่ก่อน เพื่อให้คำสั่งที่ยังสังเคราะห์อยู่รู้ตัวว่าถูกยกเลิกแล้ว
+    this.generation += 1;
     if (this.audio) {
       this.audio.pause();
       this.audio.currentTime = 0;
     }
+    // ปลดคนที่ await อยู่ด้วย ไม่งั้นปุ่มที่เรียกมาจะค้างรอตลอดไป
+    this.finish?.();
     this.release();
   }
 }

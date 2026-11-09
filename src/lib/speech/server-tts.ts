@@ -16,6 +16,27 @@ class ServerTtsProvider implements TtsProvider {
   private url: string | null = null;
   private configured: boolean | null = null;
 
+  /**
+   * หมายเลขรุ่นของคำสั่งอ่าน — ตัวกันเสียงซ้อน
+   *
+   * cancel() หยุดได้เฉพาะเสียงที่ "เล่นอยู่แล้ว" แต่ช่วงที่ยังรอไฟล์จาก
+   * เซิร์ฟเวอร์ยังไม่มี element ให้หยุด ถ้ากดฟังอีกครั้งตอนนั้น คำสั่งเก่า
+   * กับใหม่จะวิ่งคู่กันแล้วเล่นทับกันเป็นสองเสียง ซ้ำร้ายคำสั่งใหม่ยังเขียนทับ
+   * this.audio ทำให้ตัวเก่ากลายเป็นเสียงผีที่หยุดไม่ได้เลยจนกว่าจะอ่านจบ
+   *
+   * จึงติดหมายเลขรุ่นกับทุกคำสั่ง คำสั่งที่ถูกแทนที่แล้วต้องทิ้งไฟล์ที่เพิ่ง
+   * ได้มาโดยไม่เล่น และต้องไม่ไปแตะสถานะของคำสั่งใหม่ด้วย
+   */
+  private generation = 0;
+
+  /**
+   * ตัวปลด await ของคำสั่งที่กำลังเล่นอยู่
+   *
+   * ถูกยกเลิกกลางคันแล้ว onended จะไม่ยิง ถ้าไม่ปลดเอง promise ของ speak()
+   * จะค้างตลอดกาล — ปุ่มลำโพงที่รออยู่จะกะพริบไม่หยุดทั้งที่เสียงหยุดไปแล้ว
+   */
+  private finish: (() => void) | null = null;
+
   isAvailable(): boolean {
     return typeof window !== "undefined" && typeof Audio !== "undefined";
   }
@@ -44,6 +65,7 @@ class ServerTtsProvider implements TtsProvider {
     if (!this.isAvailable()) return;
 
     this.cancel();
+    const generation = this.generation;
 
     try {
       const response = await fetch("/api/tts", {
@@ -58,7 +80,13 @@ class ServerTtsProvider implements TtsProvider {
         return;
       }
 
-      const url = URL.createObjectURL(await response.blob());
+      // มีคำสั่งใหม่แซงมาแล้ว ไฟล์ก้อนนี้ไม่ต้องเล่น
+      if (generation !== this.generation) return;
+
+      const blob = await response.blob();
+      if (generation !== this.generation) return;
+
+      const url = URL.createObjectURL(blob);
       const element = new Audio(url);
       element.volume = options.volume ?? 1;
       if (options.rate) element.playbackRate = options.rate;
@@ -67,6 +95,7 @@ class ServerTtsProvider implements TtsProvider {
       this.url = url;
 
       await new Promise<void>((resolve) => {
+        this.finish = resolve;
         element.onended = () => resolve();
         // เล่นไม่ได้ก็ไม่ควรทำให้หน้าจอค้าง — จบเงียบ ๆ
         element.onerror = () => resolve();
@@ -75,7 +104,8 @@ class ServerTtsProvider implements TtsProvider {
     } catch {
       // เน็ตหลุดระหว่างทาง ปล่อยให้ผู้เรียกถอยไปเสียงอื่น
     } finally {
-      this.release();
+      // คำสั่งที่ถูกแทนที่ไปแล้วต้องไม่ไปล้างสถานะของคำสั่งใหม่
+      if (generation === this.generation) this.release();
     }
   }
 
@@ -83,13 +113,18 @@ class ServerTtsProvider implements TtsProvider {
     if (this.url) URL.revokeObjectURL(this.url);
     this.url = null;
     this.audio = null;
+    this.finish = null;
   }
 
   cancel(): void {
+    // ขึ้นรุ่นใหม่ก่อน เพื่อให้คำสั่งที่ยังรอไฟล์อยู่รู้ตัวว่าถูกยกเลิกแล้ว
+    this.generation += 1;
     if (this.audio) {
       this.audio.pause();
       this.audio.currentTime = 0;
     }
+    // ปลดคนที่ await อยู่ด้วย ไม่งั้นปุ่มที่เรียกมาจะค้างรอตลอดไป
+    this.finish?.();
     this.release();
   }
 }
