@@ -21,6 +21,8 @@ export const safetyFlagSchema = z.enum([
   "concerning",
   /** คุยออกนอกเรื่องที่ไม่เหมาะกับเด็ก */
   "off_topic",
+  /** เด็กพิมพ์คำหยาบหรือคำเหยียด — ตั้งโดยด่านฝั่งเรา ไม่ใช่โดยโมเดล */
+  "unkind_word",
 ]);
 export type SafetyFlag = z.infer<typeof safetyFlagSchema>;
 

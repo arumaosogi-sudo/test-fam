@@ -232,3 +232,51 @@ describe("questionOpenings", () => {
     expect(questionOpenings([])).toEqual([]);
   });
 });
+
+/**
+ * กฎที่เพิ่มหลังผู้ใช้ทดสอบจริงแล้วพบว่า Milo คุยเรื่องอื่นไม่ได้เลย
+ *
+ * เด็กถามว่า "do u know google?" แล้วได้คำตอบว่า "I play with my friends.
+ * Who is your friend?" คือไม่ได้ตอบคำถามและเปลี่ยนเรื่องไปเลย สาเหตุคือ
+ * กฎเพดานคำศัพท์กับกฎห้ามถามซ้ำรัดจนโมเดลหนีไปพูดประโยคกลาง ๆ แทน
+ */
+describe("ความกว้างของบทสนทนา", () => {
+  it("บอกว่าชื่อเฉพาะไม่ใช่คำศัพท์ จึงไม่ติดเพดาน CEFR", () => {
+    const text = prompt();
+
+    expect(text).toContain("Names are not vocabulary");
+  });
+
+  it("บอกว่าเรื่องที่ไม่อยู่ในคลังคำก็ยังต้องตอบ", () => {
+    const text = prompt();
+
+    expect(text).toMatch(/nowhere near the word list/);
+  });
+
+  it("จัดลำดับให้กฎ 'ตอบสิ่งที่เด็กพูด' ชนะกฎอื่นในหมวดเดียวกัน", () => {
+    const text = prompt();
+
+    expect(text).toContain("outranks every other rule in part 3");
+  });
+
+  it("ห้ามแก้ปัญหาคำถามซ้ำด้วยการเปลี่ยนเรื่องหนี", () => {
+    const text = prompt({
+      recentQuestions: ["Do you like a cat?", "Do you like a dog?"],
+    });
+
+    expect(text).toMatch(/Never solve a banned opening by switching/);
+  });
+
+  it("เรื่องที่คุยไม่ได้ต้องบอกออกมา ไม่ใช่เปลี่ยนเรื่องเงียบ ๆ", () => {
+    const text = prompt();
+
+    expect(text).toMatch(/rather than quietly changing the subject/);
+  });
+
+  it("สั่งให้ตักเตือนคำหยาบ ไม่ใช่ทำเป็นไม่เห็น", () => {
+    const text = prompt();
+
+    expect(text).toMatch(/unkind word/);
+    expect(text).toContain('safetyFlag to "unkind_word"');
+  });
+});

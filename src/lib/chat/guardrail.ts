@@ -16,8 +16,10 @@ import type { SafetyFlag } from "./types";
 const SEVERITY: Record<SafetyFlag, number> = {
   none: 0,
   off_topic: 1,
-  personal_info: 2,
-  concerning: 3,
+  unkind_word: 2,
+  // ข้อมูลส่วนตัวหนักกว่าคำหยาบ เพราะส่งออกไปแล้วเอากลับไม่ได้
+  personal_info: 3,
+  concerning: 4,
 };
 
 export function mergeSafetyFlags(a: SafetyFlag, b: SafetyFlag): SafetyFlag {

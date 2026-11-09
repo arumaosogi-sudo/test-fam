@@ -1,5 +1,6 @@
 import { ChatProviderError, getChatProvider } from "@/lib/ai";
 import {
+  DAILY_TURN_LIMIT,
   mergeSafetyFlags,
   redactionNotice,
   screenChildMessage,
@@ -9,6 +10,11 @@ import {
 import { buildSystemPrompt, recentQuestionsFrom } from "@/lib/chat/prompt";
 import { getTopic, topicWords } from "@/lib/chat/topics";
 import { chatRequestSchema } from "@/lib/chat/types";
+import {
+  hasUnkindWord,
+  UNKIND_WORD_NOTICE,
+  unkindWordReply,
+} from "@/lib/chat/unkind-words";
 import { localDateKey } from "@/lib/progress/xp";
 
 /**
@@ -53,6 +59,41 @@ export async function POST(request: Request) {
 
   const topic = getTopic(topicId);
   if (!topic) return fail(400, "ไม่พบหัวข้อที่เลือก", "unknown_topic");
+
+  /*
+   * ด่านคำหยาบมาก่อนทุกอย่าง — ก่อนนับโควตาและก่อนเรียกโมเดล
+   *
+   * ตอบเองตรงนี้เลยด้วยเหตุผลสามข้อ: เด็กต้องได้คำตอบที่ถูกต้องแน่นอนทุกครั้ง
+   * ไม่ใช่แล้วแต่โมเดลจะคิดได้, คำหยาบไม่ควรออกนอกเครื่องไปหาผู้ให้บริการ,
+   * และเทิร์นที่ไม่ได้เรียกโมเดลก็ไม่ควรกินโควตาของเด็ก
+   *
+   * เจอจากการทดสอบจริง: เด็กพิมพ์คำเหยียดแล้ว Milo เปลี่ยนเรื่องเฉย ๆ
+   * ไม่มีการตักเตือนใด ๆ
+   */
+  if (hasUnkindWord(parsed.data.message)) {
+    const { reply, replyTh, suggestedReplies } = unkindWordReply();
+
+    // ไม่ได้ใช้โควตา แต่ยังต้องบอกยอดคงเหลือจริง ไม่ใช่ null
+    // ไม่งั้นรูปแบบคำตอบของ route นี้จะไม่เหมือนกันทุกเส้นทาง
+    const current = budgets.get(clientKey(request));
+    const used =
+      current && current.date === localDateKey(new Date()) ? current.used : 0;
+
+    return Response.json({
+      turn: {
+        reply,
+        replyTh,
+        wordsUsed: [],
+        mistakes: [],
+        objectiveMet: false,
+        safetyFlag: "unkind_word",
+        suggestedReplies,
+      },
+      notice: UNKIND_WORD_NOTICE,
+      remaining: Math.max(0, DAILY_TURN_LIMIT - used),
+      model: "guardrail",
+    });
+  }
 
   const key = clientKey(request);
   const today = localDateKey(new Date());
