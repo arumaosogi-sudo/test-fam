@@ -20,6 +20,15 @@ type SpeakerButtonProps = {
    * สองอย่างนี้ต้องต่างกัน เพราะการ์ดคำศัพท์ต้องการให้เด็กได้ยินคำชัด ๆ
    */
   voice?: SpeakOptions;
+  /**
+   * ให้หน้าจอที่มีเสียงของตัวเองส่งตัวอ่านมาเอง
+   *
+   * หน้าแชทเลือกเสียงของ Milo ได้สามทาง (คลาวด์ · Kokoro · เบราว์เซอร์)
+   * ซึ่งปุ่มนี้ไม่รู้จัก ถ้าไม่เปิดช่องไว้ ปุ่มลำโพงในบับเบิลจะอ่านด้วย
+   * เสียงเบราว์เซอร์เสมอ ทั้งที่ข้อความเดียวกันตอนตอบอัตโนมัติใช้เสียงคลาวด์
+   * — เจอจริงตอนผู้ใช้กดลำโพงแล้วได้ยินคนละเสียงกับที่เพิ่งได้ยินไป
+   */
+  speak?: (text: string, options: { slow: boolean }) => Promise<void>;
   className?: string;
 };
 
@@ -63,6 +72,7 @@ export function SpeakerButton({
   slow = false,
   size = "md",
   voice,
+  speak,
   className,
 }: SpeakerButtonProps) {
   const supported = useTtsAvailable();
@@ -78,16 +88,25 @@ export function SpeakerButton({
   }, []);
 
   async function handleClick() {
-    const tts = getTts();
-    if (!tts.isAvailable()) return;
-
     setSpeaking(true);
-    await tts.speak(text, {
-      lang,
-      ...voice,
-      // ปุ่มฟังช้าต้องช้าจริงเสมอ แม้เสียงตัวละครจะตั้งความเร็วไว้แล้ว
-      rate: slow ? 0.6 : (voice?.rate ?? 0.9),
-    });
+
+    if (speak) {
+      await speak(text, { slow });
+    } else {
+      const tts = getTts();
+      if (!tts.isAvailable()) {
+        setSpeaking(false);
+        return;
+      }
+
+      await tts.speak(text, {
+        lang,
+        ...voice,
+        // ปุ่มฟังช้าต้องช้าจริงเสมอ แม้เสียงตัวละครจะตั้งความเร็วไว้แล้ว
+        rate: slow ? 0.6 : (voice?.rate ?? 0.9),
+      });
+    }
+
     // ถ้า component ถูกถอดออกไปแล้วระหว่างอ่าน ก็ไม่ต้อง setState
     if (mounted.current) setSpeaking(false);
   }
@@ -96,7 +115,7 @@ export function SpeakerButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={!supported}
+      disabled={!speak && !supported}
       aria-label={`${slow ? "ฟังแบบช้า" : "ฟังเสียง"}: ${text}`}
       title={supported ? undefined : "เบราว์เซอร์นี้ยังอ่านออกเสียงไม่ได้"}
       className={cn(

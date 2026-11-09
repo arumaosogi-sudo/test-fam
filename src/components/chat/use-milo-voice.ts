@@ -113,22 +113,35 @@ export function useMiloVoice() {
   }, []);
 
   const speak = useCallback(
-    async (text: string) => {
+    async (text: string, options: { slow?: boolean } = {}) => {
       const spoken = speakableText(text);
       if (spoken.length === 0) return;
 
+      /*
+       * ปุ่มฟังช้าต้องช้าจริงทุกเสียง ไม่ใช่เฉพาะเสียงเบราว์เซอร์
+       * เสียงคลาวด์กับ Kokoro ปรับด้วยความเร็วการเล่นไฟล์ ซึ่งเบราว์เซอร์
+       * คงระดับเสียงไว้ให้อยู่แล้ว จึงไม่กลายเป็นเสียงทุ้มผิดธรรมชาติ
+       */
+      const slow = options.slow === true;
+
       if (source === "server") {
-        await serverTts.speak(spoken);
+        await serverTts.speak(spoken, { rate: slow ? 0.6 : 1 });
         // ถ้าคีย์หายไประหว่างทาง isConfigured จะกลายเป็น false ในรอบหน้า
         return;
       }
 
       if (source === "kokoro") {
-        await kokoroTts.speak(spoken, { voiceId: DEFAULT_KOKORO_VOICE });
+        await kokoroTts.speak(spoken, {
+          voiceId: DEFAULT_KOKORO_VOICE,
+          rate: slow ? 0.7 : 1,
+        });
         return;
       }
 
-      await getTts().speak(spoken, MILO_VOICE);
+      await getTts().speak(spoken, {
+        ...MILO_VOICE,
+        rate: slow ? 0.6 : MILO_VOICE.rate,
+      });
     },
     [source],
   );

@@ -16,7 +16,6 @@ import {
   topicWords,
 } from "@/lib/chat/topics";
 import type { ChatMessage, ChatMistake, ChatTurn } from "@/lib/chat/types";
-import { MILO_VOICE } from "@/lib/chat/voice";
 import { useMiloVoice } from "./use-milo-voice";
 import type { CefrLevel } from "@/lib/types";
 import {
@@ -52,10 +51,13 @@ function Bubble({
   message,
   showThai,
   onToggleThai,
+  speak,
 }: {
   message: ChatMessage;
   showThai: boolean;
   onToggleThai: () => void;
+  /** ตัวอ่านของหน้าแชท เพื่อให้ปุ่มลำโพงใช้เสียงเดียวกับตอน Milo ตอบ */
+  speak: (text: string, options: { slow: boolean }) => Promise<void>;
 }) {
   const fromChild = message.role === "child";
 
@@ -79,13 +81,8 @@ function Bubble({
 
         {!fromChild ? (
           <div className="flex items-center gap-2">
-            <SpeakerButton text={message.text} size="sm" voice={MILO_VOICE} />
-            <SpeakerButton
-              text={message.text}
-              slow
-              size="sm"
-              voice={MILO_VOICE}
-            />
+            <SpeakerButton text={message.text} size="sm" speak={speak} />
+            <SpeakerButton text={message.text} slow size="sm" speak={speak} />
             {message.textTh ? (
               <Button
                 variant="ghost"
@@ -468,6 +465,7 @@ export function ChatRoom() {
           <div key={message.id} className="space-y-2">
             <Bubble
               message={message}
+              speak={voice.speak}
               showThai={thaiShown.includes(message.id)}
               onToggleThai={() =>
                 setThaiShown((current) =>
